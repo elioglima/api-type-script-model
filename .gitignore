@@ -1,0 +1,36 @@
+node_modules
+ormconfig.*
+.DS_Store
+
+### WebStorm ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### Local configurations ###
+*-local.*
+
+### Local logs ###
+logs
+*.log
+*.logs
+package-lock.json
+yarn.lock
+
+### Dot ENV Files ###
+.env
+*.development
+*.production
+*.test
+
+### TypeORM ###
+ormconfig.json

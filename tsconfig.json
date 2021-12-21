@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "noEmitOnError": true,
+    "resolveJsonModule": true,
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": [
+      "ESNext"
+    ],
+    "allowJs": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "compileOnSave": false,
+  "include": [
+    "./src/**/*",
+    "./src/**/*.json"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

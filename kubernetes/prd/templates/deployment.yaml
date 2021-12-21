@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  labels:
+    name: {{ .Values.appName }}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: {{ .Values.appName }}
+  template:
+    metadata:
+      name: {{ .Values.appName }}
+      labels:
+        name: {{ .Values.appName }}
+    spec:
+      containers:
+        - name: {{ .Values.appName }}
+          image: {{ .Values.DOCKER_REGISTRY }}
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.appName }}
+          resources:
+            limits:
+              cpu: 200m
+              memory: 800Mi
+            requests:
+              cpu: 100m
+              memory: 400Mi
+      restartPolicy: Always
