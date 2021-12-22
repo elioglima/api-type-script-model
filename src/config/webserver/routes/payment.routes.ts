@@ -5,9 +5,7 @@ const paymentController = new PaymentController();
 export const payment: Router = Router();
 
 payment
-    .get('/', paymentController.getAll)
+    .get('/gateway/:id', paymentController.getByGatewayId)
     .get('/:id', paymentController.getById)
-    .get('/breakfast/:idEnterprise', paymentController.getBreakfast)
     .post('/', paymentController.create)
-    .put('/', paymentController.update)
-    .delete('/:id', paymentController.delete);
+    .put('/', paymentController.update);
