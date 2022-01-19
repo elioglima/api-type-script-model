@@ -2,15 +2,19 @@
 
     https://developercielo.github.io/manual/cielo-ecommerce#tokeniza%C3%A7%C3%A3o-de-cart%C3%B5es
 
+    "host": "jflrealty.cqisbfzuue6q.us-east-2.rds.amazonaws.com",
+    "port": 3306,
+    "username": "jflmanager",
+    "password": "6Yj4yB70SwZe6MYe8Uwc",
+    "database": "jflrealty",
+
     - criar token para transacoes internas
         - criar middlewares para validar acesso
 
     - TABELAS - 2h30
         - tabela de dados lista cartoes
-            - idReference           - id da referencia do cadastro
-            - typeReference         - tipo de referencia do cadastro (se é um usuario ou um apartamento etc...)
             - createdAt             - data de cadastro
-            - createdUserId         - id do usuario de criacao
+            - idUser                - id do usuario
             - token                 - token da cielo (cardToken)
             - lastFourNumberCard    - os quatros ultimos numero do cartao
             - Brand                 - nome da bandeira
@@ -46,9 +50,7 @@
             - regras irreverssivel
 
             request: {
-                idReference: number, - id do usuario logado
-                typeReference: string, - usuario master                               
-                
+                idUser: number, - id do usuario logado                
                 cardNumber string,
                 cardSecurityCode: string,
                 cardDueDay: Number,
@@ -56,27 +58,7 @@
                 cardBrand: string,
 
                 idCard - opcional
-            }
-
-        - payment/future - 4h        
-            - fila de futuros pagamentos - lançar futuros pagamento         
-            - lancar pagamento
-            - consultar responsavel pelo apartamento e lancar no is dele
-            
-            request: {
-                idReference: number, - id do usuario logado 
-                typeReference: string, - caso dependente 'DEPENDENTE' caso master 'MASTER'                                
-                idMaster: string, - codigo do master do ap
-                
-                cardNumber string,
-                cardSecurityCode: string,
-                cardDueDay: Number,
-                cardDueYear: Number,
-                cardBrand: string,
-
-                description: string, - indica a descricao do que sera comprado
-                value: Number, - valor da compra
-            }
+            }        
         
         - payment/find/extract - 2h  
             - extrato de pagamento
@@ -85,6 +67,7 @@
             - campo de idTransaction opcional
 
             {
+                idUser: number, - id do usuario logado                
                 dateStart,
                 dateEnd,
                 idTransaction
@@ -112,6 +95,18 @@
     
     - EXPOR ENDPOINT NA BFF
     
+        POST - payment/now para payment-api.post.payment/now
+            - efetua o pagamento
+            payload: {
+                idUser: number, - id do usuario logado                
+                cardNumber string,
+                cardSecurityCode: string,
+                cardDueDay: Number,
+                cardDueYear: Number,
+                cardBrand: string,
+                idCard - opcional
+            }  
+
         POST - payment/card/add para payment-api.post.payment/card/add
             payload: { id, idUser, number }
 
