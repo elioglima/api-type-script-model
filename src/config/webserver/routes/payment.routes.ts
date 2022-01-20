@@ -6,6 +6,6 @@ export const payment: Router = Router();
 
 payment
     .get('/gateway/:id', paymentController.getByGatewayId)
-    .get('/:id', paymentController.getById)
-    .post('/', paymentController.create)
-    .put('/', paymentController.update);
+    .get('/:idTransaction', paymentController.getReceipt)
+    .post('/', paymentController.MakePayment)
+

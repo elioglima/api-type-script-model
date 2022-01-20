@@ -1,8 +1,8 @@
 import debug from 'debug';
 import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 
-export class FindPaymentByIdService {
-    private logger = debug('service-api:FindPaymentByIdService');
+export default class ReceiptIdService {
+    private logger = debug('service-api:ReceiptIdService');
     private paymentRepository = new PaymentRepository();
 
     public execute = async (id: number) => {
