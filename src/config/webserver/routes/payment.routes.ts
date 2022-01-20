@@ -8,6 +8,7 @@ payment
     .get('/gateway/:id', paymentController.getByGatewayId)
     .get('/:idTransaction', paymentController.getReceipt)
     .post('/', paymentController.MakePayment)
-    .post('/card/list', paymentController.CardListByFilter)
-    .put('/card/add', paymentController.CardAdd)
+    .get('/card', paymentController.CardListByFilter)
+    .put('/card', paymentController.CardAdd)
+    .delete('/card', paymentController.CardRemove)
 
