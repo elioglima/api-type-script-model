@@ -24,11 +24,13 @@
             - createdAt
             - userId
             - date
-            - descricao
+            - description
+            - transactionId
+            - transactionMessage
             - status 
                 - Em Aberto
                 - Pago
-                    - idTransaction
+                - Rejeitado
                 - Cancelado
             - valor    
 

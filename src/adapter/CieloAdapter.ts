@@ -1,27 +1,50 @@
-import { IAdapter } from '../domain/IAdapter';
+import { IAdapter, reqCardAdd, reqCardFind, reqCardRemove, reqMakePayment, reqRepayPayment, resCardAdd, resCardFind, resCardRemove, resMakePayment, resRepayPayment } from '../domain/IAdapter';
 
 export class CieloAdapter implements IAdapter {
+
     readonly API_URL = 'cielo.com';
-
-    public addCreditCard() {
-        return true;
+    readURL(): string | undefined {
+        throw new Error('Method not implemented.');
     }
 
-    public getCreditCards() {
-        return {
-            url: this.API_URL,
-        };
+    request(method: 'POST' | 'GET' | 'PUT') {
+        switch (method) {
+            case 'POST':
+
+                break;
+
+            case 'GET':
+
+                break;
+
+            case 'PUT':
+
+                break;
+
+            default:
+                throw new Error('Method not implemented.');
+        }
     }
 
-    public removeCreditCard() {
-        return true;
+    cardAdd(payload: reqCardAdd): resCardAdd {
+        throw new Error('Method not implemented.');
     }
 
-    public makePayment() {
-        return true;
+    cardRemove(payload: reqCardRemove): resCardRemove {
+        throw new Error('Method not implemented.');
     }
 
-    public refoundPayment() {
-        return true;
+    cardFind(payload: reqCardFind): resCardFind {
+        throw new Error('Method not implemented.');
     }
+
+    makePayment(payload: reqMakePayment): resMakePayment {
+        throw new Error('Method not implemented.');
+    }
+
+    repayPayment(payload: reqRepayPayment): resRepayPayment {
+        throw new Error('Method not implemented.');
+    }
+
+
 }
