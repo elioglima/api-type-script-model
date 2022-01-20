@@ -1,13 +1,38 @@
 import { IAdapter, reqCardAdd, reqCardFind, reqCardRemove, reqMakePayment, reqRepayPayment, resCardAdd, resCardFind, resCardRemove, resMakePayment, resRepayPayment } from '../domain/IAdapter';
 
+/*
+    https://developercielo.github.io/manual/cielo-ecommerce#tokeniza%C3%A7%C3%A3o-de-cart%C3%B5es
+*/
+
 export class CieloAdapter implements IAdapter {
 
     readonly API_URL = 'cielo.com';
-    readURL(): string | undefined {
+
+    public readURL(): string | undefined {
         throw new Error('Method not implemented.');
     }
 
-    request(method: 'POST' | 'GET' | 'PUT') {
+    public cardAdd(payload: reqCardAdd): resCardAdd {
+        throw new Error('Method not implemented.');
+    }
+
+    public cardRemove(payload: reqCardRemove): resCardRemove {
+        throw new Error('Method not implemented.');
+    }
+
+    public cardFind(payload: reqCardFind): resCardFind {
+        throw new Error('Method not implemented.');
+    }
+
+    public makePayment(payload: reqMakePayment): resMakePayment {
+        throw new Error('Method not implemented.');
+    }
+
+    public repayPayment(payload: reqRepayPayment): resRepayPayment {
+        throw new Error('Method not implemented.');
+    }
+
+    private _request(method: 'POST' | 'GET' | 'PUT') {
         switch (method) {
             case 'POST':
 
@@ -25,26 +50,5 @@ export class CieloAdapter implements IAdapter {
                 throw new Error('Method not implemented.');
         }
     }
-
-    cardAdd(payload: reqCardAdd): resCardAdd {
-        throw new Error('Method not implemented.');
-    }
-
-    cardRemove(payload: reqCardRemove): resCardRemove {
-        throw new Error('Method not implemented.');
-    }
-
-    cardFind(payload: reqCardFind): resCardFind {
-        throw new Error('Method not implemented.');
-    }
-
-    makePayment(payload: reqMakePayment): resMakePayment {
-        throw new Error('Method not implemented.');
-    }
-
-    repayPayment(payload: reqRepayPayment): resRepayPayment {
-        throw new Error('Method not implemented.');
-    }
-
 
 }

@@ -12,7 +12,8 @@ export class PaymentController {
     private ReceiptIdService = new service.ReceiptIdService();
     private CardListByFilterService = new service.CardListByFilterService();
     private CardAddService = new service.CardAddService();
-
+    private CardRemoveService = new service.CardRemoveService();
+    
     private updateByGatewayIdService = new UpdateByGatewayIdService();
     private findPaymentByGatewayIdService = new FindPaymentByGatewayIdService();
 
@@ -75,6 +76,22 @@ export class PaymentController {
 
         return res.status(200).json(data);
     }
+
+    public CardRemove = async (req: Request, res: Response) => {
+        this.logger(`CardRemove`);
+
+        const data = await this.CardRemoveService.execute(
+            req.body,
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    }
+
 
     public getByGatewayId = async (req: Request, res: Response) => {
         this.logger(`Find payment by id ${req.params.id}`);
