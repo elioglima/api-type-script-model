@@ -35,15 +35,15 @@ export class CieloAdapter implements IAdapter {
     private _request(method: 'POST' | 'GET' | 'PUT') {
         switch (method) {
             case 'POST':
-
+                throw new Error('Method not implemented.');
                 break;
 
             case 'GET':
-
+                throw new Error('Method not implemented.');
                 break;
 
             case 'PUT':
-
+                throw new Error('Method not implemented.');
                 break;
 
             default:
