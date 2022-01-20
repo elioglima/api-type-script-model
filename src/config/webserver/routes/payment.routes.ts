@@ -9,4 +9,5 @@ payment
     .get('/:idTransaction', paymentController.getReceipt)
     .post('/', paymentController.MakePayment)
     .post('/card/list', paymentController.CardListByFilter)
+    .put('/card/add', paymentController.CardAdd)
 
