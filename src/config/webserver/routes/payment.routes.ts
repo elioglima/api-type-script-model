@@ -9,6 +9,6 @@ payment
     .get('/:idTransaction', paymentController.getReceipt)
     .post('/', paymentController.MakePayment)
     .get('/card', paymentController.CardListByFilter)
-    .put('/card', paymentController.CardAdd)
+    .post('/card', paymentController.CardAdd)
     .delete('/card', paymentController.CardRemove)
 
