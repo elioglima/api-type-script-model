@@ -13,9 +13,13 @@ export class PaymentRepository {
             .insert()
             .values([
                 {
-                    gatewayId: payment.gatewayId,
+                    transactionId: payment.transactionId,
+                    transactionMessage: payment.transactionMessage,
+                    descriptionMessage: payment.descriptionMessage,
+                    descriptionIdReference: payment.descriptionIdReference,
                     status: payment.status,
-                    type: payment.type,
+                    userId: payment.userId,
+                    value: payment.value,
                 },
             ])
             .execute()
@@ -35,15 +39,13 @@ export class PaymentRepository {
             .getRepository(PaymentEntity)
             .createQueryBuilder('payment')
             .where('payment.id = :id', { id })
-            .andWhere('payment.deletedAt IS NULL')
             .getOne();
 
-    public getByGatewayId = async (gatewayId: string) =>
+    public getByTransactionId = async (transactionId: string) =>
         await getConnection()
             .getRepository(PaymentEntity)
             .createQueryBuilder('payment')
-            .where('payment.gatewayId = :gatewayId', { gatewayId })
-            .andWhere('payment.deletedAt IS NULL')
+            .where('payment.transactionId = :transactionId', { transactionId })
             .getOne();
 
     public update = async (payment: Payment) => {
