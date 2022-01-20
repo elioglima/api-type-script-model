@@ -8,4 +8,5 @@ payment
     .get('/gateway/:id', paymentController.getByGatewayId)
     .get('/:idTransaction', paymentController.getReceipt)
     .post('/', paymentController.MakePayment)
+    .post('/card/list', paymentController.CardListByFilter)
 

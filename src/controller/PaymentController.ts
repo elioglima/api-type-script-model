@@ -2,14 +2,16 @@ import debug from 'debug';
 import { Request, Response } from 'express';
 
 import service from '../service/index';
-import { FindPaymentByIdService } from '../service/ReceiptIdService';
 import { UpdateByGatewayIdService } from '../service/UpdateByGatewayIdService';
 import { FindPaymentByGatewayIdService } from '../service/FindPaymentByGatewayIdService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
+
     private MakePaymentService = new service.MakePaymentService();
     private ReceiptIdService = new service.ReceiptIdService();
+    private CardListByFilterService = new service.CardListByFilterService();
+
     private updateByGatewayIdService = new UpdateByGatewayIdService();
     private findPaymentByGatewayIdService = new FindPaymentByGatewayIdService();
 
@@ -41,6 +43,21 @@ export class PaymentController {
 
         return res.status(200).json(data);
     };
+
+    public CardListByFilter = async (req: Request, res: Response) => {
+        this.logger(`CardListByFilter`);
+
+        const data = await this.CardListByFilterService.execute(
+            req.body,
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    }
 
     public getByGatewayId = async (req: Request, res: Response) => {
         this.logger(`Find payment by id ${req.params.id}`);
