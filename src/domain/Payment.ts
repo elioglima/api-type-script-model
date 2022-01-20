@@ -1,12 +1,14 @@
-import { PaymentStatus } from "src/enum/PaymentStatusEnum";
-import { PaymentType } from "src/enum/PaymentTypeEnum";
+import { PaymentStatus } from 'src/enum/PaymentStatusEnum';
 
 export interface Payment {
     id: number;
-    gatewayId: string;
-    type: PaymentType;
+    userId: number;
+    transactionId: string;
+    transactionMessage: string;
+    value: number;
     status: PaymentStatus;
+    descriptionMessage: string;
+    descriptionIdReference: string;
     createdAt: Date;
     updatedAt: Date;
-    deletedAt: Date;
 }
