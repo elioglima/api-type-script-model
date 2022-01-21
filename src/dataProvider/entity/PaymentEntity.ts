@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { PaymentType } from '../../enum/PaymentTypeEnum';
 import { PaymentStatus } from '../../enum/PaymentStatusEnum';
 
 @Entity('payment')
@@ -8,19 +7,27 @@ export class PaymentEntity {
     id: number | undefined;
 
     @Column({
-        name: 'gatewayId',
+        name: 'userId',
+        type: 'int',
+    })
+    userId: number | undefined;
+
+    @Column({
+        name: 'transactionId',
         type: 'varchar',
         length: 50,
     })
-    gatewayId: string | undefined;
+    transactionId: string | undefined;
 
     @Column({
-        name: 'type',
-        type: 'enum',
-        enum: PaymentType,
-        nullable: true,
+        name: 'transactionMessage',
+        type: 'varchar',
+        length: 50,
     })
-    type: string | undefined;
+    transactionMessage: string | undefined;
+
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    value: number | undefined;
 
     @Column({
         name: 'status',
@@ -29,6 +36,20 @@ export class PaymentEntity {
         nullable: true,
     })
     status: string | undefined;
+
+    @Column({
+        name: 'descriptionMessage',
+        type: 'varchar',
+        length: 200,
+    })
+    descriptionMessage: string | undefined;
+
+    @Column({
+        name: 'descriptionIdReference',
+        type: 'varchar',
+        length: 200,
+    })
+    descriptionIdReference: string | undefined;
 
     @Column({
         name: 'createdAt',
@@ -45,10 +66,4 @@ export class PaymentEntity {
     })
     updatedAt: Date | undefined;
 
-    @Column({
-        name: 'deletedAt',
-        type: 'timestamp',
-        nullable: true,
-    })
-    deletedAt: Date | undefined;
 }
