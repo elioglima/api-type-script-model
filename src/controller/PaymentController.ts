@@ -13,7 +13,7 @@ export class PaymentController {
     private CardListByFilterService = new service.CardListByFilterService();
     private CardAddService = new service.CardAddService();
     private CardRemoveService = new service.CardRemoveService();
-    
+
     private updateByGatewayIdService = new UpdateByGatewayIdService();
     private findPaymentByGatewayIdService = new FindPaymentByGatewayIdService();
 

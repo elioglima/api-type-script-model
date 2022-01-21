@@ -22,7 +22,7 @@ export class Payment implements IAdapter {
         return this.API_URL
     }
 
-    cardAdd(payload: reqCardAdd): resCardAdd {
+    public cardAdd(payload: reqCardAdd): resCardAdd {
         try {
             return this.paymentProvider.cardAdd(payload)
         } catch (error) {
@@ -65,3 +65,5 @@ export class Payment implements IAdapter {
 
 
 }
+
+export default Payment

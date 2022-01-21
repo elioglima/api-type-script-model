@@ -1,3 +1,4 @@
+
 export type resCardAdd = {
 
 }
@@ -59,3 +60,7 @@ export interface IAdapter {
     makePayment(payload: reqMakePayment): resMakePayment;
     repayPayment(payload: reqRepayPayment): resRepayPayment;
 }
+
+
+
+
