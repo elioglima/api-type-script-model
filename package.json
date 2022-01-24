@@ -16,6 +16,7 @@
   "author": "Opah IT",
   "license": "ISC",
   "dependencies": {
+    "camelcase-keys": "^7.0.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "custom-env": "^2.0.1",
@@ -23,6 +24,8 @@
     "debug": "^4.3.2",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
+    "http": "0.0.1-security",
+    "https": "^1.0.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "typeorm": "^0.2.34"

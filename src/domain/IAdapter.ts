@@ -1,10 +1,23 @@
+import { EnumBrands } from '../enum/BrandsEnum';
+export interface Link {
+    Method: string;
+    Rel: string;
+    Href: string;
+}
+// Add new Card Req and Response
+export type reqCardAdd = {
+    customerName: string;
+    cardNumber: string;
+    holder: string;
+    expirationDate: string;
+    brand: EnumBrands;
+    [x: string]: any;
+};
 export type resCardAdd = {
     cardToken: string;
-    method: string;
-    rel: string;
-    href: string;
+    links: Link;
 };
-
+// Card remove
 export type resCardRemove = {};
 
 export type resCardFind = {};
@@ -19,15 +32,6 @@ export type resMakePayment = {
 };
 
 export type resRepayPayment = {};
-
-export type reqCardAdd = {
-    customerName: string;
-    cardNumber: string;
-    holder: string;
-    expirationDate: string;
-    brand: string;
-    [x: string]: any;
-};
 
 export type reqCardRemove = {};
 
@@ -46,7 +50,7 @@ export interface IAdapter {
 
     readURL(): string | undefined;
 
-    cardAdd(payload: reqCardAdd): resCardAdd;
+    cardAdd(payload: reqCardAdd): Promise<resCardAdd>;
     cardRemove(payload: reqCardRemove): resCardRemove;
     cardFind(payload: reqCardFind): resCardFind;
 

@@ -1,13 +1,13 @@
 import debug from 'debug';
-import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
+import { PaymentCardsRepository } from '../dataProvider/repository/PaymentCardsRepository';
 
-export default class CardListByFilterService {
-    private logger = debug('service-api:CardListByFilterService');
-    private paymentRepository = new PaymentRepository();
+export default class CardAddService {
+    private logger = debug('service-api:CardAddService');
+    private paymentCardRepository = new PaymentCardsRepository();
 
     public execute = async (id: number) => {
-        this.logger(`Find payment by id`);
-        return this.paymentRepository.getById(id).then(
+        this.logger(`Find Card Add`);
+        return this.paymentCardRepository.getById(id).then(
             data => {
                 if (data === undefined) {
                     this.logger(`Payment ${id} not found`);
