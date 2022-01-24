@@ -1,11 +1,22 @@
-import { IAdapter, reqCardAdd, reqCardFind, reqCardRemove, reqMakePayment, reqRepayPayment, resCardAdd, resCardFind, resCardRemove, resMakePayment, resRepayPayment } from '../domain/IAdapter';
+import {
+    IAdapter,
+    reqCardAdd,
+    reqCardFind,
+    reqCardRemove,
+    reqMakePayment,
+    reqRepayPayment,
+    resCardAdd,
+    resCardFind,
+    resCardRemove,
+    resMakePayment,
+    resRepayPayment,
+} from '../domain/IAdapter';
 
 /*
     https://developercielo.github.io/manual/cielo-ecommerce#tokeniza%C3%A7%C3%A3o-de-cart%C3%B5es
 */
 
 export class CieloAdapter implements IAdapter {
-
     readonly API_URL = 'cielo.com';
 
     public readURL(): string | undefined {
@@ -50,5 +61,4 @@ export class CieloAdapter implements IAdapter {
                 throw new Error('Method not implemented.');
         }
     }
-
 }
