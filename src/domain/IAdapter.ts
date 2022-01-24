@@ -21,11 +21,12 @@ export type resMakePayment = {
 export type resRepayPayment = {};
 
 export type reqCardAdd = {
-    customerName: string | undefined;
+    customerName: string;
     cardNumber: string;
     holder: string;
     expirationDate: string;
     brand: string;
+    [x: string]: any;
 };
 
 export type reqCardRemove = {};
