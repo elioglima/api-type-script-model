@@ -17,7 +17,6 @@ export class Cielo {
     private requestId?: string | undefined;
 
     public card: Card;
-    public cartao: Card = this.card;
 
     constructor(constructor: CieloConstructor) {
         this.merchantId = constructor.merchantId;

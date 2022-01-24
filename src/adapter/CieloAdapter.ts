@@ -1,4 +1,3 @@
-import { request } from 'express';
 import { CieloTransactionInterface } from 'src/interface/cielo-transaction.interface';
 import {
     IAdapter,
