@@ -1,3 +1,4 @@
+import { request } from 'express';
 import {
     IAdapter,
     reqCardAdd,
@@ -24,7 +25,10 @@ export class CieloAdapter implements IAdapter {
     }
 
     public cardAdd(payload: reqCardAdd): resCardAdd {
-        throw new Error('Method not implemented.');
+        return this.cardAdd.post<reqCardAdd, resCardAdd>(
+            { path: '/card' },
+            request,
+        );
     }
 
     public cardRemove(payload: reqCardRemove): resCardRemove {
