@@ -1,5 +1,7 @@
-import { ConsultTokenRequestModel } from 'src/domain/consultToken';
-import { ConsultTokenResponseModel } from 'src/domain/PaymentLogTransaction';
+import {
+    ConsultTokenRequestModel,
+    ConsultTokenResponseModel,
+} from 'src/domain/Card/consultToken';
 import { Utils } from 'src/utils/utils';
 import { CieloTransactionInterface } from '../interface/cielo-transaction.interface';
 

@@ -15,8 +15,3 @@ export interface ConsultTransactionMerchantOrderIdRequestModel {
 export interface ConsultTransactionRecurrentPaymentIdRequestModel {
     recurrentPaymentId: string;
 }
-export interface ConsultTokenResponseModel {
-    cardNumber: string;
-    holder: string;
-    expirationDate: string;
-}
