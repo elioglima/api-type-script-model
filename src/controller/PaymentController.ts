@@ -46,11 +46,11 @@ export class PaymentController {
         return res.status(200).json(data);
     };
 
-    public CardListByFilter = async (req: Request, res: Response) => {
+    public UserCardListByFilter = async (req: Request, res: Response) => {
         this.logger(`CardListByFilter`);
 
         const data = await this.CardListByFilterService.execute(
-            req.body,
+            Number(req.params.userId),
         );
 
         if (data instanceof Error) {
@@ -81,7 +81,7 @@ export class PaymentController {
         this.logger(`CardRemove`);
 
         const data = await this.CardRemoveService.execute(
-            req.body,
+            Number(req.params.id),
         );
 
         if (data instanceof Error) {

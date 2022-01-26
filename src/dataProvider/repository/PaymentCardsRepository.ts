@@ -46,6 +46,14 @@ export class PaymentCardsRepository {
             .where('paymentCards.deletedAt IS NULL')
             .getMany();
 
+    public getAllUserCards = async (userId: number) =>
+        await getConnection()
+            .getRepository(PaymentCardsEntity)
+            .createQueryBuilder('paymentCards')
+            .where('paymentCards.deletedAt IS NULL')
+            .andWhere('paymentCards.userId = :userId', { userId })
+            .getMany();
+
     public update = async (paymentCards: PaymentCards) => {
         return await getConnection()
             .getRepository(PaymentCardsEntity)
