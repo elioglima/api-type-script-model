@@ -48,6 +48,14 @@ export class PaymentRepository {
             .where('payment.transactionId = :transactionId', { transactionId })
             .getOne();
 
+    public getUserPayments = async (userId: number) =>
+        await getConnection()
+            .getRepository(PaymentEntity)
+            .createQueryBuilder('payment')
+            .where('payment.userId = :userId', { userId })
+            .andWhere('payment.createdAt > (NOW() - INTERVAL 5 MONTH)')
+            .getMany();
+
     public update = async (payment: Payment) => {
         return await getConnection()
             .getRepository(PaymentEntity)

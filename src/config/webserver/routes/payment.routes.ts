@@ -5,8 +5,7 @@ const paymentController = new PaymentController();
 export const payment: Router = Router();
 
 payment
-    .get('/gateway/:id', paymentController.getByGatewayId)
-    .get('/:idTransaction', paymentController.getReceipt)
+    .get('/:userId', paymentController.getReceipt)
     .post('/', paymentController.MakePayment)
     .get('/card/:userId', paymentController.UserCardListByFilter)
     .post('/card', paymentController.CardAdd)

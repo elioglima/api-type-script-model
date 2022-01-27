@@ -5,22 +5,18 @@ export default class ReceiptIdService {
     private logger = debug('service-api:ReceiptIdService');
     private paymentRepository = new PaymentRepository();
 
-    public execute = async (id: number) => {
+    public execute = async (userId: number, transactionId: string | null) => {
         this.logger(`Find payment by id`);
-        return this.paymentRepository.getById(id).then(
-            data => {
-                if (data === undefined) {
-                    this.logger(`Payment ${id} not found`);
-                    return {};
-                }
 
-                this.logger(`${data}`);
-                return data;
-            },
-            err => {
-                this.logger(`Error: ${err}`);
-                return new Error(err);
-            },
-        );
+        if (transactionId) {
+            const data = await this.paymentRepository.getByTransactionId(
+                transactionId,
+            );
+
+            if (data == undefined) return new Error('Payment not found');
+            else return data;
+        } else {
+            return await this.paymentRepository.getUserPayments(userId);
+        }
     };
 }
