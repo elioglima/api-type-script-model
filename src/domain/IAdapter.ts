@@ -1,4 +1,6 @@
 import { EnumBrands } from '../enum/BrandsEnum';
+import { CustomerModel } from './Customer/customer.model';
+import { PaymentRequestModel } from './Payment/paymentRequest.model';
 export interface Link {
     Method: string;
     Rel: string;
@@ -22,17 +24,6 @@ export type resCardRemove = {};
 
 export type resCardFind = {};
 
-export type resMakePayment = {
-    cardNumber: String | undefined;
-    cardSecurityCode: Number | undefined;
-    cardDueDay: Number | undefined;
-    cardDueYear: Number | undefined;
-    cardBrand: String | undefined;
-    cardToken: string | undefined;
-};
-
-export type resRepayPayment = {};
-
 export type reqCardRemove = {};
 
 export type reqCardFind = {
@@ -41,7 +32,33 @@ export type reqCardFind = {
     idTransaction: Number;
 };
 
-export type reqMakePayment = {};
+// Make payment
+
+export type reqMakePayment = {
+    merchantOrderId: string;
+    customer: CustomerModel;
+    payment: PaymentRequestModel;
+    [x: string]: any;
+};
+
+export type resMakePayment = {
+    merchantOrderId: string;
+    customer: CustomerModel;
+    payment: PaymentRequestModel;
+};
+
+// export type resMakePayment = {
+//     cardNumber: String | undefined;
+//     cardSecurityCode: Number | undefined;
+//     cardDueDay: Number | undefined;
+//     cardDueYear: Number | undefined;
+//     cardBrand: String | undefined;
+//     cardToken: string | undefined;
+
+// };
+
+// Repayment
+export type resRepayPayment = {};
 
 export type reqRepayPayment = {};
 

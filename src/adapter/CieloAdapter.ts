@@ -47,30 +47,13 @@ export class CieloAdapter implements IAdapter {
         throw new Error('Method not implemented.');
     }
 
-    public makePayment(payload: reqMakePayment): Promise<resMakePayment> {
-        return this.util.postToSales<resMakePayment, reqMakePayment>(payload);
+    public makePayment(transaction: reqMakePayment): Promise<resMakePayment> {
+        return this.util.postToSales<resMakePayment, reqMakePayment>(
+            transaction,
+        );
     }
 
     public repayPayment(payload: reqRepayPayment): resRepayPayment {
         throw new Error('Method not implemented.');
-    }
-
-    private _request(method: 'POST' | 'GET' | 'PUT') {
-        switch (method) {
-            case 'POST':
-                throw new Error('Method not implemented.');
-                break;
-
-            case 'GET':
-                throw new Error('Method not implemented.');
-                break;
-
-            case 'PUT':
-                throw new Error('Method not implemented.');
-                break;
-
-            default:
-                throw new Error('Method not implemented.');
-        }
     }
 }
