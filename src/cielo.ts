@@ -1,4 +1,6 @@
 import { Card } from './class/cards';
+import { Consult } from './class/consult';
+import { CreditCard } from './class/creditCard';
 import { CieloTransactionInterface } from './interface/cielo-transaction.interface';
 
 export interface CieloConstructor {
@@ -16,6 +18,8 @@ export class Cielo {
     private sandbox: boolean;
     private requestId?: string | undefined;
 
+    public creditCard: CreditCard | undefined;
+    public consult: Consult | undefined;
     public card: Card;
 
     constructor(constructor: CieloConstructor) {
