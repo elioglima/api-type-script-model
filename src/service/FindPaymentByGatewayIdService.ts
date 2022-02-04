@@ -8,7 +8,7 @@ export class FindPaymentByGatewayIdService {
     public execute = async (gatewayId: string) => {
         this.logger(`Find payment by id`);
         return this.paymentRepository.getByGatewayId(gatewayId).then(
-            data => {
+            (data: undefined) => {
                 if (data === undefined) {
                     this.logger(`Payment ${gatewayId} not found`);
                     return {};
@@ -17,7 +17,7 @@ export class FindPaymentByGatewayIdService {
                 this.logger(`${data}`);
                 return data;
             },
-            err => {
+            (err: string | undefined) => {
                 this.logger(`Error: ${err}`);
                 return new Error(err);
             },

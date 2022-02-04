@@ -66,11 +66,6 @@ export interface IAdapter {
     readonly API_URL: string | undefined;
 
     readURL(): string | undefined;
-
-    cardAdd(payload: reqCardAdd): Promise<resCardAdd>;
-    cardRemove(payload: reqCardRemove): resCardRemove;
-    cardFind(payload: reqCardFind): resCardFind;
-
-    makePayment(payload: reqMakePayment): resMakePayment;
+    makePayment(payload: reqMakePayment): Promise<any>;
     repayPayment(payload: reqRepayPayment): resRepayPayment;
 }

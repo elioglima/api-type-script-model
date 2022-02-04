@@ -1,9 +1,9 @@
-import { EnumFraudAnalysisStatus } from "../../enums";
-import { ReplyDataResponseModel } from "./replay-data.model";
+import { EnumFraudAnalysisStatus } from 'src/enum/FraudANalysisStatusEnum';
+import { ReplyDataResponseModel } from './replay-data.model';
 
 export interface FraudAnalysisResponseModel {
-    id: string,
-    status: EnumFraudAnalysisStatus,
-    fraudAnalysisReasonCode: number
-    replyData: ReplyDataResponseModel
+    id: string;
+    status: EnumFraudAnalysisStatus;
+    fraudAnalysisReasonCode: number;
+    replyData: ReplyDataResponseModel;
 }

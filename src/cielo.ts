@@ -14,7 +14,7 @@ export interface CieloConstructor {
 export class Cielo {
     private merchantId: string;
     private merchantKey: string;
-    private debug: boolean;
+    // private debug: boolean;
     private sandbox: boolean;
     private requestId?: string | undefined;
 
@@ -25,7 +25,7 @@ export class Cielo {
     constructor(constructor: CieloConstructor) {
         this.merchantId = constructor.merchantId;
         this.merchantKey = constructor.merchantKey;
-        this.debug = constructor.debug || false;
+        // this.debug = constructor.debug || false;
         this.sandbox = constructor.sandbox || false;
         this.requestId = constructor.requestId || undefined;
 

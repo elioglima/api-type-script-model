@@ -18,11 +18,9 @@ import { Utils } from 'src/utils/utils';
 import { CieloTransactionInterface } from '../interface/cielo-transaction.interface';
 
 export class Consult {
-    private cieloTransactionParams: CieloTransactionInterface;
     private util: Utils;
 
     constructor(transaction: CieloTransactionInterface) {
-        this.cieloTransactionParams = transaction;
         this.util = new Utils(transaction);
     }
 
