@@ -41,6 +41,16 @@ export class Cielo {
         };
 
         this.card = new Card(cieloTransactionInterface);
+        this.consult = new Consult(cieloTransactionInterface);
+        this.creditCard = new CreditCard(cieloTransactionInterface);
+    }
+
+    public getConsult() {
+        return this.consult;
+    }
+
+    public getCreditCard() {
+        return this.creditCard;
     }
 
     private getHostnames(sandbox: boolean): Array<string> {
