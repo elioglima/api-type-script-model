@@ -19,6 +19,7 @@ export class PaymentController {
 
     public MakePayment = async (req: Request, res: Response) => {
         this.logger(`Creating payment`, req.body);
+
         const data = await this.MakePaymentService.execute(req.body);
 
         if (data instanceof Error) {

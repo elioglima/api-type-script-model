@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { Payment } from '../domain/Payment';
+import { Payment } from '../domain/Payment/Payment';
 import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 import { PaymentEntity } from '../dataProvider/entity/PaymentEntity';
 

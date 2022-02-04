@@ -1,5 +1,5 @@
-import Adapter from './Adapter'
+import Adapter from './Adapter';
 
 export default {
-    Adapter
-}
+    Adapter,
+};
