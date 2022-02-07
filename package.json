@@ -16,6 +16,7 @@
   "author": "Opah IT",
   "license": "ISC",
   "dependencies": {
+    "@types/tape": "^4.13.2",
     "camelcase-keys": "^7.0.1",
     "cielo": "^2.4.4",
     "compression": "^1.7.4",

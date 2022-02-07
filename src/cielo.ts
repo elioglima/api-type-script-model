@@ -14,7 +14,7 @@ export interface CieloConstructor {
 export class Cielo {
     private merchantId: string;
     private merchantKey: string;
-    private debug: boolean;
+    // private debug: boolean;
     private sandbox: boolean;
     private requestId?: string | undefined;
 
@@ -25,7 +25,7 @@ export class Cielo {
     constructor(constructor: CieloConstructor) {
         this.merchantId = constructor.merchantId;
         this.merchantKey = constructor.merchantKey;
-        this.debug = constructor.debug || false;
+        // this.debug = constructor.debug || false;
         this.sandbox = constructor.sandbox || false;
         this.requestId = constructor.requestId || undefined;
 
@@ -41,6 +41,16 @@ export class Cielo {
         };
 
         this.card = new Card(cieloTransactionInterface);
+        this.consult = new Consult(cieloTransactionInterface);
+        this.creditCard = new CreditCard(cieloTransactionInterface);
+    }
+
+    public getConsult() {
+        return this.consult;
+    }
+
+    public getCreditCard() {
+        return this.creditCard;
     }
 
     private getHostnames(sandbox: boolean): Array<string> {

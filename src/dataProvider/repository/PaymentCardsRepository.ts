@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { PaymentCards } from '../../domain/PaymentCards';
+import { PaymentCards } from 'src/domain/Payment/PaymentCards';
 import { getConnection } from 'typeorm';
 import { PaymentCardsEntity } from '../entity/PaymentCardsEntity';
 

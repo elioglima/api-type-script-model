@@ -1,6 +1,5 @@
 import { CieloTransactionInterface } from 'src/interface/cielo-transaction.interface';
 import {
-    IAdapter,
     reqCardAdd,
     reqCardFind,
     reqCardRemove,
@@ -13,12 +12,13 @@ import {
     resRepayPayment,
 } from '../domain/IAdapter';
 import { Utils } from '../utils/utils';
+import { ICardAdapter } from './ICardAdapter';
 
 /*
     https://developercielo.github.io/manual/cielo-ecommerce#tokeniza%C3%A7%C3%A3o-de-cart%C3%B5es
 */
 
-export class CieloAdapter implements IAdapter {
+export class CieloAdapter implements ICardAdapter {
     readonly API_URL = 'cielo.com';
     private util: Utils;
     private cieloTransactionParams: CieloTransactionInterface;
@@ -39,11 +39,11 @@ export class CieloAdapter implements IAdapter {
         );
     }
 
-    public cardRemove(payload: reqCardRemove): resCardRemove {
+    public cardRemove(_payload: reqCardRemove): resCardRemove {
         throw new Error('Method not implemented.');
     }
 
-    public cardFind(payload: reqCardFind): resCardFind {
+    public cardFind(_payload: reqCardFind): resCardFind {
         throw new Error('Method not implemented.');
     }
 
@@ -53,7 +53,7 @@ export class CieloAdapter implements IAdapter {
         );
     }
 
-    public repayPayment(payload: reqRepayPayment): resRepayPayment {
+    public repayPayment(_payload: reqRepayPayment): resRepayPayment {
         throw new Error('Method not implemented.');
     }
 }

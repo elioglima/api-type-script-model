@@ -63,7 +63,7 @@ export class Utils {
     }
 
     private parseHttpRequestError(
-        options: IHttpRequestOptions,
+        _options: IHttpRequestOptions,
         data: string,
         responseHttp: any,
         responseCielo: any,
