@@ -13,3 +13,4 @@ export * from './CartVelocityHedgeEnum';
 export * from './FraudANalysisStatusEnum';
 export * from './TypeFlowAnalysusFraudEnum';
 export * from './RecurrentPaymentIntervalEnum';
+export * from './TravelEnum';

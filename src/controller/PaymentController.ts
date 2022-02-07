@@ -93,7 +93,7 @@ export class PaymentController {
         this.logger(`Find payment by id ${req.params.id}`);
 
         const data = await this.findPaymentByGatewayIdService.execute(
-            req.params.id,
+            Number(req.params.id),
         );
 
         if (data instanceof Error) {

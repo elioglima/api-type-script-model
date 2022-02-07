@@ -8,9 +8,7 @@ export class UpdateByGatewayIdService {
     private paymentRepository = new PaymentRepository();
 
     public async execute(payment: Payment) {
-        const hasPayment = await this.paymentRepository.getByGatewayId(
-            payment.gatewayId,
-        );
+        const hasPayment = await this.paymentRepository.getById(payment.id);
 
         if (hasPayment instanceof PaymentEntity) {
             this.logger(`Updating Payment`);

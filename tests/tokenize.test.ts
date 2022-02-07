@@ -67,9 +67,8 @@ brands.forEach(brand => {
                 },
             },
         };
-        const venda = await cielo.creditCard
-            .transaction(vendaParams)
-            .catch(error);
+        const creditCard = cielo.getCreditCard();
+        const venda = await creditCard?.transaction(vendaParams).catch(error);
         if (!venda) {
             t.end('Erro ao criar uma venda com o cartão tokenizado');
             return;
@@ -91,9 +90,11 @@ brands.forEach(brand => {
         const consultaCartaoTokenizadoParams: ConsultTokenRequestModel = {
             cardToken: token.cardToken,
         };
-        const consultaCartao = await cielo.consult
-            .cardToken(consultaCartaoTokenizadoParams)
+        const consulta = cielo.getConsult();
+        const consultaCartao = await consulta
+            ?.cardToken(consultaCartaoTokenizadoParams)
             .catch(error);
+
         if (!consultaCartao) {
             t.end('Não foi possivel fazer a consulta do cartão tokenizado');
             return;

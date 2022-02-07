@@ -42,7 +42,7 @@ export class Payment implements IAdapter {
         return this.API_URL;
     }
 
-    public cardAdd(payload: reqCardAdd): resCardAdd {
+    public cardAdd(payload: reqCardAdd): Promise<resCardAdd> {
         try {
             return this.paymentProvider.cardAdd(payload);
         } catch (error) {
@@ -66,7 +66,7 @@ export class Payment implements IAdapter {
         }
     }
 
-    makePayment(payload: reqMakePayment): resMakePayment {
+    makePayment(payload: reqMakePayment): Promise<resMakePayment> {
         try {
             return this.paymentProvider.makePayment(payload);
         } catch (error) {
