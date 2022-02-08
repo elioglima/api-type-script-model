@@ -1,4 +1,6 @@
 import {
+    reqMakePayment,
+    resMakePayment,
     reqCardAdd,
     reqCardFind,
     reqCardRemove,
@@ -9,6 +11,7 @@ import {
 
 export interface ICardAdapter {
     readonly API_URL: string | undefined;
+    makePayment(transaction: reqMakePayment): Promise<resMakePayment>;
 
     readURL(): string | undefined;
 
