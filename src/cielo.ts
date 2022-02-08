@@ -1,6 +1,4 @@
-import { Card } from './class/cards';
-import { Consult } from './class/consult';
-import { CreditCard } from './class/creditCard';
+import { Consult, Card, CreditCard } from './CieloAdapter';
 import { CieloTransactionInterface } from './interface/cielo-transaction.interface';
 
 export interface CieloConstructor {
