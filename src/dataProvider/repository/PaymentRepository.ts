@@ -48,13 +48,24 @@ export class PaymentRepository {
             .where('payment.transactionId = :transactionId', { transactionId })
             .getOne();
 
-    public getUserPayments = async (userId: number) =>
-        await getConnection()
+    public getUserPayments = async (userId: number, daysFilter?: number) => {
+        const query = getConnection()
             .getRepository(PaymentEntity)
             .createQueryBuilder('payment')
-            .where('payment.userId = :userId', { userId })
-            .andWhere('payment.createdAt > (NOW() - INTERVAL 5 MONTH)')
-            .getMany();
+            .select([
+                'payment.descriptionMessage,payment.status,payment.value,payment.id,DATE_FORMAT(payment.createdAt, "%d/%m/%Y") as day',
+            ])
+            .where('payment.userId = :userId', { userId });
+
+        if (daysFilter) {
+            query.andWhere(
+                'payment.createdAt > (NOW() - INTERVAL :daysFilter DAY)',
+                { daysFilter },
+            );
+        }
+
+        return query.getRawMany();
+    };
 
     public update = async (payment: Payment) => {
         return await getConnection()
