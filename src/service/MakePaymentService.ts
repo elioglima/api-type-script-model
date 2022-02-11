@@ -1,9 +1,9 @@
 import debug from 'debug';
 import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
-import { Payment } from '../domain/Payment';
+import { Payment } from '../domain/Payment/Payment';
 
-export class CreatePaymentService {
-    private logger = debug('service-api:CreatePaymentService');
+export default class MakePaymentService {
+    private logger = debug('service-api:MakePaymentService');
     private paymentRepository = new PaymentRepository();
 
     public async execute(payment: Payment) {

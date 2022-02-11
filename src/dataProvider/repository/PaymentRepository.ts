@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { Payment } from '../../domain/Payment';
+import { Payment } from '../../domain/Payment/Payment';
 import { getConnection } from 'typeorm';
 import { PaymentEntity } from '../entity/PaymentEntity';
 
@@ -13,9 +13,13 @@ export class PaymentRepository {
             .insert()
             .values([
                 {
-                    gatewayId: payment.gatewayId,
+                    transactionId: payment.transactionId,
+                    transactionMessage: payment.transactionMessage,
+                    descriptionMessage: payment.descriptionMessage,
+                    descriptionIdReference: payment.descriptionIdReference,
                     status: payment.status,
-                    type: payment.type,
+                    userId: payment.userId,
+                    value: payment.value,
                 },
             ])
             .execute()
@@ -35,16 +39,33 @@ export class PaymentRepository {
             .getRepository(PaymentEntity)
             .createQueryBuilder('payment')
             .where('payment.id = :id', { id })
-            .andWhere('payment.deletedAt IS NULL')
             .getOne();
 
-    public getByGatewayId = async (gatewayId: string) =>
+    public getByTransactionId = async (transactionId: string) =>
         await getConnection()
             .getRepository(PaymentEntity)
             .createQueryBuilder('payment')
-            .where('payment.gatewayId = :gatewayId', { gatewayId })
-            .andWhere('payment.deletedAt IS NULL')
+            .where('payment.transactionId = :transactionId', { transactionId })
             .getOne();
+
+    public getUserPayments = async (userId: number, daysFilter?: number) => {
+        const query = getConnection()
+            .getRepository(PaymentEntity)
+            .createQueryBuilder('payment')
+            .select([
+                'payment.descriptionMessage,payment.status,payment.value,payment.id,DATE_FORMAT(payment.createdAt, "%d/%m/%Y") as day',
+            ])
+            .where('payment.userId = :userId', { userId });
+
+        if (daysFilter) {
+            query.andWhere(
+                'payment.createdAt > (NOW() - INTERVAL :daysFilter DAY)',
+                { daysFilter },
+            );
+        }
+
+        return query.getRawMany();
+    };
 
     public update = async (payment: Payment) => {
         return await getConnection()

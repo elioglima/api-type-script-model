@@ -5,9 +5,9 @@ export class FindPaymentByGatewayIdService {
     private logger = debug('service-api:FindPaymentByGatewayIdService');
     private paymentRepository = new PaymentRepository();
 
-    public execute = async (gatewayId: string) => {
+    public execute = async (gatewayId: number) => {
         this.logger(`Find payment by id`);
-        return this.paymentRepository.getByGatewayId(gatewayId).then(
+        return this.paymentRepository.getById(gatewayId).then(
             data => {
                 if (data === undefined) {
                     this.logger(`Payment ${gatewayId} not found`);
@@ -17,7 +17,7 @@ export class FindPaymentByGatewayIdService {
                 this.logger(`${data}`);
                 return data;
             },
-            err => {
+            (err: string | undefined) => {
                 this.logger(`Error: ${err}`);
                 return new Error(err);
             },

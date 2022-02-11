@@ -1,27 +1,59 @@
-import { IAdapter } from '../domain/IAdapter';
+import { CieloTransactionInterface } from 'src/interface/cielo-transaction.interface';
+import {
+    reqCardAdd,
+    reqCardFind,
+    reqCardRemove,
+    reqMakePayment,
+    reqRepayPayment,
+    resCardAdd,
+    resCardFind,
+    resCardRemove,
+    resMakePayment,
+    resRepayPayment,
+} from '../domain/IAdapter';
+import { Utils } from '../utils/utils';
+import { ICardAdapter } from './ICardAdapter';
 
-export class CieloAdapter implements IAdapter {
+/*
+    https://developercielo.github.io/manual/cielo-ecommerce#tokeniza%C3%A7%C3%A3o-de-cart%C3%B5es
+*/
+
+export class CieloAdapter implements ICardAdapter {
     readonly API_URL = 'cielo.com';
+    private util: Utils;
+    private cieloTransactionParams: CieloTransactionInterface;
 
-    public addCreditCard() {
-        return true;
+    constructor(transaction: CieloTransactionInterface) {
+        this.cieloTransactionParams = transaction;
+        this.util = new Utils(this.cieloTransactionParams);
     }
 
-    public getCreditCards() {
-        return {
-            url: this.API_URL,
-        };
+    public readURL(): string | undefined {
+        throw new Error('Method not implemented.');
     }
 
-    public removeCreditCard() {
-        return true;
+    public cardAdd(payload: reqCardAdd): Promise<resCardAdd> {
+        return this.util.post<resCardAdd, reqCardAdd>(
+            { path: '/1/card' },
+            payload,
+        );
     }
 
-    public makePayment() {
-        return true;
+    public cardRemove(_payload: reqCardRemove): resCardRemove {
+        throw new Error('Method not implemented.');
     }
 
-    public refoundPayment() {
-        return true;
+    public cardFind(_payload: reqCardFind): resCardFind {
+        throw new Error('Method not implemented.');
+    }
+
+    public makePayment(transaction: reqMakePayment): Promise<resMakePayment> {
+        return this.util.postToSales<resMakePayment, reqMakePayment>(
+            transaction,
+        );
+    }
+
+    public repayPayment(_payload: reqRepayPayment): resRepayPayment {
+        throw new Error('Method not implemented.');
     }
 }
