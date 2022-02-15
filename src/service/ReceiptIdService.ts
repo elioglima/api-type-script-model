@@ -5,7 +5,11 @@ export default class ReceiptIdService {
     private logger = debug('service-api:ReceiptIdService');
     private paymentRepository = new PaymentRepository();
 
-    public execute = async (userId: number, transactionId: string | null) => {
+    public execute = async (
+        userId: number,
+        transactionId?: string,
+        daysFilter?: number,
+    ) => {
         this.logger(`Find payment by id`);
 
         if (transactionId) {
@@ -16,7 +20,10 @@ export default class ReceiptIdService {
             if (data == undefined) return new Error('Payment not found');
             else return data;
         } else {
-            return await this.paymentRepository.getUserPayments(userId);
+            return await this.paymentRepository.getUserPayments(
+                userId,
+                daysFilter,
+            );
         }
     };
 }

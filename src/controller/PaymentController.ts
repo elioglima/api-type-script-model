@@ -35,7 +35,10 @@ export class PaymentController {
 
         const data = await this.ReceiptIdService.execute(
             Number(req.params.userId),
-            req.query.idTransaction ? String(req.query.idTransaction) : null,
+            req.query.idTransaction
+                ? String(req.query.idTransaction)
+                : undefined,
+            req.query.daysFilter ? Number(req.query.daysFilter) : undefined,
         );
 
         if (data instanceof Error) {
