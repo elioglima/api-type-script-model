@@ -1,11 +1,13 @@
 import {
     TransactionCreditCardRequestModel,
     TransactionCreditCardResponseModel,
-} from '../domain/Transactions/transactionCreditCard';
+} from '../../domain/Transactions/transactionCreditCard';
+
 import {
     CancelTransactionResponseModel,
     CancelTransactionRequestModel,
 } from 'src/domain/Transactions/CancelTransaction';
+
 import { CieloTransactionInterface } from 'src/interface/cielo-transaction.interface';
 import { HttpRequestMethodEnum, Utils } from 'src/utils/utils';
 import { IHttpRequestOptions } from 'cielo';

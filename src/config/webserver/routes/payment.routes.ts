@@ -6,7 +6,7 @@ export const payment: Router = Router();
 
 payment
     .get('/:userId', paymentController.getReceipt)
-    .post('/', paymentController.MakePayment)
+    .put('/', paymentController.MakePayment)
     .get('/card/:userId', paymentController.UserCardListByFilter)
     .post('/card', paymentController.CardAdd)
     .post('/config', paymentController.createPaymentconfig)
