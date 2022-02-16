@@ -9,5 +9,5 @@ payment
     .post('/', paymentController.MakePayment)
     .get('/card/:userId', paymentController.UserCardListByFilter)
     .post('/card', paymentController.CardAdd)
-    .delete('/card/:id', paymentController.CardRemove)
-
+    .post('/config', paymentController.createPaymentconfig)
+    .delete('/card/:id', paymentController.CardRemove);

@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import service from '../service/index';
 import { UpdateByGatewayIdService } from '../service/UpdateByGatewayIdService';
 import { FindPaymentByGatewayIdService } from '../service/FindPaymentByGatewayIdService';
+import { CreatePaymentConfigService } from '../service/CreatePaymentConfigService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -16,6 +17,7 @@ export class PaymentController {
 
     private updateByGatewayIdService = new UpdateByGatewayIdService();
     private findPaymentByGatewayIdService = new FindPaymentByGatewayIdService();
+    private createPaymentConfigService = new CreatePaymentConfigService();
 
     public MakePayment = async (req: Request, res: Response) => {
         this.logger(`Creating payment`, req.body);
@@ -111,6 +113,19 @@ export class PaymentController {
         this.logger(`Update payment`, req.body);
 
         const data = await this.updateByGatewayIdService.execute(req.body);
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public createPaymentconfig = async (req: Request, res: Response) => {
+        this.logger(`Creating payment`, req.body);
+
+        const data = await this.createPaymentConfigService.execute(req.body);
 
         if (data instanceof Error) {
             this.logger('Error', data.message);
