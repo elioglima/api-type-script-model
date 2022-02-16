@@ -1,4 +1,4 @@
-import { Consult, Card, CreditCard } from './CieloAdapter';
+import { Consult, Card, CreditCard, Recurrent } from './CieloAdapter';
 import { CieloTransactionInterface } from './interface/cielo-transaction.interface';
 
 export interface CieloConstructor {
@@ -19,6 +19,9 @@ export class Cielo {
     public creditCard: CreditCard | undefined;
     public consult: Consult | undefined;
     public card: Card;
+
+    public recurrent: Recurrent;
+    public recorrencia: Recurrent;
 
     constructor(constructor: CieloConstructor) {
         this.merchantId = constructor.merchantId;
@@ -41,6 +44,9 @@ export class Cielo {
         this.card = new Card(cieloTransactionInterface);
         this.consult = new Consult(cieloTransactionInterface);
         this.creditCard = new CreditCard(cieloTransactionInterface);
+        this.recurrent = new Recurrent(cieloTransactionInterface);
+
+        this.recorrencia = this.recurrent;
     }
 
     public getConsult() {

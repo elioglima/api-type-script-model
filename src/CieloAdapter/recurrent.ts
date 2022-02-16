@@ -9,15 +9,18 @@ import {
     RecurrentCreateModel,
     RecurrentModifyModel,
     RecurrentCreateResponse,
+    RecurrentModifyDayModel,
     RecurrentModifyAmountModel,
     RecurrentModifyPaymentModel,
+    RecurrentModifyEndDateModel,
     RecurrentModifyCustomerModel,
+    RecurrentModifyIntervalModel,
     RecurrentModifyNextPaymentDateModel,
 } from '../domain/RecurrentPayment/index';
 import { CustomerModel } from 'src/domain/Customer';
 import { PaymentRecurrentModifyModel } from 'src/domain/Payment';
 
-export class recurrent {
+export class Recurrent {
     private cieloTransactionParams: CieloTransactionInterface;
     private util: Utils;
 
@@ -43,6 +46,36 @@ export class recurrent {
         const modifyParams = {
             path: `/1/RecurrentPayment/${params.paymentId}/Customer`,
             data: params.customer,
+        };
+        return this.modify<IHttpResponse>(modifyParams);
+    }
+
+    public modifyEndDate(
+        params: RecurrentModifyEndDateModel,
+    ): Promise<IHttpResponse> {
+        const modifyParams = {
+            path: `/1/RecurrentPayment/${params.paymentId}/EndDate`,
+            data: params.endDate,
+        };
+        return this.modify<IHttpResponse>(modifyParams);
+    }
+
+    public modifyInterval(
+        params: RecurrentModifyIntervalModel,
+    ): Promise<IHttpResponse> {
+        const modifyParams = {
+            path: `/1/RecurrentPayment/${params.paymentId}/Interval`,
+            data: params.interval,
+        };
+        return this.modify<IHttpResponse>(modifyParams);
+    }
+
+    public modifyRecurrencyDay(
+        params: RecurrentModifyDayModel,
+    ): Promise<IHttpResponse> {
+        const modifyParams = {
+            path: `/1/RecurrentPayment/${params.paymentId}/RecurrencyDay`,
+            data: params.recurrencyDay,
         };
         return this.modify<IHttpResponse>(modifyParams);
     }

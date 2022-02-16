@@ -5,3 +5,11 @@ export enum EnumRecurrentPaymentInterval {
     SEMIANNUAL = 'SEMIANNUAL',
     ANNUAL = 'ANNUAL',
 }
+
+export enum EnumRecurrentPaymentUpdateInterval {
+    MONTHLY = 1,
+    BIMONTHLY = 2,
+    QUARTERLY = 3,
+    SEMIANNUAL = 6,
+    ANNUAL = 12,
+}

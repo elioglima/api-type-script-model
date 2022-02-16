@@ -1,3 +1,4 @@
+import { EnumRecurrentPaymentUpdateInterval } from 'src/enum/RecurrentPaymentIntervalEnum';
 import { CustomerModel } from '../Customer';
 import { PaymentRecurrentModifyModel } from '../Payment';
 
@@ -20,4 +21,16 @@ export interface RecurrentModifyNextPaymentDateModel
 
 export interface RecurrentModifyPaymentModel extends RecurrentModifyModel {
     payment: PaymentRecurrentModifyModel;
+}
+
+export interface RecurrentModifyEndDateModel extends RecurrentModifyModel {
+    endDate: string;
+}
+
+export interface RecurrentModifyIntervalModel extends RecurrentModifyModel {
+    interval: EnumRecurrentPaymentUpdateInterval;
+}
+
+export interface RecurrentModifyDayModel extends RecurrentModifyModel {
+    recurrencyDay: number;
 }
