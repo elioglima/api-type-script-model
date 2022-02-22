@@ -17,6 +17,7 @@ export class PaymentCardsRepository {
                     token: paymentCards.token,
                     brand: paymentCards.brand,
                     userId: paymentCards.userId,
+                    enterpriseId: paymentCards.enterpriseId,
                 },
             ])
             .execute()

@@ -22,12 +22,8 @@ const brands = [
     'Hipercard',
 ];
 
-const cieloParams: CieloConstructor = {
-    merchantId: 'dbe5e423-ed15-4c27-843a-fedf325ea67c',
-    merchantKey: 'NPGKHFARFASEZEPYEYLTXJMWACSWDEMJWBAKWPQD',
-    sandbox: true,
-};
-const cielo = new Cielo(cieloParams);
+
+const cielo = new Cielo();
 
 brands.forEach(brand => {
     test(`Tokenize card brand ${brand}`, async t => {
