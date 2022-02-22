@@ -1,10 +1,10 @@
-import { CieloTransactionInterface } from '../interface/cielo-transaction.interface';
+import { CieloTransactionInterface } from '../../interface/cielo-transaction.interface';
 import {
     IHttpResponse,
     Utils,
     IHttpRequestOptions,
     HttpRequestMethodEnum,
-} from '../utils/utils';
+} from '../../utils/utils';
 import {
     RecurrentCreateModel,
     RecurrentModifyModel,
@@ -16,7 +16,7 @@ import {
     RecurrentModifyCustomerModel,
     RecurrentModifyIntervalModel,
     RecurrentModifyNextPaymentDateModel,
-} from '../domain/RecurrentPayment/index';
+} from '../../domain/RecurrentPayment/index';
 import { CustomerModel } from 'src/domain/Customer';
 import { PaymentRecurrentModifyModel } from 'src/domain/Payment';
 
