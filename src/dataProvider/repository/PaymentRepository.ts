@@ -41,6 +41,12 @@ export class PaymentRepository {
             .where('payment.id = :id', { id })
             .getOne();
 
+    public getAll = async () =>
+        await getConnection()
+            .getRepository(PaymentEntity)
+            .createQueryBuilder('payment')
+            .getMany();
+
     public getByTransactionId = async (transactionId: string) =>
         await getConnection()
             .getRepository(PaymentEntity)
