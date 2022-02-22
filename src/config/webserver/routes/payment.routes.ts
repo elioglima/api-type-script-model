@@ -5,9 +5,10 @@ const paymentController = new PaymentController();
 export const payment: Router = Router();
 
 payment
+    .get('/', paymentController.getAllPayments)
     .get('/:userId', paymentController.getReceipt)
-    .post('/', paymentController.MakePayment)
+    .put('/', paymentController.MakePayment)
     .get('/card/:userId', paymentController.UserCardListByFilter)
     .post('/card', paymentController.CardAdd)
-    .delete('/card/:id', paymentController.CardRemove)
-
+    .post('/config', paymentController.createPaymentconfig)
+    .delete('/card/:id', paymentController.CardRemove);

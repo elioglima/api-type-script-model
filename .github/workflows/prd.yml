@@ -84,7 +84,7 @@ jobs:
           command: create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Fill in the new image ID in the K8S Cluster task definition
-        uses: "deliverybot/helm@v1"
+        uses: "glopezep/helm@v1.7.1"
         with:
           helm: helm3
           release: "${{ env.APP_NAME }}"

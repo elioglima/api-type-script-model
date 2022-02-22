@@ -15,7 +15,8 @@ import {
 } from 'src/domain/Transactions/ConsultTransaction';
 import { TransactionCreditCardResponseModel } from 'src/domain/Transactions/transactionCreditCard';
 import { Utils } from 'src/utils/utils';
-import { CieloTransactionInterface } from '../interface/cielo-transaction.interface';
+
+import { CieloTransactionInterface } from '../../interface/cielo-transaction.interface';
 
 export class Consult {
     private util: Utils;

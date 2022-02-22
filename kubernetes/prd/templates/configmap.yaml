@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.appName }}
 data:
+  CRYPT_HOST: "{{ .Values.CRYPT_HOST }}"
   TYPEORM_CONNECTION: "{{ .Values.DB_DRIVE }}"
   TYPEORM_HOST: "{{ .Values.DB_HOST }}"
   TYPEORM_USERNAME: "{{ .Values.DB_USER }}"

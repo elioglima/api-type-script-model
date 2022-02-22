@@ -1,6 +1,6 @@
 import { Utils } from 'src/utils/utils';
 import { CieloTransactionInterface } from 'src/interface/cielo-transaction.interface';
-import { reqCardAdd, resCardAdd } from '../domain/IAdapter';
+import { reqCardAdd, resCardAdd } from '../../domain/IAdapter';
 
 export class Card {
     private cieloTransactionParams: CieloTransactionInterface;

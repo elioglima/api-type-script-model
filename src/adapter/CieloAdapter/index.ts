@@ -1,3 +1,4 @@
+
 import { CieloTransactionInterface } from 'src/interface/cielo-transaction.interface';
 import {
     reqCardAdd,
@@ -10,9 +11,21 @@ import {
     resCardRemove,
     resMakePayment,
     resRepayPayment,
-} from '../domain/IAdapter';
-import { Utils } from '../utils/utils';
+} from '../../domain/IAdapter';
+
+import { Utils } from '../../utils/utils';
 import { ICardAdapter } from './ICardAdapter';
+
+import { Card } from './cards';
+import { Consult } from './consult';
+import { CreditCard } from './creditCard';
+
+export {
+    Card,
+    Consult,
+    CreditCard
+}
+
 
 /*
     https://developercielo.github.io/manual/cielo-ecommerce#tokeniza%C3%A7%C3%A3o-de-cart%C3%B5es
@@ -57,3 +70,4 @@ export class CieloAdapter implements ICardAdapter {
         throw new Error('Method not implemented.');
     }
 }
+
