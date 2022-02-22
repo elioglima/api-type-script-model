@@ -14,14 +14,14 @@ export class PaymentConfigEntity {
     @Column({
         name: 'merchantId',
         type: 'varchar',
-        length: 100,
+        length: 200,
     })
     merchantId: string | undefined;
 
     @Column({
         name: 'merchantKey',
         type: 'varchar',
-        length: 100,
+        length: 200,
     })
     merchantKey: string | undefined;
 

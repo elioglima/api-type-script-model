@@ -15,7 +15,9 @@ export class FindPaymentConfigService {
                 async data => {
                     if (data === undefined) {
                         this.logger(`Payment config ${enterpriseId} not found`);
-                        return {};
+                        return new Error(
+                            `Payment config ${enterpriseId} not found`,
+                        );
                     }
 
                     data.merchantId =

@@ -12,6 +12,12 @@ export class PaymentCardsEntity {
     userId: number | undefined;
 
     @Column({
+        name: 'enterpriseId',
+        type: 'int',
+    })
+    enterpriseId: number | undefined;
+
+    @Column({
         name: 'token',
         type: 'varchar',
         length: 200,
