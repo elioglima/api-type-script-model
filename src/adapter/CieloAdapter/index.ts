@@ -30,7 +30,6 @@ import { Consult } from './consult';
 import { CreditCard } from './creditCard';
 
 import { FindPaymentConfigService } from '../../service/FindPaymentConfigService';
-import xDownloadOptions from 'helmet/dist/middlewares/x-download-options';
 
 export {
     Card,
