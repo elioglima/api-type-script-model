@@ -15,20 +15,25 @@ export default class MakePaymentService {
     private paymentRepository = new PaymentRepository();
 
     public async execute(req: TransactionPaymentService) {
+        try {
+            this.logger('Starting method to create Payment');
+            const paymentOperator = new Adapter({
+                provider: 'CIELO',
+                id: req.enterpriseId
+            })
 
-        this.logger('Starting method to create Payment');
-        const paymentOperator = new Adapter({
-            provider: 'Cielo',
-            id: req.payment.enterpriseId
-        })
+            const response: resMakePayment | TErrorGeneric = await paymentOperator.makePayment(req)
+            if (response.error == true) {
+                return response
+            }
 
-        const response: resMakePayment | TErrorGeneric = await paymentOperator.makePayment(req.payment)
-        if (response.error == true) {
-            return response
+            return await this.paymentRepository
+                .persist(req.paymentData)
+                .then(hasPersist => hasPersist);
+
+        } catch (error) {
+            console.log(error)
+            return error
         }
-
-        return await this.paymentRepository
-            .persist(req.payment)
-            .then(hasPersist => hasPersist);
     }
 }

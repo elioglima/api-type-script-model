@@ -22,7 +22,7 @@ export class PaymentController {
 
     public MakePayment = async (req: Request, res: Response) => {
         try {
-
+            console.log(req.body)
             this.logger(`Creating payment`, req.body);
             const MakePaymentService = new service.MakePaymentService();
             const data = await MakePaymentService.execute(req.body);
@@ -39,6 +39,8 @@ export class PaymentController {
 
             return res.status(200).json(data);
         } catch (error) {
+            console.log(error)
+            this.logger(`Creating payment`, error);
             return res.status(422).json(error);
 
         }

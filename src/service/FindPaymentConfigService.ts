@@ -8,8 +8,8 @@ export class FindPaymentConfigService {
     private cryptIntegrationGateway = new CryptIntegrationGateway();
 
     public execute = async (enterpriseId: number) => {
-        this.logger(`Find payment config by enterpriseId`);
-        return this.paymentConfigRepository
+        this.logger(`Find payment config by enterpriseId`, { enterpriseId });
+        const response = await this.paymentConfigRepository
             .getByEnterpriseId(enterpriseId)
             .then(
                 async data => {
@@ -37,5 +37,7 @@ export class FindPaymentConfigService {
                     return new Error(err);
                 },
             );
+
+        return response
     };
 }

@@ -33,12 +33,13 @@ export class PaymentConfigRepository {
             .where('paymentConfig.id = :id', { id })
             .getOne();
 
-    public getByEnterpriseId = async (enterpriseId: number) =>
-        await getConnection()
+    public getByEnterpriseId = async (enterpriseId: number) => {
+        return await getConnection()
             .getRepository(PaymentConfigEntity)
             .createQueryBuilder('paymentConfig')
             .where('paymentConfig.enterpriseId = :enterpriseId', {
                 enterpriseId,
             })
             .getOne();
+    }
 }

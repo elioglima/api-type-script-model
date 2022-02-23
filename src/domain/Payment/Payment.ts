@@ -23,5 +23,8 @@ export interface TransactionCreditCardRequestModel {
 }
 
 export interface TransactionPaymentService {
+    customer: CustomerModel;
+    payment: PaymentRequestModel;
+    paymentData: Payment;
     [x: string]: any;
 }
