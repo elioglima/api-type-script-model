@@ -46,6 +46,23 @@ export class PaymentController {
         }
     };
 
+
+    public CardAdd = async (req: Request, res: Response) => {
+        this.logger(`CardAdd`);
+
+        const data = await this.CardAddService.execute(req.body);
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+
+
+
     public getReceipt = async (req: Request, res: Response) => {
         this.logger(`getReceipt`);
 
@@ -93,18 +110,7 @@ export class PaymentController {
         return res.status(200).json(data);
     };
 
-    public CardAdd = async (req: Request, res: Response) => {
-        this.logger(`CardAdd`);
 
-        const data = await this.CardAddService.execute(req.body);
-
-        if (data instanceof Error) {
-            this.logger('Error', data.message);
-            return res.status(422).json({ ['Error']: data.message });
-        }
-
-        return res.status(200).json(data);
-    };
 
     public CardRemove = async (req: Request, res: Response) => {
         this.logger(`CardRemove`);

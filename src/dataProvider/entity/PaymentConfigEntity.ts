@@ -12,6 +12,27 @@ export class PaymentConfigEntity {
     enterpriseId: number | undefined;
 
     @Column({
+        name: 'provider',
+        type: 'varchar',
+        length: 50,
+    })
+    provider: string | undefined;
+
+    @Column({
+        name: 'hostnameTransacao',
+        type: 'varchar',
+        length: 100,
+    })
+    hostnameTransacao: string | undefined;
+
+    @Column({
+        name: 'hostnameQuery',
+        type: 'varchar',
+        length: 100,
+    })
+    hostnameQuery: string | undefined;
+
+    @Column({
         name: 'merchantId',
         type: 'varchar',
         length: 200,

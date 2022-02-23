@@ -1,6 +1,7 @@
 import { IncomingMessage } from 'http';
 import { request, RequestOptions } from 'https';
 import camelcaseKeys from 'camelcase-keys';
+import axios from 'axios';
 
 import {
     TCieloTransactionInterface,
@@ -15,14 +16,6 @@ export class Utils {
     }
 
     public get<T>(params: { path: string }): Promise<T | TErrorGeneric> {
-        if (this.cieloConstructor.loaded.error == true) {
-            // caso haja algum erro, aborta a chamada no endpoint
-            return new Promise<TErrorGeneric>((resolve) => resolve({
-                error: true,
-                message: this.cieloConstructor.loaded.message || 'unexpected error'
-            }))
-        }
-
 
         const hostname: String | any = this.cieloConstructor.hostnameQuery;
         const { path } = params;
@@ -47,20 +40,13 @@ export class Utils {
      */
     public post<T, U>(params: { path: string }, data: U): Promise<T | TErrorGeneric> {
 
-        if (this.cieloConstructor.loaded.error == true) {
-            // caso haja algum erro, aborta a chamada no endpoint
-            return new Promise<TErrorGeneric>((resolve) => resolve({
-                error: true,
-                message: this.cieloConstructor.loaded.message || 'unexpected error'
-            }))
-        }
-
         const { path } = params;
         const options: IHttpRequestOptions = this.getHttpRequestOptions({
             method: HttpRequestMethodEnum.POST,
             path,
             hostname: this.cieloConstructor.hostnameTransacao,
         });
+
         return this.request<T>(options, data);
     }
 
@@ -68,6 +54,7 @@ export class Utils {
         hostname: string;
         path: string;
         method: HttpRequestMethodEnum;
+
     }): IHttpRequestOptions {
         return {
             method: params.method,
@@ -78,7 +65,7 @@ export class Utils {
             headers: {
                 MerchantId: this.cieloConstructor.merchantId,
                 MerchantKey: this.cieloConstructor.merchantKey,
-                RequestId: this.cieloConstructor.requestId || '',
+                RequestId: params.method || '',
                 'Content-Type': 'application/json',
             },
         } as IHttpRequestOptions;
@@ -118,57 +105,114 @@ export class Utils {
         options: IHttpRequestOptions,
         data: any,
     ): Promise<IHttpResponse> {
+
         const dataPost = JSON.stringify(data)
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '');
+        return new Promise<IHttpResponse>(async (resolve, reject) => {
+            try {
 
-        return new Promise<IHttpResponse>((resolve, reject) => {
-            if (options && options.headers)
-                options.headers['Content-Length'] = Buffer.byteLength(dataPost);
-            const req = request(options, (res: IncomingMessage) => {
-                var chunks: string = '';
-                res.on('data', (chunk: any) => (chunks += chunk));
+                if (options && options.headers)
+                    options.headers['Content-Length'] = Buffer.byteLength(dataPost);
 
-                res.on('end', () => {
-                    const response =
-                        chunks.length > 0 && this.validateJSON(chunks)
-                            ? JSON.parse(chunks)
-                            : '';
-                    if (
-                        res.statusCode &&
-                        [200, 201].indexOf(res.statusCode) === -1
-                    )
-                        return reject(
-                            this.parseHttpRequestError(
-                                options,
-                                data,
-                                res,
-                                response,
-                            ),
-                        );
-                    if (options.method === 'PUT' && chunks.length === 0)
-                        return resolve(this.parseHttpPutResponse(res));
-                    return resolve({
-                        ...this.parseHttpPutResponse(res),
-                        data: camelcaseKeys(response, { deep: true }),
+                const response: any = await axios.post(`${options.hostname}/${options.path}`, dataPost,
+                    {
+                        headers: options.headers
                     });
-                });
-            });
 
-            req.write(dataPost);
-            req.on('error', err => reject(err));
-            req.end();
+                // if (
+                //     response.statusCode &&
+                //     [200, 201].indexOf(response.statusCode) === -1
+                // )
+                //     return reject(
+                //         {
+                //             err: true,
+                //             data: {
+                //                 message: response.message || 'erro inesperado'
+                //             }
+                //         }
+                //     )
+
+                return resolve({
+                    ...this.parseHttpPutResponse(response.data),
+                    data: camelcaseKeys(response.data, { deep: true }),
+                });
+            } catch (error) {
+                console.log(error)
+            }
+
         });
+        // const req = request(options, (res: IncomingMessage) => {
+        //     var chunks: string = '';
+        //     res.on('data', (chunk: any) => (chunks += chunk));
+        //     res.on('end', () => {
+        //         const response =
+        //             chunks.length > 0 && this.validateJSON(chunks)
+        //                 ? JSON.parse(chunks)
+        //                 : '';
+        //         if (
+        //             res.statusCode &&
+        //             [200, 201].indexOf(res.statusCode) === -1
+        //         )
+        //             return reject(
+        //                 this.parseHttpRequestError(
+        //                     options,
+        //                     data,
+        //                     res,
+        //                     response,
+        //                 ),
+        //             );
+        //         if (options.method === 'PUT' && chunks.length === 0)
+        //             return resolve(this.parseHttpPutResponse(res));
+        //         return resolve({
+        //             ...this.parseHttpPutResponse(res),
+        //             data: camelcaseKeys(response, { deep: true }),
+        //         });
+        //     });
+        // });
+
+        // req.write(dataPost);
+        // req.on('error', err => reject(err));
+        // req.end();
     }
 
+
     public request<T>(options: IHttpRequestOptions, data: any): Promise<T> {
-        return new Promise((resolve, reject) => {
-            this.httpRequest(options, data)
-                .then(response => {
-                    const data = response.data ? response.data : {};
-                    resolve(data as T);
-                })
-                .catch(reject);
+        return new Promise(async (resolve, reject) => {
+
+            const dataPost = JSON.stringify(data)
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+
+            if (options && options.headers)
+                options.headers['Content-Length'] = Buffer.byteLength(dataPost);
+
+            const response: any = await axios.post(`${options.hostname}/${options.path}`, dataPost,
+                {
+                    headers: options.headers
+                });
+
+
+            if (
+                response.statusCode &&
+                [200, 201].indexOf(response.statusCode) === -1
+            )
+                return reject(
+                    {
+                        err: true,
+                        data: {
+                            message: response.message || 'erro inesperado'
+                        }
+                    }
+                )
+
+
+            const dataReturn = {
+                ...camelcaseKeys(response.data, { deep: true }),
+            }
+
+            console.log(dataReturn)
+            return resolve(dataReturn);
         });
     }
 

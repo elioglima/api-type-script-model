@@ -29,67 +29,29 @@ import { Card } from './cards';
 import { Consult } from './consult';
 import { CreditCard } from './creditCard';
 
-import { FindPaymentConfigService } from '../../service/FindPaymentConfigService';
-
 export {
     Card,
     Consult,
     CreditCard
 }
 
-
 export class CieloAdapter implements ICardAdapter {
     readonly API_URL = 'cielo.com';
-    private util: Utils;
-    private FindPaymentConfigService = new FindPaymentConfigService();
+    private util: Utils | undefined;
 
-    constructor(enterprise: TEnterprise) {
-        const transaction = this.getEnterpriseData(enterprise);
-        this.util = new Utils(transaction);
+    constructor(transactionConfig: TCieloTransactionInterface) {
+        this.util = new Utils(transactionConfig);
+
     }
-
-    public getEnterpriseData(params: TEnterprise) {
-
-        const paymentConfig = this.FindPaymentConfigService.execute(params.id).then(data => {
-            console.log(1235, data)
-        })
-        console.log(123, paymentConfig)
-
-        const cieloTransactionParams: TCieloTransactionInterface = {
-            enterpriseProvider: params.provider,
-            enterpriseProviderId: params.id,
-            hostnameTransacao: '',
-            hostnameQuery: '',
-            merchantId: '',
-            merchantKey: '',
-            requestId: '',
-            loaded: {
-                error: true,
-                message: 'not executed'
-            }
-        }
-
-        try {
-            // instance the enterprise data to carry out the transactions
-            cieloTransactionParams.hostnameTransacao = ''
-            cieloTransactionParams.hostnameQuery = ''
-            cieloTransactionParams.merchantId = '82581f4f-0242-4653-8f99-21339e991911'
-            cieloTransactionParams.merchantKey = 'OKYBGFFFROOYXUAPPBMQYSCBEFIYWFKQHWVTIFXL'
-            cieloTransactionParams.requestId = ''
-            cieloTransactionParams.loaded.error = false
-            cieloTransactionParams.loaded.message = 'Success'
-            return cieloTransactionParams
-
-        } catch (error: any) {
-            // results error inside the adapter
-            cieloTransactionParams.loaded.error = true
-            cieloTransactionParams.loaded.message = error?.message || 'unexpected error'
-            return cieloTransactionParams
-        }
-    }
-
 
     public makePayment(transaction: reqMakePayment): Promise<resMakePayment | TErrorGeneric> {
+        if (!this.util) {
+            return new Promise<TErrorGeneric>((resolve) => resolve({
+                error: true,
+                message: 'this.util not started'
+            }))
+        }
+
         return this.util.postToSales<resMakePayment, reqMakePayment>(
             transaction,
         );
@@ -100,6 +62,13 @@ export class CieloAdapter implements ICardAdapter {
     }
 
     public cardAdd(payload: reqCardAdd): Promise<resCardAdd | TErrorGeneric> {
+        if (!this.util) {
+            return new Promise<TErrorGeneric>((resolve) => resolve({
+                error: true,
+                message: 'this.util not started'
+            }))
+        }
+
         return this.util.post<resCardAdd, reqCardAdd | TErrorGeneric>(
             { path: '/1/card' },
             payload,
@@ -107,16 +76,37 @@ export class CieloAdapter implements ICardAdapter {
     }
 
     public cardRemove(_payload: reqCardRemove): resCardRemove | TErrorGeneric {
+        if (!this.util) {
+            return new Promise<TErrorGeneric>((resolve) => resolve({
+                error: true,
+                message: 'this.util not started'
+            }))
+        }
+
         throw new Error('Method not implemented.');
     }
 
     public cardFind(_payload: reqCardFind): resCardFind | TErrorGeneric {
+        if (!this.util) {
+            return new Promise<TErrorGeneric>((resolve) => resolve({
+                error: true,
+                message: 'this.util not started'
+            }))
+        }
+
         throw new Error('Method not implemented.');
     }
 
 
 
     public repayPayment(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
+        if (!this.util) {
+            return new Promise<TErrorGeneric>((resolve) => resolve({
+                error: true,
+                message: 'this.util not started'
+            }))
+        }
+
         throw new Error('Method not implemented.');
     }
 }

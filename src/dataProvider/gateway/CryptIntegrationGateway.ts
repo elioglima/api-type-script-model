@@ -13,14 +13,14 @@ export default class CryptIntegrationGateway {
     public encryptData = async (str: string) => {
 
         const strEncode = base64Encode(str)
-        const {data} = await this.cryptIntegration.get(`/encrypt/${strEncode}`);
+        const { data } = await this.cryptIntegration.get(`/encrypt/${strEncode}`);
 
         this.logger("Response crypt-integration\n", data)
         return data.encrypted
     }
 
     public decryptData = async (str: string) => {
-        const {data} = await this.cryptIntegration.get(`decrypt/${str}`);
+        const { data } = await this.cryptIntegration.get(`decrypt/${str}`);
         const strDecoded = base64Decode(data.decrypted)
         this.logger("Response crypt-integration\n", strDecoded)
         return strDecoded

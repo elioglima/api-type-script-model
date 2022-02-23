@@ -13,6 +13,7 @@ export default class CardAddService {
         this.logger(`Find Card Add`);
 
         await this.cielo.init({ enterpriseId: paymentCard.enterpriseId });
+
         const cardCielo = this.cielo.card;
 
         if (cardCielo) {

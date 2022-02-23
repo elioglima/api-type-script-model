@@ -2,7 +2,6 @@ import { CieloAdapter } from 'src/adapter/CieloAdapter';
 
 import {
     TErrorGeneric,
-    TEnterprise,
     IAdapter,
     reqCardAdd,
     reqCardFind,
@@ -16,15 +15,28 @@ import {
     resRepayPayment,
 } from './IAdapter';
 
-export class Payment implements IAdapter {
-    paymentProvider: CieloAdapter;
-    API_URL: string | undefined;
+import { FindPaymentConfigService } from '../service/FindPaymentConfigService';
 
-    constructor(enterprise: TEnterprise) {
-        // faz a seleção das operadoras de pagamento
-        switch (enterprise.provider) {
+export class Payment implements IAdapter {
+
+    API_URL: string | undefined;
+    private FindPaymentConfigService = new FindPaymentConfigService();
+    private paymentProvider: CieloAdapter | undefined;
+
+    constructor() {
+
+    }
+
+    public async init(enterpriseId: number) {
+
+        const paymentConfig: any = await this.FindPaymentConfigService.execute(enterpriseId)
+        if (paymentConfig instanceof Error) {
+            return { error: paymentConfig.message }
+        }
+
+        switch (paymentConfig.provider) {
             case 'CIELO':
-                this.paymentProvider = new CieloAdapter(enterprise);
+                this.paymentProvider = new CieloAdapter(paymentConfig);
                 break;
 
             default:
@@ -37,6 +49,9 @@ export class Payment implements IAdapter {
     }
 
     public cardAdd(payload: reqCardAdd): Promise<resCardAdd | TErrorGeneric> {
+        if (!this.paymentProvider)
+            throw new Error('Error provider not found.');
+
         try {
             return this.paymentProvider.cardAdd(payload);
         } catch (error) {
@@ -45,6 +60,9 @@ export class Payment implements IAdapter {
     }
 
     public cardRemove(payload: reqCardRemove): resCardRemove {
+        if (!this.paymentProvider)
+            throw new Error('Error provider not found.');
+
         try {
             return this.paymentProvider.cardRemove(payload);
         } catch (error) {
@@ -53,6 +71,9 @@ export class Payment implements IAdapter {
     }
 
     public cardFind(payload: reqCardFind): resCardFind {
+        if (!this.paymentProvider)
+            throw new Error('Error provider not found.');
+
         try {
             return this.paymentProvider.cardFind(payload);
         } catch (error) {
@@ -60,15 +81,22 @@ export class Payment implements IAdapter {
         }
     }
 
-    public makePayment(payload: reqMakePayment): Promise<resMakePayment | TErrorGeneric> {
+    public makePayment(payload: reqMakePayment): Promise<reqMakePayment | TErrorGeneric> {
+        if (!this.paymentProvider)
+            throw new Error('Error provider not found.');
+
         try {
             return this.paymentProvider.makePayment(payload);
         } catch (error) {
+            console.log(error)
             throw new Error('Error Method makePayment.');
         }
     }
 
     public repayPayment(payload: reqRepayPayment): resRepayPayment {
+        if (!this.paymentProvider)
+            throw new Error('Error provider not found.');
+
         try {
             return this.paymentProvider.repayPayment(payload);
         } catch (error) {

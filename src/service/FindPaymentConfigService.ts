@@ -29,6 +29,7 @@ export class FindPaymentConfigService {
                             `${data.merchantKey}`,
                         );
 
+
                     this.logger(`${data}`);
                     return data;
                 },

@@ -35,14 +35,14 @@ export type TLoaded = {
 
 
 export type TCieloTransactionInterface = {
-    enterpriseProvider: string;
-    enterpriseProviderId: Number;
+    provider: string;
+    enterpriseId: number;
     hostnameTransacao: string;
     hostnameQuery?: string;
     merchantId: string;
     merchantKey: string;
-    requestId: string;
-    loaded: TLoaded;
+    requestId?: string;
+    loaded?: TLoaded;
 }
 
 // Add new Card Req and Response

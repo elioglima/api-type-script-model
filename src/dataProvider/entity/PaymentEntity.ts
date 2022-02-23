@@ -26,6 +26,13 @@ export class PaymentEntity {
     })
     transactionMessage: string | undefined;
 
+
+    @Column({
+        name: 'transactionCode',
+        type: 'int',
+    })
+    transactionCode: number | undefined;
+
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     value: number | undefined;
 
@@ -44,12 +51,12 @@ export class PaymentEntity {
     })
     descriptionMessage: string | undefined;
 
-    @Column({
-        name: 'descriptionIdReference',
-        type: 'varchar',
-        length: 200,
-    })
-    descriptionIdReference: string | undefined;
+    // @Column({
+    //     name: 'descriptionIdReference',
+    //     type: 'varchar',
+    //     length: 200,
+    // })
+    // descriptionIdReference: string | undefined;
 
     @Column({
         name: 'createdAt',

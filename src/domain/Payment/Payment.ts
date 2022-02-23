@@ -6,9 +6,10 @@ export interface Payment { // payment
     enterpriseId: number;
     id: number;
     userId: number;
-    transactionId: string;
-    transactionMessage: string;
-    value: number;
+    paymentId: string;
+    returnMessage: string;
+    returnCode: number;
+    amount: number;
     status: PaymentStatus;
     descriptionMessage: string;
     descriptionIdReference: string;
