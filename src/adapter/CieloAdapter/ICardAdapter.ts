@@ -1,4 +1,6 @@
+import { IAdapterBase } from './IAdapterBase'
 import {
+    TErrorGeneric,
     reqMakePayment,
     resMakePayment,
     reqCardAdd,
@@ -9,12 +11,15 @@ import {
     resCardRemove,
 } from 'src/domain/IAdapter';
 
-export interface ICardAdapter {
+export interface ICardAdapter extends IAdapterBase {
+
     readonly API_URL: string | undefined;
 
-    makePayment(transaction: reqMakePayment): Promise<resMakePayment>;
+    makePayment(transaction: reqMakePayment): Promise<resMakePayment | TErrorGeneric>;
     readURL(): string | undefined;
-    cardAdd(payload: reqCardAdd): Promise<resCardAdd>;
-    cardRemove(payload: reqCardRemove): resCardRemove;
-    cardFind(payload: reqCardFind): resCardFind;
+    cardAdd(payload: reqCardAdd): Promise<resCardAdd | TErrorGeneric>;
+    cardRemove(payload: reqCardRemove): resCardRemove | TErrorGeneric;
+    cardFind(payload: reqCardFind): resCardFind | TErrorGeneric;
 }
+
+

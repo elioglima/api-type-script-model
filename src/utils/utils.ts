@@ -1,17 +1,30 @@
 import { IncomingMessage } from 'http';
 import { request, RequestOptions } from 'https';
-import { CieloTransactionInterface } from '../interface/cielo-transaction.interface';
 import camelcaseKeys from 'camelcase-keys';
 
-export class Utils {
-    private cieloConstructor: CieloTransactionInterface;
+import {
+    TCieloTransactionInterface,
+    TErrorGeneric
+} from '../domain/IAdapter';
 
-    constructor(params: CieloTransactionInterface) {
+export class Utils {
+    private cieloConstructor: TCieloTransactionInterface;
+
+    constructor(params: TCieloTransactionInterface) {
         this.cieloConstructor = params;
     }
 
-    public get<T>(params: { path: string }): Promise<T> {
-        const hostname = this.cieloConstructor.hostnameQuery;
+    public get<T>(params: { path: string }): Promise<T | TErrorGeneric> {
+        if (this.cieloConstructor.loaded.error == true) {
+            // caso haja algum erro, aborta a chamada no endpoint
+            return new Promise<TErrorGeneric>((resolve) => resolve({
+                error: true,
+                message: this.cieloConstructor.loaded.message || 'unexpected error'
+            }))
+        }
+
+
+        const hostname: String | any = this.cieloConstructor.hostnameQuery;
         const { path } = params;
         const method = HttpRequestMethodEnum.GET;
 
@@ -23,7 +36,7 @@ export class Utils {
         return this.request<T>(options, {});
     }
 
-    public postToSales<T, U>(data: U): Promise<T> {
+    public postToSales<T, U>(data: U): Promise<T | TErrorGeneric> {
         return this.post<T, U>({ path: '/1/sales/' }, data);
     }
 
@@ -32,7 +45,16 @@ export class Utils {
      * @param params path do post
      * @param data payload de envio
      */
-    public post<T, U>(params: { path: string }, data: U): Promise<T> {
+    public post<T, U>(params: { path: string }, data: U): Promise<T | TErrorGeneric> {
+
+        if (this.cieloConstructor.loaded.error == true) {
+            // caso haja algum erro, aborta a chamada no endpoint
+            return new Promise<TErrorGeneric>((resolve) => resolve({
+                error: true,
+                message: this.cieloConstructor.loaded.message || 'unexpected error'
+            }))
+        }
+
         const { path } = params;
         const options: IHttpRequestOptions = this.getHttpRequestOptions({
             method: HttpRequestMethodEnum.POST,

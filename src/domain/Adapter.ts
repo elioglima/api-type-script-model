@@ -1,6 +1,8 @@
 import { CieloAdapter } from 'src/adapter/CieloAdapter';
-import { CieloTransactionInterface } from 'src/interface/cielo-transaction.interface';
+
 import {
+    TErrorGeneric,
+    TEnterprise,
     IAdapter,
     reqCardAdd,
     reqCardFind,
@@ -18,19 +20,11 @@ export class Payment implements IAdapter {
     paymentProvider: CieloAdapter;
     API_URL: string | undefined;
 
-    constructor(provider: 'CIELO') {
-        const cieloTransactionInterface: CieloTransactionInterface = {
-            hostnameTransacao: '',
-            hostnameQuery: '',
-            merchantId: '',
-            merchantKey: '',
-            requestId: '',
-        };
-        switch (provider) {
+    constructor(enterprise: TEnterprise) {
+        // faz a seleção das operadoras de pagamento
+        switch (enterprise.provider) {
             case 'CIELO':
-                this.paymentProvider = new CieloAdapter(
-                    cieloTransactionInterface,
-                );
+                this.paymentProvider = new CieloAdapter(enterprise);
                 break;
 
             default:
@@ -42,7 +36,7 @@ export class Payment implements IAdapter {
         return this.API_URL;
     }
 
-    public cardAdd(payload: reqCardAdd): Promise<resCardAdd> {
+    public cardAdd(payload: reqCardAdd): Promise<resCardAdd | TErrorGeneric> {
         try {
             return this.paymentProvider.cardAdd(payload);
         } catch (error) {
@@ -50,7 +44,7 @@ export class Payment implements IAdapter {
         }
     }
 
-    cardRemove(payload: reqCardRemove): resCardRemove {
+    public cardRemove(payload: reqCardRemove): resCardRemove {
         try {
             return this.paymentProvider.cardRemove(payload);
         } catch (error) {
@@ -58,23 +52,23 @@ export class Payment implements IAdapter {
         }
     }
 
-    cardFind(payload: reqCardFind): resCardFind {
+    public cardFind(payload: reqCardFind): resCardFind {
         try {
             return this.paymentProvider.cardFind(payload);
         } catch (error) {
-            throw new Error('Error Method cardRemove.');
+            throw new Error('Error Method cardFind.');
         }
     }
 
-    makePayment(payload: reqMakePayment): Promise<resMakePayment> {
+    public makePayment(payload: reqMakePayment): Promise<resMakePayment | TErrorGeneric> {
         try {
             return this.paymentProvider.makePayment(payload);
         } catch (error) {
-            throw new Error('Error Method cardRemove.');
+            throw new Error('Error Method makePayment.');
         }
     }
 
-    repayPayment(payload: reqRepayPayment): resRepayPayment {
+    public repayPayment(payload: reqRepayPayment): resRepayPayment {
         try {
             return this.paymentProvider.repayPayment(payload);
         } catch (error) {

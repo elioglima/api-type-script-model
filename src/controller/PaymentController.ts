@@ -10,7 +10,6 @@ import { FindAllPaymentService } from '../service/FindAllPaymentService';
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
 
-    private MakePaymentService = new service.MakePaymentService();
     private ReceiptIdService = new service.ReceiptIdService();
     private CardListByFilterService = new service.CardListByFilterService();
     private CardAddService = new service.CardAddService();
@@ -22,16 +21,27 @@ export class PaymentController {
     private findAllPaymentService = new FindAllPaymentService();
 
     public MakePayment = async (req: Request, res: Response) => {
-        this.logger(`Creating payment`, req.body);
+        try {
 
-        const data = await this.MakePaymentService.execute(req.body);
+            this.logger(`Creating payment`, req.body);
+            const MakePaymentService = new service.MakePaymentService();
+            const data = await MakePaymentService.execute(req.body);
 
-        if (data instanceof Error) {
-            this.logger('Error', data.message);
-            return res.status(422).json({ ['Error']: data.message });
+            if (data instanceof Error) {
+                this.logger('Error', data.message);
+                return res.status(422).json({ ['Error']: data.message });
+            }
+
+            if (data.error) {
+                this.logger('Error', data.message);
+                return res.status(422).json({ ['Error']: data.message });
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            return res.status(422).json(error);
+
         }
-
-        return res.status(200).json(data);
     };
 
     public getReceipt = async (req: Request, res: Response) => {
