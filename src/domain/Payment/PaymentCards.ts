@@ -10,6 +10,7 @@ export interface PaymentCards {
     expirationDate: string;
     enterpriseId: number;
     holder: string;
+    active: boolean;
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;

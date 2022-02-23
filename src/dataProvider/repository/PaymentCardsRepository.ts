@@ -18,6 +18,7 @@ export class PaymentCardsRepository {
                     brand: paymentCards.brand,
                     userId: paymentCards.userId,
                     enterpriseId: paymentCards.enterpriseId,
+                    active: paymentCards.active,
                 },
             ])
             .execute()
@@ -54,6 +55,27 @@ export class PaymentCardsRepository {
             .where('paymentCards.deletedAt IS NULL')
             .andWhere('paymentCards.userId = :userId', { userId })
             .getMany();
+
+    public inactivateUserCards = async (userId: number) => {
+        return await getConnection()
+            .getRepository(PaymentCardsEntity)
+            .createQueryBuilder('paymentCards')
+            .update()
+            .set({
+                active: false,
+            })
+            .where('userId = :userId', { userId })
+            .execute()
+            .then(
+                () => {
+                    return userId;
+                },
+                onRejected => {
+                    this.logger('Error ', onRejected);
+                    return onRejected;
+                },
+            );
+    };
 
     public update = async (paymentCards: PaymentCards) => {
         return await getConnection()

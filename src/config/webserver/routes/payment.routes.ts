@@ -11,4 +11,6 @@ payment
     .get('/card/:userId', paymentController.UserCardListByFilter)
     .post('/card', paymentController.CardAdd)
     .post('/config', paymentController.createPaymentconfig)
+    .put('/card', paymentController.updateCard)
+    .put('/inactivate-card/:userId', paymentController.inactivateUserCards)
     .delete('/card/:id', paymentController.CardRemove);

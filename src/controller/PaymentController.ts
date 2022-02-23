@@ -6,6 +6,8 @@ import { UpdateByGatewayIdService } from '../service/UpdateByGatewayIdService';
 import { FindPaymentByGatewayIdService } from '../service/FindPaymentByGatewayIdService';
 import { CreatePaymentConfigService } from '../service/CreatePaymentConfigService';
 import { FindAllPaymentService } from '../service/FindAllPaymentService';
+import { UpdatePaymentCardService } from '../service/UpdatePaymentCardService';
+import { InactivatePaymentCardService } from '../service/InactivatePaymentCardService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -20,6 +22,8 @@ export class PaymentController {
     private findPaymentByGatewayIdService = new FindPaymentByGatewayIdService();
     private createPaymentConfigService = new CreatePaymentConfigService();
     private findAllPaymentService = new FindAllPaymentService();
+    private updatePaymentCardService = new UpdatePaymentCardService();
+    private inactivatePaymentCardService = new InactivatePaymentCardService();
 
     public MakePayment = async (req: Request, res: Response) => {
         this.logger(`Creating payment`, req.body);
@@ -141,6 +145,34 @@ export class PaymentController {
         this.logger(`Creating payment`, req.body);
 
         const data = await this.createPaymentConfigService.execute(req.body);
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public updateCard = async (req: Request, res: Response) => {
+        this.logger(`updating card`, req.body);
+
+        const data = await this.updatePaymentCardService.execute(req.body);
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public inactivateUserCards = async (req: Request, res: Response) => {
+        this.logger(`updating card`, req.body);
+
+        const data = await this.inactivatePaymentCardService.execute(
+            Number(req.params.userId),
+        );
 
         if (data instanceof Error) {
             this.logger('Error', data.message);

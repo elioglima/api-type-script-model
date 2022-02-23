@@ -38,6 +38,9 @@ export class PaymentCardsEntity {
     })
     brand: string | undefined;
 
+    @Column({ name: 'active', type: 'boolean' })
+    active: boolean | undefined;
+
     @Column({
         name: 'createdAt',
         type: 'timestamp',
