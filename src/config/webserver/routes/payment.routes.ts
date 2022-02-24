@@ -12,3 +12,4 @@ payment
     .get('/:userId', paymentController.getReceipt)
     .get('/', paymentController.getAllPayments)
     .put('/', paymentController.MakePayment)
+    .put('/inactivate-card/:userId', paymentController.inactivateUserCards)
