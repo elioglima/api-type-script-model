@@ -1,4 +1,4 @@
-import { EnumBrands } from 'src/enum/';
+import { EnumBrands } from '../../enum/';
 export interface PaymentCards {
     id: number;
     userId: number;

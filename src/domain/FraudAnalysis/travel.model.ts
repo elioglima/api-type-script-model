@@ -1,4 +1,4 @@
-import { EnumTravelJourneyType } from 'src/enum/TravelEnum';
+import { EnumTravelJourneyType } from '../../enum/TravelEnum';
 import { TravelPassengersModel } from './travel-passengers.model';
 
 export interface TravelModel {

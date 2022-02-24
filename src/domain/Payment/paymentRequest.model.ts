@@ -1,5 +1,5 @@
-import { EnumPaymentInterest } from 'src/enum/PaymentInterestEnum';
-import { EnumCardType } from 'src/enum/CardEnum';
+import { EnumPaymentInterest } from '../../enum/PaymentInterestEnum';
+import { EnumCardType } from '../../enum/CardEnum';
 import { CreditCardModel } from '../CreditCard';
 import { RecurrentPaymentModel } from '../RecurrentPayment';
 import { FraudAnalysisModel } from '../FraudAnalysis/fraud-analysis.model';

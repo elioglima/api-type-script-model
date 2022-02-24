@@ -9,7 +9,7 @@ import {
     resCardAdd,
     resCardFind,
     resCardRemove,
-} from 'src/domain/IAdapter';
+} from '../../domain/IAdapter';
 
 export interface ICardAdapter extends IAdapterBase {
     makePayment(transaction: reqMakePayment): Promise<resMakePayment | TErrorGeneric>;
