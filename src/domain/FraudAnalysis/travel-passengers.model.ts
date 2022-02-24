@@ -1,7 +1,7 @@
 import {
     EnumTravelPassengersRating,
     EnumTravelPassengersStatus,
-} from 'src/enum/TravelEnum';
+} from '../../enum/TravelEnum';
 import { TravelLegsModel } from './travel-legs.model';
 
 export interface TravelPassengersModel {

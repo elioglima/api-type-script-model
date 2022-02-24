@@ -7,7 +7,7 @@ import {
     resCardAdd,
     resCardFind,
     resCardRemove,
-} from 'src/domain/IAdapter';
+} from '../domain/IAdapter';
 
 export interface ICardAdapter {
     readonly API_URL: string | undefined;

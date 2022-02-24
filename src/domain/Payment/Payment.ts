@@ -1,4 +1,4 @@
-import { PaymentStatus } from 'src/enum/PaymentStatusEnum';
+import { PaymentStatus } from '../../enum/PaymentStatusEnum';
 import { CustomerModel } from '../Customer/customer.model';
 import { PaymentRequestModel } from './paymentRequest.model';
 

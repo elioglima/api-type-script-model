@@ -1,4 +1,4 @@
-import { CieloAdapter } from 'src/adapter/CieloAdapter';
+import { CieloAdapter } from '../adapter/CieloAdapter';
 
 import {
     TErrorGeneric,

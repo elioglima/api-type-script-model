@@ -17,8 +17,8 @@
 //     RecurrentModifyIntervalModel,
 //     RecurrentModifyNextPaymentDateModel,
 // } from '../../domain/RecurrentPayment/index';
-// import { CustomerModel } from 'src/domain/Customer';
-// import { PaymentRecurrentModifyModel } from 'src/domain/Payment';
+// import { CustomerModel } from '../domain/Customer';
+// import { PaymentRecurrentModifyModel } from '../domain/Payment';
 
 export class Recurrent {
     // private cieloTransactionParams: CieloTransactionInterface;

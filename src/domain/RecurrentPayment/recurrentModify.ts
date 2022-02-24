@@ -1,4 +1,4 @@
-import { EnumRecurrentPaymentUpdateInterval } from 'src/enum/RecurrentPaymentIntervalEnum';
+import { EnumRecurrentPaymentUpdateInterval } from '../../enum/RecurrentPaymentIntervalEnum';
 import { CustomerModel } from '../Customer';
 import { PaymentRecurrentModifyModel } from '../Payment';
 

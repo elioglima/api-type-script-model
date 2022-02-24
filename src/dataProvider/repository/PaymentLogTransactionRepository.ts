@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { PaymentLogTransaction } from 'src/domain/Payment/PaymentLogTransaction';
+import { PaymentLogTransaction } from '../../domain/Payment/PaymentLogTransaction';
 import { getConnection } from 'typeorm';
 import { PaymentLogTransactionEntity } from '../entity/PaymentLogTransactionEntity';
 
