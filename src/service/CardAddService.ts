@@ -5,7 +5,7 @@ import { reqCardAdd } from '../domain/IAdapter';
 import Adapter from '../domain/Adapter';
 
 export default class CardAddService {
-    private logger = debug('service-api:CardAddService');
+    private logger = debug('payment-api:CardAddService');
     private paymentCardRepository = new PaymentCardsRepository();
     private paymentOperator = new Adapter()
 

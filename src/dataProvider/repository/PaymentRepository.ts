@@ -4,7 +4,7 @@ import { getConnection } from 'typeorm';
 import { PaymentEntity } from '../entity/PaymentEntity';
 
 export class PaymentRepository {
-    private logger = debug('service-api:PaymentRepository');
+    private logger = debug('payment-api:PaymentRepository');
 
     public persist = async (payment: Payment) => {
 

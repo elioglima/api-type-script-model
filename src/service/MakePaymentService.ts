@@ -4,7 +4,7 @@ import { TransactionPaymentService } from '../domain/Payment/Payment';
 import Adapter from '../domain/Adapter';
 
 export default class MakePaymentService {
-    private logger = debug('service-api:MakePaymentService');
+    private logger = debug('payment-api:MakePaymentService');
     private paymentRepository = new PaymentRepository();
     private paymentOperator = new Adapter()
 

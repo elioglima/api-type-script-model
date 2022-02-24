@@ -3,7 +3,7 @@ import debug from 'debug';
 import Server from './config/webserver/server';
 import { createConnection } from 'typeorm';
 
-const logger = debug('service-api:http');
+const logger = debug('payment-api:http');
 
 const server: Server = new Server();
 

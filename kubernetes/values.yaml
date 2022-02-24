@@ -1,2 +1,2 @@
-appName: service-api
+appName: payment-api
 CRYPT_HOST: tcp://crypt-integration:3000

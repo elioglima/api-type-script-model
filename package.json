@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "cross-env DEBUG=service-api* ts-node-dev --transpile-only --ignore-watch node_modules -r tsconfig-paths/register src/index.ts",
-    "start": "DEBUG=service-api* node dist/index.js"
+    "dev": "cross-env DEBUG=payment-api* ts-node-dev --transpile-only --ignore-watch node_modules -r tsconfig-paths/register src/index.ts",
+    "start": "DEBUG=payment-api* node dist/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://git.opah.com.br/jfl/backend/service-api.git"
+    "url": "https://git.opah.com.br/jfl/backend/payment-api.git"
   },
   "keywords": [],
   "author": "Opah IT",
