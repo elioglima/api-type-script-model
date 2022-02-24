@@ -7,14 +7,14 @@ export default class ReceiptIdService {
 
     public execute = async (
         userId: number,
-        transactionId?: string,
+        paymentId?: string,
         daysFilter?: number,
     ) => {
         this.logger(`Find payment by id`);
 
-        if (transactionId) {
+        if (paymentId) {
             const data = await this.paymentRepository.getByTransactionId(
-                transactionId,
+                paymentId,
             );
 
             if (data == undefined) return new Error('Payment not found');

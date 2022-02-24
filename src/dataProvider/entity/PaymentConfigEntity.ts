@@ -1,15 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('paymentCards')
-export class PaymentCardsEntity {
+@Entity('paymentConfig')
+export class PaymentConfigEntity {
     @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
     id: number | undefined;
-
-    @Column({
-        name: 'userId',
-        type: 'int',
-    })
-    userId: number | undefined;
 
     @Column({
         name: 'enterpriseId',
@@ -18,28 +12,39 @@ export class PaymentCardsEntity {
     enterpriseId: number | undefined;
 
     @Column({
-        name: 'token',
+        name: 'provider',
+        type: 'varchar',
+        length: 50,
+    })
+    provider: string | undefined;
+
+    @Column({
+        name: 'hostnameTransacao',
+        type: 'varchar',
+        length: 100,
+    })
+    hostnameTransacao: string | undefined;
+
+    @Column({
+        name: 'hostnameQuery',
+        type: 'varchar',
+        length: 100,
+    })
+    hostnameQuery: string | undefined;
+
+    @Column({
+        name: 'merchantId',
         type: 'varchar',
         length: 200,
     })
-    token: string | undefined;
+    merchantId: string | undefined;
 
     @Column({
-        name: 'lastFourNumbers',
+        name: 'merchantKey',
         type: 'varchar',
-        length: 10,
+        length: 200,
     })
-    lastFourNumbers: string | undefined;
-
-    @Column({
-        name: 'brand',
-        type: 'varchar',
-        length: 30,
-    })
-    brand: string | undefined;
-
-    @Column({ name: 'active', type: 'boolean' })
-    active: boolean | undefined;
+    merchantKey: string | undefined;
 
     @Column({
         name: 'createdAt',
@@ -55,7 +60,4 @@ export class PaymentCardsEntity {
         onUpdate: 'CURRENT_TIMESTAMP()',
     })
     updatedAt: Date | undefined;
-
-    @Column({ name: 'deletedAt', type: 'timestamp', nullable: true })
-    deletedAt: Date | undefined;
 }

@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { PaymentCardsEntity } from './PaymentCardsEntity';
 
-@Entity('paymentCards')
-export class PaymentCardsEntity {
+@Entity('paymentRecurrence')
+export class PaymentRecurrenceEntity {
     @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
     id: number | undefined;
 
@@ -12,34 +13,19 @@ export class PaymentCardsEntity {
     userId: number | undefined;
 
     @Column({
-        name: 'enterpriseId',
-        type: 'int',
-    })
-    enterpriseId: number | undefined;
-
-    @Column({
-        name: 'token',
+        name: 'recurrenceId',
         type: 'varchar',
-        length: 200,
+        length: 50,
     })
-    token: string | undefined;
+    recurrenceId: string | undefined;
 
-    @Column({
-        name: 'lastFourNumbers',
-        type: 'varchar',
-        length: 10,
+    @ManyToOne(() => PaymentCardsEntity, paymentCard => paymentCard, {
+        eager: true,
     })
-    lastFourNumbers: string | undefined;
+    paymentCard: PaymentCardsEntity | undefined;
 
-    @Column({
-        name: 'brand',
-        type: 'varchar',
-        length: 30,
-    })
-    brand: string | undefined;
-
-    @Column({ name: 'active', type: 'boolean' })
-    active: boolean | undefined;
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    value: number | undefined;
 
     @Column({
         name: 'createdAt',

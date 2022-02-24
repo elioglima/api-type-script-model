@@ -78,7 +78,7 @@ jobs:
           command: create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Fill in the new image ID in the K8S Cluster task definition
-        uses: "deliverybot/helm@v1"
+        uses: "glopezep/helm@v1.7.1"
         with:
           helm: helm3
           release: "${{ env.APP_NAME }}"
@@ -91,6 +91,7 @@ jobs:
             DOCKER_REGISTRY: ${{ steps.docker-registry.outputs.image }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            SANDBOX: ${{ secrets.SANDBOX_HML }}
             DB_DRIVE: ${{ secrets.RDS_HML_DRIVE }}
             DB_HOST: ${{ secrets.RDS_HML_HOST }}
             DB_USER: ${{ secrets.RDS_HML_USER }}

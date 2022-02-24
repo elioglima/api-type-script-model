@@ -1,11 +1,50 @@
 import { EnumBrands } from '../enum/BrandsEnum';
 import { CustomerModel } from './Customer/customer.model';
 import { PaymentRequestModel } from './Payment/paymentRequest.model';
+
 export interface Link {
     Method: string;
     Rel: string;
     Href: string;
 }
+
+export type typePaymentCredentials = {
+    merchantId: string;
+    merchantKey: string;
+};
+
+
+export type TEnterprise = {
+    provider: string;
+    id: number;
+}
+
+
+export type TErrorGeneric = {
+    message: string;
+    error?: boolean;
+    name?: string;
+    stack?: string;
+    data?: any;
+}
+
+export type TLoaded = {
+    error: boolean;
+    message: string;
+}
+
+
+export type TCieloTransactionInterface = {
+    provider: string;
+    enterpriseId: number;
+    hostnameTransacao: string;
+    hostnameQuery?: string;
+    merchantId: string;
+    merchantKey: string;
+    requestId?: string;
+    loaded?: TLoaded;
+}
+
 // Add new Card Req and Response
 export type reqCardAdd = {
     customerName: string;
@@ -15,6 +54,8 @@ export type reqCardAdd = {
     brand: EnumBrands;
     [x: string]: any;
 };
+
+
 export type resCardAdd = {
     cardToken: string;
     links: Link;
@@ -35,14 +76,14 @@ export type reqCardFind = {
 // Make payment
 
 export type reqMakePayment = {
-    merchantOrderId: string;
     customer: CustomerModel;
     payment: PaymentRequestModel;
     [x: string]: any;
 };
 
 export type resMakePayment = {
-    merchantOrderId: string;
+    message?: string;
+    error?: boolean;
     customer: CustomerModel;
     payment: PaymentRequestModel;
 };

@@ -2,12 +2,14 @@ import { PaymentStatus } from 'src/enum/PaymentStatusEnum';
 import { CustomerModel } from '../Customer/customer.model';
 import { PaymentRequestModel } from './paymentRequest.model';
 
-export interface Payment {
+export interface Payment { // payment
+    enterpriseId: number;
     id: number;
     userId: number;
-    transactionId: string;
-    transactionMessage: string;
-    value: number;
+    paymentId: string;
+    returnMessage: string;
+    returnCode: number;
+    amount: number;
     status: PaymentStatus;
     descriptionMessage: string;
     descriptionIdReference: string;
@@ -16,8 +18,14 @@ export interface Payment {
 }
 
 export interface TransactionCreditCardRequestModel {
-    merchantOrderId: string;
     customer: CustomerModel;
     payment: PaymentRequestModel;
+    [x: string]: any;
+}
+
+export interface TransactionPaymentService {
+    customer: CustomerModel;
+    payment: PaymentRequestModel;
+    paymentData: Payment;
     [x: string]: any;
 }
