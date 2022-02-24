@@ -6,6 +6,7 @@ import { UpdateByGatewayIdService } from '../service/UpdateByGatewayIdService';
 import { FindPaymentByGatewayIdService } from '../service/FindPaymentByGatewayIdService';
 import { CreatePaymentConfigService } from '../service/CreatePaymentConfigService';
 import { FindAllPaymentService } from '../service/FindAllPaymentService';
+import camelcaseKeys from 'camelcase-keys';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -22,10 +23,10 @@ export class PaymentController {
 
     public MakePayment = async (req: Request, res: Response) => {
         try {
-            console.log(req.body)
             this.logger(`Creating payment`, req.body);
+            const dataRequest = camelcaseKeys(req.body, { deep: true })
             const MakePaymentService = new service.MakePaymentService();
-            const data = await MakePaymentService.execute(req.body);
+            const data = await MakePaymentService.execute(dataRequest);
 
             if (data instanceof Error) {
                 this.logger('Error', data.message);
@@ -49,8 +50,12 @@ export class PaymentController {
 
     public CardAdd = async (req: Request, res: Response) => {
         this.logger(`CardAdd`);
+        const dataRequest = camelcaseKeys(req.body)
+        const data = await this.CardAddService.execute(dataRequest);
 
-        const data = await this.CardAddService.execute(req.body);
+        if (data?.err == true) {
+            return res.status(422).json(data);
+        }
 
         if (data instanceof Error) {
             this.logger('Error', data.message);
@@ -61,17 +66,17 @@ export class PaymentController {
     };
 
 
-
-
     public getReceipt = async (req: Request, res: Response) => {
         this.logger(`getReceipt`);
+        const dataRequest: {
+            paymentId?: string,
+            daysFilter?: number,
+        } = camelcaseKeys(req?.query)
 
         const data = await this.ReceiptIdService.execute(
             Number(req.params.userId),
-            req.query.idTransaction
-                ? String(req.query.idTransaction)
-                : undefined,
-            req.query.daysFilter ? Number(req.query.daysFilter) : undefined,
+            dataRequest?.paymentId,
+            dataRequest?.daysFilter,
         );
 
         if (data instanceof Error) {
@@ -81,6 +86,7 @@ export class PaymentController {
 
         return res.status(200).json(data);
     };
+
 
     public getAllPayments = async (_req: Request, res: Response) => {
         this.logger(`getAllPayments`);

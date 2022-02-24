@@ -19,8 +19,8 @@ export class PaymentRepository {
                     transactionMessage: payment.returnMessage,
                     transactionCode: payment.returnCode,
                     descriptionMessage: payment.returnMessage,
-                    status: [6].includes(payment.returnCode) ? 'PAGO' : 'ERRO',
-                    value: Number(payment?.amount) > 0 ? payment.amount / 100 : 0,
+                    status: [4, 6].includes(Number(payment.returnCode)) ? 'PAGO' : 'ERRO',
+                    value: Number(payment?.amount) > 0 ? payment.amount : 0,
                 },
             ])
             .execute()

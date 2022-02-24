@@ -11,7 +11,6 @@ import {
     resCardAdd,
     resCardFind,
     resCardRemove,
-    resMakePayment,
     resRepayPayment,
 } from './IAdapter';
 
