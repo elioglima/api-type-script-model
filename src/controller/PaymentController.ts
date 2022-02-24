@@ -1,138 +1,206 @@
 import debug from 'debug';
 import { Request, Response } from 'express';
-import { CreateServiceService } from '../service/Service/CreateServiceService';
-import { FindAllServiceService } from '../service/Service/FindAllServiceService';
-import { FindServiceByIdService } from '../service/Service/FindServiceByIdService';
-import { FindBreakfastServiceService } from '../service/Service/FindBreakfastServiceService';
-import { UpdateServiceService } from '../service/Service/UpdateServiceService';
-import { DeleteServiceService } from '../service/Service/DeleteServiceService';
-import { IFilter } from '../domain/IFilter';
-import { IPagination } from '../domain/IPagination';
-import { SystemMessages } from '../enum/SystemMessages';
+
+import service from '../service/index';
+import { UpdateByGatewayIdService } from '../service/UpdateByGatewayIdService';
+import { FindPaymentByGatewayIdService } from '../service/FindPaymentByGatewayIdService';
+import { CreatePaymentConfigService } from '../service/CreatePaymentConfigService';
+import { FindAllPaymentService } from '../service/FindAllPaymentService';
+import camelcaseKeys from 'camelcase-keys';
+import { UpdatePaymentCardService } from '../service/UpdatePaymentCardService';
+import { InactivatePaymentCardService } from '../service/InactivatePaymentCardService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
-    private createServiceService = new CreateServiceService();
-    private findAllServiceService = new FindAllServiceService();
-    private findServiceByIdService = new FindServiceByIdService();
-    private findBreakfastServiceService = new FindBreakfastServiceService();
-    private updateServiceService = new UpdateServiceService();
-    private deleteServiceService = new DeleteServiceService();
 
-    public create = async (req: Request, res: Response) => {
-        this.logger(`${SystemMessages.CREATE_CONTROLLER} service`, req.body);
+    private ReceiptIdService = new service.ReceiptIdService();
+    private CardListByFilterService = new service.CardListByFilterService();
+    private CardAddService = new service.CardAddService();
+    private CardRemoveService = new service.CardRemoveService();
 
-        const data = await this.createServiceService.execute(req.body);
+    private updateByGatewayIdService = new UpdateByGatewayIdService();
+    private findPaymentByGatewayIdService = new FindPaymentByGatewayIdService();
+    private createPaymentConfigService = new CreatePaymentConfigService();
+    private findAllPaymentService = new FindAllPaymentService();
+    private updatePaymentCardService = new UpdatePaymentCardService();
+    private inactivatePaymentCardService = new InactivatePaymentCardService();
+
+    public MakePayment = async (req: Request, res: Response) => {
+        try {
+            this.logger(`Creating payment`, req.body);
+            const dataRequest = camelcaseKeys(req.body, { deep: true })
+            const MakePaymentService = new service.MakePaymentService();
+            const data = await MakePaymentService.execute(dataRequest);
+
+            if (data instanceof Error) {
+                this.logger('Error', data.message);
+                return res.status(422).json({ ['Error']: data.message });
+            }
+
+            if (data.error) {
+                this.logger('Error', data.message);
+                return res.status(422).json({ ['Error']: data.message });
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            console.log(error)
+            this.logger(`Creating payment`, error);
+            return res.status(422).json(error);
+
+        }
+    };
+
+
+    public CardAdd = async (req: Request, res: Response) => {
+        this.logger(`CardAdd`);
+        const dataRequest = camelcaseKeys(req.body)
+        const data = await this.CardAddService.execute(dataRequest);
+
+        if (data?.err == true) {
+            return res.status(422).json(data);
+        }
 
         if (data instanceof Error) {
-            this.logger(SystemMessages.ERROR, data.message);
-            return res
-                .status(422)
-                .json({ [SystemMessages.ERROR]: data.message });
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
         }
 
         return res.status(200).json(data);
     };
 
-    public getAll = async (req: Request, res: Response) => {
-        this.logger(`${SystemMessages.FIND_ALL_CONTROLLER} services`);
 
-        const filter = <IFilter>{
-            hasSchedule: req.query.hasSchedule,
-            search: req.query.search,
-            order: req.query.order,
-            idEnterprise: req.query.idEnterprise,
-            filterStatus: req.query.filter_status === 'true' ? true : false,
-            language: req.query.language,
-        };
+    public getReceipt = async (req: Request, res: Response) => {
+        this.logger(`getReceipt`);
+        const dataRequest: {
+            paymentId?: string,
+            daysFilter?: number,
+        } = camelcaseKeys(req?.query)
 
-        const pagination = <IPagination>{
-            page_size: req.query.page_size,
-            current_page: req.query.current_page,
-        };
-
-        const data = await this.findAllServiceService.execute(
-            filter,
-            pagination,
+        const data = await this.ReceiptIdService.execute(
+            Number(req.params.userId),
+            dataRequest?.paymentId,
+            dataRequest?.daysFilter,
         );
 
         if (data instanceof Error) {
-            this.logger({ [SystemMessages.ERROR]: data.message });
-            return res
-                .status(422)
-                .json({ [SystemMessages.ERROR]: data.message });
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
         }
 
         return res.status(200).json(data);
     };
 
-    public getById = async (req: Request, res: Response) => {
-        this.logger(
-            `${SystemMessages.FIND_BY_CONTROLLER} service id ${req.params.id}`,
+
+    public getAllPayments = async (_req: Request, res: Response) => {
+        this.logger(`getAllPayments`);
+
+        const data = await this.findAllPaymentService.execute();
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public UserCardListByFilter = async (req: Request, res: Response) => {
+        this.logger(`CardListByFilter`);
+
+        const data = await this.CardListByFilterService.execute(
+            Number(req.params.userId),
         );
 
-        const data = await this.findServiceByIdService.execute(
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+
+
+    public CardRemove = async (req: Request, res: Response) => {
+        this.logger(`CardRemove`);
+
+        const data = await this.CardRemoveService.execute(
             Number(req.params.id),
         );
 
         if (data instanceof Error) {
-            this.logger(SystemMessages.ERROR, data.message);
-            return res
-                .status(422)
-                .json({ [SystemMessages.ERROR]: data.message });
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
         }
 
         return res.status(200).json(data);
     };
 
-    public getBreakfast = async (req: Request, res: Response) => {
-        this.logger(
-            `${SystemMessages.FIND_BY_CONTROLLER} breakfast idEnterprise ${req.params.idEnterprise}`,
-        );
+    public getByGatewayId = async (req: Request, res: Response) => {
+        this.logger(`Find payment by id ${req.params.id}`);
 
-        const data = await this.findBreakfastServiceService.execute(
-            Number(req.params.idEnterprise),
+        const data = await this.findPaymentByGatewayIdService.execute(
+            Number(req.params.id),
         );
 
         if (data instanceof Error) {
-            this.logger(SystemMessages.ERROR, data.message);
-            return res
-                .status(422)
-                .json({ [SystemMessages.ERROR]: data.message });
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
         }
 
         return res.status(200).json(data);
     };
 
     public update = async (req: Request, res: Response) => {
-        this.logger(`${SystemMessages.UPDATE_CONTROLLER} service`, req.body);
+        this.logger(`Update payment`, req.body);
 
-        const data = await this.updateServiceService.execute(req.body);
+        const data = await this.updateByGatewayIdService.execute(req.body);
 
         if (data instanceof Error) {
-            this.logger(SystemMessages.ERROR, data.message);
-            return res
-                .status(422)
-                .json({ [SystemMessages.ERROR]: data.message });
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
         }
 
         return res.status(200).json(data);
     };
 
-    public delete = async (req: Request, res: Response) => {
-        this.logger(
-            `${SystemMessages.DELETE_CONTROLLER} service id ${req.params.id}`,
-        );
+    public createPaymentconfig = async (req: Request, res: Response) => {
+        this.logger(`Creating payment`, req.body);
 
-        const data = await this.deleteServiceService.execute(
-            Number(req.params.id),
+        const data = await this.createPaymentConfigService.execute(req.body);
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public updateCard = async (req: Request, res: Response) => {
+        this.logger(`updating card`, req.body);
+
+        const data = await this.updatePaymentCardService.execute(req.body);
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public inactivateUserCards = async (req: Request, res: Response) => {
+        this.logger(`updating card`, req.body);
+
+        const data = await this.inactivatePaymentCardService.execute(
+            Number(req.params.userId),
         );
 
         if (data instanceof Error) {
-            this.logger(SystemMessages.ERROR, data.message);
-            return res
-                .status(422)
-                .json({ [SystemMessages.ERROR]: data.message });
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
         }
 
         return res.status(200).json(data);
