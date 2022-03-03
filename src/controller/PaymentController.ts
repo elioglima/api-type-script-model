@@ -63,7 +63,7 @@ export class PaymentController {
 
         if (data instanceof Error) {
             this.logger('Error', data.message);
-            return res.status(422).json({ ['Error']: data.message });
+            return res.status(422).json(data.message);
         }
 
         return res.status(200).json(data);

@@ -37,7 +37,7 @@ export default class CardAddService {
                 lastFourNumbers: paymentCard.cardNumber.slice(-4),
             });
         } catch (error) {
-            console.log(error)
+            return new Error(error);
         }
     };
 }
