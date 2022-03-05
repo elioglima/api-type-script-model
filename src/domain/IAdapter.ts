@@ -60,6 +60,7 @@ export type resCardAdd = {
     cardToken: string;
     links: Link;
 };
+
 // Card remove
 export type resCardRemove = {};
 
@@ -104,9 +105,6 @@ export type resRepayPayment = {};
 export type reqRepayPayment = {};
 
 export interface IAdapter {
-    readonly API_URL: string | undefined;
-
-    readURL(): string | undefined;
     makePayment(payload: reqMakePayment): Promise<any>;
     repayPayment(payload: reqRepayPayment): resRepayPayment;
 }
