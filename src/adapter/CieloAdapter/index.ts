@@ -13,22 +13,44 @@ import {
     reqCardFind,
     reqCardRemove,
     reqMakePayment,
-    reqRepayPayment,
     resCardAdd,
     resCardFind,
     resCardRemove,
     resMakePayment,
-    resRepayPayment,
 } from '../../domain/IAdapter';
+
+import {
+    reqRecurrentCreate,
+    resRecurrentCreate,
+    reqRecurrentPaymentConsult,
+    resRecurrentPaymentConsult,
+    reqRecurrentDeactivate,
+    resRecurrentDeactivate,
+    reqRecurrentReactivate,
+    resRecurrentReactivate
+
+} from '../../domain/RecurrentPayment';
+
+import {
+    reqFindPayment,
+    resFindPayment,
+} from '../../domain/Payment';
 
 import { Utils } from '../../utils/utils';
 import { ICardAdapter } from './ICardAdapter';
+import { RecurentMethods } from './recurrent/index';
+import { PaymentsMethods } from './payment/index';
 
 export class CieloAdapter implements ICardAdapter {
     private util: Utils | undefined;
+    private recurentMethods: RecurentMethods;
+    private paymentsMethods: PaymentsMethods;
+
 
     constructor(transactionConfig: TCieloTransactionInterface) {
         this.util = new Utils(transactionConfig);
+        this.recurentMethods = new RecurentMethods(transactionConfig)
+        this.paymentsMethods = new PaymentsMethods(transactionConfig)
 
     }
 
@@ -39,6 +61,29 @@ export class CieloAdapter implements ICardAdapter {
         }))
     }
 
+
+    // manipulando cartoes 
+    public cardAdd(payload: reqCardAdd): Promise<resCardAdd | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started')
+        return this.util.post<resCardAdd, reqCardAdd | TErrorGeneric>(
+            { path: '/1/card/' },
+            payload,
+        );
+    }
+
+    public cardRemove(payload: reqCardRemove): resCardRemove | TErrorGeneric {
+        if (!this.util) return this.error('this.util not started')
+        throw new Error('Method not implemented.');
+    }
+
+    public cardFind(payload: reqCardFind): resCardFind | TErrorGeneric {
+        if (!this.util) return this.error('this.util not started')
+        throw new Error('Method not implemented.');
+    }
+
+
+
+    // manipulando e efetuando pagamentos
     public makePayment(transaction: reqMakePayment): Promise<resMakePayment | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
 
@@ -50,63 +95,34 @@ export class CieloAdapter implements ICardAdapter {
         );
     }
 
-    public cardAdd(payload: reqCardAdd): Promise<resCardAdd | TErrorGeneric> {
+    public find(payload: reqFindPayment): Promise<resFindPayment | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
-        return this.util.post<resCardAdd, reqCardAdd | TErrorGeneric>(
-            { path: '/1/card/' },
-            payload,
-        );
-    }
-
-    public cardRemove(_payload: reqCardRemove): resCardRemove | TErrorGeneric {
-        if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented.');
-    }
-
-    public cardFind(_payload: reqCardFind): resCardFind | TErrorGeneric {
-        if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented.');
-    }
-
-    public repayPayment(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
-        if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented.');
+        return this.paymentsMethods.Find(payload)
     }
 
 
-    public recurrentPaymentCustomer(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
+    // manipulando e efetuando pagamentos recorrentes
+    public recurrentCreate(payload: reqRecurrentCreate): Promise<resRecurrentCreate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented. (recurrentPaymentCustomer)');
+        return this.recurentMethods.Create(payload)
     }
 
-    public recurrentPaymentEndDate(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
+    public recurrentFind(payload: reqRecurrentPaymentConsult): Promise<resRecurrentPaymentConsult | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented. (recurrentPaymentEndDate)');
+        return this.recurentMethods.Find(payload)
     }
 
-    public recurrentPaymentInterval(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
+    public recurrentDeactivate(payload: reqRecurrentDeactivate): Promise<resRecurrentDeactivate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented. (recurrentPaymentInterval)');
+        return this.recurentMethods.Deactivate(payload)
     }
 
-    public recurrentPaymentRecurrencyDay(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
+    public recurrentReactivate(payload: reqRecurrentReactivate): Promise<resRecurrentReactivate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented. (recurrentPaymentRecurrencyDay)');
+        return this.recurentMethods.Reactivate(payload)
     }
 
-    public recurrentPaymentAmount(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
-        if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented. (recurrentPaymentAmount)');
-    }
 
-    public recurrentPaymentPayment(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
-        if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented. (recurrentPaymentPayment)');
-    }
 
-    public recurrentPaymentReactivate(_payload: reqRepayPayment): resRepayPayment | TErrorGeneric {
-        if (!this.util) return this.error('this.util not started')
-        throw new Error('Method not implemented. (recurrentPaymentReactivate)');
-    }
 }
 

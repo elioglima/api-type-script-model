@@ -19,6 +19,7 @@ export class PaymentCardsRepository {
                     userId: paymentCards.userId,
                     enterpriseId: paymentCards.enterpriseId,
                     active: paymentCards.active,
+                    hash: paymentCards.hash,
                 },
             ])
             .execute()

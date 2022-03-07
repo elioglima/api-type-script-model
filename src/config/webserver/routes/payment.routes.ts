@@ -8,6 +8,7 @@ payment
     .post('/config', paymentController.createPaymentconfig)
     .post('/card', paymentController.CardAdd)
     .get('/card/:userId', paymentController.UserCardListByFilter)
+    .get('/card/id/:id', paymentController.findCardById)
     .delete('/card/:id', paymentController.CardRemove)
     .get('/:userId', paymentController.getReceipt)
     .get('/', paymentController.getAllPayments)

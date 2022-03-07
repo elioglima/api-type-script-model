@@ -38,6 +38,13 @@ export class PaymentCardsEntity {
     })
     brand: string | undefined;
 
+    @Column({
+        name: 'hash',
+        type: 'varchar',
+        length: 200,
+    })
+    hash: string | undefined;
+
     @Column({ name: 'active', type: 'boolean' })
     active: boolean | undefined;
 
