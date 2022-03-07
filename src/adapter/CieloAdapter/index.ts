@@ -23,7 +23,12 @@ import {
     reqRecurrentCreate,
     resRecurrentCreate,
     reqRecurrentPaymentConsult,
-    resRecurrentPaymentConsult
+    resRecurrentPaymentConsult,
+    reqRecurrentDeactivate,
+    resRecurrentDeactivate,
+    reqRecurrentReactivate,
+    resRecurrentReactivate
+
 } from '../../domain/RecurrentPayment';
 
 import {
@@ -66,12 +71,12 @@ export class CieloAdapter implements ICardAdapter {
         );
     }
 
-    public cardRemove(_payload: reqCardRemove): resCardRemove | TErrorGeneric {
+    public cardRemove(payload: reqCardRemove): resCardRemove | TErrorGeneric {
         if (!this.util) return this.error('this.util not started')
         throw new Error('Method not implemented.');
     }
 
-    public cardFind(_payload: reqCardFind): resCardFind | TErrorGeneric {
+    public cardFind(payload: reqCardFind): resCardFind | TErrorGeneric {
         if (!this.util) return this.error('this.util not started')
         throw new Error('Method not implemented.');
     }
@@ -90,21 +95,31 @@ export class CieloAdapter implements ICardAdapter {
         );
     }
 
-    public find(_payload: reqFindPayment): Promise<resFindPayment | TErrorGeneric> {
+    public find(payload: reqFindPayment): Promise<resFindPayment | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
-        return this.paymentsMethods.Find(_payload)
+        return this.paymentsMethods.Find(payload)
     }
 
 
     // manipulando e efetuando pagamentos recorrentes
-    public recurrentCreate(_payload: reqRecurrentCreate): Promise<resRecurrentCreate | TErrorGeneric> {
+    public recurrentCreate(payload: reqRecurrentCreate): Promise<resRecurrentCreate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
-        return this.recurentMethods.Create(_payload)
+        return this.recurentMethods.Create(payload)
     }
 
-    public recurrentFind(_payload: reqRecurrentPaymentConsult): Promise<resRecurrentPaymentConsult | TErrorGeneric> {
+    public recurrentFind(payload: reqRecurrentPaymentConsult): Promise<resRecurrentPaymentConsult | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started')
-        return this.recurentMethods.Find(_payload)
+        return this.recurentMethods.Find(payload)
+    }
+
+    public recurrentDeactivate(payload: reqRecurrentDeactivate): Promise<resRecurrentDeactivate | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started')
+        return this.recurentMethods.Deactivate(payload)
+    }
+
+    public recurrentReactivate(payload: reqRecurrentReactivate): Promise<resRecurrentReactivate | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started')
+        return this.recurentMethods.Reactivate(payload)
     }
 
 

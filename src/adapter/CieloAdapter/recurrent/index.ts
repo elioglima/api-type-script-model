@@ -1,8 +1,12 @@
 import {
-    reqRecurrentCreate,
     resRecurrentCreate,
+    reqRecurrentCreate,
     reqRecurrentPaymentConsult,
-    resRecurrentPaymentConsult
+    resRecurrentPaymentConsult,
+    reqRecurrentDeactivate,
+    resRecurrentDeactivate,
+    reqRecurrentReactivate,
+    resRecurrentReactivate
 } from '../../../domain/RecurrentPayment'
 
 import {
@@ -46,6 +50,28 @@ export class RecurentMethods {
         // consultando uma recorrencia
         return this.util.get<resRecurrentPaymentConsult | TErrorGeneric>(
             { path: `/1/sales/${payload.RecurrentPaymentId}` }
+        );
+    }
+
+    public Deactivate(payload: reqRecurrentDeactivate): Promise<resRecurrentDeactivate | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started')
+
+        if (!payload.recurrentPaymentId)
+            return this.error('recurrentPaymentId was not informed.')
+
+        return this.util.get<resRecurrentDeactivate | TErrorGeneric>(
+            { path: `/1/RecurrentPayment/${payload.recurrentPaymentId}/Deactivate` }
+        );
+    }
+
+    public Reactivate(payload: reqRecurrentReactivate): Promise<resRecurrentReactivate | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started')
+
+        if (!payload.recurrentPaymentId)
+            return this.error('recurrentPaymentId was not informed.')
+
+        return this.util.get<resRecurrentReactivate | TErrorGeneric>(
+            { path: `/1/RecurrentPayment/${payload.recurrentPaymentId}/Reactivate` }
         );
     }
 
