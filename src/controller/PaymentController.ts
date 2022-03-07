@@ -9,6 +9,7 @@ import { FindAllPaymentService } from '../service/FindAllPaymentService';
 import camelcaseKeys from 'camelcase-keys';
 import { UpdatePaymentCardService } from '../service/UpdatePaymentCardService';
 import { InactivatePaymentCardService } from '../service/InactivatePaymentCardService';
+import { FindCardByIdService } from '../service/FindCardByIdService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -24,6 +25,7 @@ export class PaymentController {
     private findAllPaymentService = new FindAllPaymentService();
     private updatePaymentCardService = new UpdatePaymentCardService();
     private inactivatePaymentCardService = new InactivatePaymentCardService();
+    private findCardByIdService = new FindCardByIdService();
 
     public MakePayment = async (req: Request, res: Response) => {
         try {
@@ -110,6 +112,21 @@ export class PaymentController {
 
         const data = await this.CardListByFilterService.execute(
             Number(req.params.userId),
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public findCardById = async (req: Request, res: Response) => {
+        this.logger(`findCardById`);
+
+        const data = await this.findCardByIdService.execute(
+            Number(req.params.id),
         );
 
         if (data instanceof Error) {
