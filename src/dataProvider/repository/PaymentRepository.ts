@@ -2,7 +2,6 @@ import debug from 'debug';
 import { Payment } from '../../domain/Payment/Payment';
 import { getConnection } from 'typeorm';
 import { PaymentEntity } from '../entity/PaymentEntity';
-import { PaymentStatus } from '../../enum/PaymentStatusEnum';
 
 export class PaymentRepository {
     private logger = debug('service-api:PaymentRepository');
