@@ -43,7 +43,7 @@ export default class CardAddService {
                 lastFourNumbers: paymentCard.cardNumber.slice(-4),
             });
         } catch (error) {
-            return new Error(error);
+            return error;
         }
     };
 }

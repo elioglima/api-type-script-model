@@ -71,12 +71,12 @@ export class CieloAdapter implements ICardAdapter {
         );
     }
 
-    public cardRemove(payload: reqCardRemove): resCardRemove | TErrorGeneric {
+    public cardRemove(_payload: reqCardRemove): resCardRemove | TErrorGeneric {
         if (!this.util) return this.error('this.util not started')
         throw new Error('Method not implemented.');
     }
 
-    public cardFind(payload: reqCardFind): resCardFind | TErrorGeneric {
+    public cardFind(_payload: reqCardFind): resCardFind | TErrorGeneric {
         if (!this.util) return this.error('this.util not started')
         throw new Error('Method not implemented.');
     }

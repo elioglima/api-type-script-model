@@ -1,5 +1,4 @@
 import { Link } from '../IAdapter';
-import { recurrentPayment } from '../RecurrentPayment';
 import { CreditCardModel } from '../CreditCard/index';
 
 interface customer {

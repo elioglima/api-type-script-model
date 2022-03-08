@@ -106,5 +106,5 @@ export type reqRepayPayment = {};
 
 export interface IAdapter {
     makePayment(payload: reqMakePayment): Promise<any>;
-    repayPayment(payload: reqRepayPayment): resRepayPayment;
+    // repayPayment(payload: reqRepayPayment): resRepayPayment;
 }
