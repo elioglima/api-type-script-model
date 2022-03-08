@@ -1,3 +1,4 @@
+import { TResident } from './../../../domain/Tegrus/TResident';
 import { Request, Response } from 'express';
 import { TErrorGeneric } from '../../../domain/Generics'
 import { TFirstPayment } from '../../../domain/Tegrus'
@@ -33,6 +34,12 @@ const firstPaymentCreate = (req: Request, res: Response): (resFirstPaymentCreate
             5 - enviar o link para o cliente SMS e EMAIL
                         
         */
+
+        const { resident:TResident } = body;
+
+        
+
+
 
         return res.status(200).json(body);
     } catch (error: any) {
