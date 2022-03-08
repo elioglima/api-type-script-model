@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 import service from '../service/index';
 import { UpdateByGatewayIdService } from '../service/UpdateByGatewayIdService';
-import { FindPaymentByGatewayIdService } from '../service/FindPaymentByGatewayIdService';
+import { FindPaymentByIdService } from '../service/FindPaymentByIdService';
 import { CreatePaymentConfigService } from '../service/CreatePaymentConfigService';
 import { FindAllPaymentService } from '../service/FindAllPaymentService';
 import camelcaseKeys from 'camelcase-keys';
@@ -20,7 +20,7 @@ export class PaymentController {
     private CardRemoveService = new service.CardRemoveService();
 
     private updateByGatewayIdService = new UpdateByGatewayIdService();
-    private findPaymentByGatewayIdService = new FindPaymentByGatewayIdService();
+    private findPaymentByIdService = new FindPaymentByIdService();
     private createPaymentConfigService = new CreatePaymentConfigService();
     private findAllPaymentService = new FindAllPaymentService();
     private updatePaymentCardService = new UpdatePaymentCardService();
@@ -154,10 +154,10 @@ export class PaymentController {
         return res.status(200).json(data);
     };
 
-    public getByGatewayId = async (req: Request, res: Response) => {
+    public getById = async (req: Request, res: Response) => {
         this.logger(`Find payment by id ${req.params.id}`);
 
-        const data = await this.findPaymentByGatewayIdService.execute(
+        const data = await this.findPaymentByIdService.execute(
             Number(req.params.id),
         );
 

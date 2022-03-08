@@ -10,6 +10,7 @@ payment
     .get('/card/:userId', paymentController.UserCardListByFilter)
     .get('/card/id/:id', paymentController.findCardById)
     .delete('/card/:id', paymentController.CardRemove)
+    .get('/id/:id', paymentController.getById)
     .get('/:userId', paymentController.getReceipt)
     .get('/', paymentController.getAllPayments)
     .put('/', paymentController.MakePayment)
