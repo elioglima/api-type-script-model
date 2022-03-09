@@ -15,6 +15,8 @@ import { TFirstPayment } from '../../../domain/Tegrus'
 
 
 type resFirstPaymentCreate = {
+    err: Boolean,
+    
 
 }
 
@@ -35,9 +37,9 @@ const firstPaymentCreate = (req: Request, res: Response): (resFirstPaymentCreate
                         
         */
 
-        const { resident:TResident } = body;
+        const { resident } = body;
 
-        
+
 
 
 
