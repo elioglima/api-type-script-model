@@ -14,5 +14,6 @@ payment
     .get('/:userId', paymentController.getReceipt)
     .get('/', paymentController.getAllPayments)
     .put('/', paymentController.MakePayment)
-    .put('/card',paymentController.updateCard)
-    .put('/inactivate-card/:userId', paymentController.inactivateUserCards)
+    .put('/refound/:id', paymentController.RefoundPayment)
+    .put('/card', paymentController.updateCard)
+    .put('/inactivate-card/:userId', paymentController.inactivateUserCards);

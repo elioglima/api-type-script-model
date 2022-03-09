@@ -10,6 +10,8 @@ import {
     resCardAdd,
     resCardFind,
     resCardRemove,
+    reqRefoundPayment,
+    resRefoundPayment,
 } from './IAdapter';
 
 import { FindPaymentConfigService } from '../service/FindPaymentConfigService';
@@ -84,6 +86,18 @@ export class Payment implements IAdapter {
 
         try {
             return this.paymentProvider.makePayment(payload);
+        } catch (error) {
+            console.log(error)
+            throw new Error('Error Method makePayment.');
+        }
+    }
+
+    public refoundPayment(payload: reqRefoundPayment): Promise<resRefoundPayment | TErrorGeneric> {
+        if (!this.paymentProvider)
+            throw new Error('Error provider not found.');
+
+        try {
+            return this.paymentProvider.refoundPayment(payload);
         } catch (error) {
             console.log(error)
             throw new Error('Error Method makePayment.');
