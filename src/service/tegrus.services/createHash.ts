@@ -1,19 +1,9 @@
-import { TErrorGeneric, returnError, PromiseExec } from '../../../domain/Generics'
+import { TErrorGeneric, returnError, PromiseExec } from '../../domain/Generics'
+import { reqCreateHash, resCreateHash } from '../../domain/Tegrus/TFirstPayment'
 
 /*
 
 */
-
-type reqCreateHash = {
-    invoiceId: number,
-    url?: any
-}
-
-type resCreateHash = {
-    invoiceId: number,
-    link?: string,
-    hash?: string
-}
 
 const createHash = (data: reqCreateHash): Promise<resCreateHash | TErrorGeneric> => {
     try {
@@ -29,4 +19,4 @@ const createHash = (data: reqCreateHash): Promise<resCreateHash | TErrorGeneric>
 
 }
 
-export { createHash }
+export default createHash 

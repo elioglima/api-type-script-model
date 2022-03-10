@@ -11,3 +11,19 @@ export type TFirstPayment = {
     resident: TResident,
     invoice: TInvoice
 }
+
+export type resFirstPaymentCreate = {
+
+}
+
+
+export type reqCreateHash = {
+    invoiceId: number,
+    url?: any
+}
+
+export type resCreateHash = {
+    invoiceId: number,
+    link?: string,
+    hash?: string
+}
