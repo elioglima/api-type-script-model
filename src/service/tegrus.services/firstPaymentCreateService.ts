@@ -1,8 +1,9 @@
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics'
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
 import { TFirstPayment } from '../../domain/Tegrus'
-import createHash from './createHash'
-import { reqCreateHash, resCreateHash } from '../../domain/Tegrus/TFirstPayment'
+
+// import createHash from './createHash'
+// import { reqCreateHash, resCreateHash } from '../../domain/Tegrus/TFirstPayment'
 // import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 
 export default (payload: TFirstPayment): Promise<resFirstPaymentCreate | TErrorGeneric> => {
@@ -29,7 +30,7 @@ export default (payload: TFirstPayment): Promise<resFirstPaymentCreate | TErrorG
     return PromiseExec({
         err: true,
         data: {
-
+            payload
         }
     })
 }
