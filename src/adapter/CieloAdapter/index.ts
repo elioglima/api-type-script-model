@@ -17,6 +17,8 @@ import {
     resCardFind,
     resCardRemove,
     resMakePayment,
+    reqRefoundPayment,
+    resRefoundPayment
 } from '../../domain/IAdapter';
 
 import {
@@ -92,6 +94,14 @@ export class CieloAdapter implements ICardAdapter {
 
         return this.util.postToSales<resMakePayment, reqMakePayment>(
             transaction,
+        );
+    }
+
+    public refoundPayment(payload: reqRefoundPayment): Promise<resRefoundPayment | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started')
+        return this.util.put<resRefoundPayment, reqRefoundPayment | TErrorGeneric>(
+            { path: `/1/sales/${payload.paymentId}/void?amount=${payload.amount}` },
+            payload,
         );
     }
 
