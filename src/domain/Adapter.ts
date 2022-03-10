@@ -7,11 +7,11 @@ import {
     reqCardFind,
     reqCardRemove,
     reqMakePayment,
-    reqRepayPayment,
     resCardAdd,
     resCardFind,
     resCardRemove,
-    resRepayPayment,
+    reqRefoundPayment,
+    resRefoundPayment,
 } from './IAdapter';
 
 import { FindPaymentConfigService } from '../service/FindPaymentConfigService';
@@ -92,16 +92,28 @@ export class Payment implements IAdapter {
         }
     }
 
-    public repayPayment(payload: reqRepayPayment): resRepayPayment {
+    public refoundPayment(payload: reqRefoundPayment): Promise<resRefoundPayment | TErrorGeneric> {
         if (!this.paymentProvider)
             throw new Error('Error provider not found.');
 
         try {
-            return this.paymentProvider.repayPayment(payload);
+            return this.paymentProvider.refoundPayment(payload);
         } catch (error) {
-            throw new Error('Error Method repayPayment.');
+            console.log(error)
+            throw new Error('Error Method makePayment.');
         }
     }
+
+    // public repayPayment(payload: reqRepayPayment): resRepayPayment {
+    //     if (!this.paymentProvider)
+    //         throw new Error('Error provider not found.');
+
+    //     try {
+    //         return this.paymentProvider.repayPayment(payload);
+    //     } catch (error) {
+    //         throw new Error('Error Method repayPayment.');
+    //     }
+    // }
 }
 
 export default Payment;

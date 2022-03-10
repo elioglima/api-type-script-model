@@ -3,12 +3,13 @@ import { Request, Response } from 'express';
 
 import service from '../service/index';
 import { UpdateByGatewayIdService } from '../service/UpdateByGatewayIdService';
-import { FindPaymentByGatewayIdService } from '../service/FindPaymentByGatewayIdService';
+import { FindPaymentByIdService } from '../service/FindPaymentByIdService';
 import { CreatePaymentConfigService } from '../service/CreatePaymentConfigService';
 import { FindAllPaymentService } from '../service/FindAllPaymentService';
 import camelcaseKeys from 'camelcase-keys';
 import { UpdatePaymentCardService } from '../service/UpdatePaymentCardService';
 import { InactivatePaymentCardService } from '../service/InactivatePaymentCardService';
+import { FindCardByIdService } from '../service/FindCardByIdService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -17,13 +18,15 @@ export class PaymentController {
     private CardListByFilterService = new service.CardListByFilterService();
     private CardAddService = new service.CardAddService();
     private CardRemoveService = new service.CardRemoveService();
+    private refoundPaymentService = new service.RefoundPaymentService();
 
     private updateByGatewayIdService = new UpdateByGatewayIdService();
-    private findPaymentByGatewayIdService = new FindPaymentByGatewayIdService();
+    private findPaymentByIdService = new FindPaymentByIdService();
     private createPaymentConfigService = new CreatePaymentConfigService();
     private findAllPaymentService = new FindAllPaymentService();
     private updatePaymentCardService = new UpdatePaymentCardService();
     private inactivatePaymentCardService = new InactivatePaymentCardService();
+    private findCardByIdService = new FindCardByIdService();
 
     public MakePayment = async (req: Request, res: Response) => {
         try {
@@ -34,18 +37,41 @@ export class PaymentController {
 
             if (data instanceof Error) {
                 this.logger('Error', data.message);
-                return res.status(422).json({ ['Error']: data.message });
+                return res.status(422).json(data.message);
             }
 
-            if (data.error) {
+            if (data.err) {
                 this.logger('Error', data.message);
-                return res.status(422).json({ ['Error']: data.message });
+                return res.status(422).json(data.message );
             }
 
             return res.status(200).json(data);
         } catch (error) {
             console.log(error)
             this.logger(`Creating payment`, error);
+            return res.status(422).json(error);
+
+        }
+    };
+
+    public RefoundPayment = async (req: Request, res: Response) => {
+        try {
+            this.logger(`Refound payment`, req.body);
+            const data = await this.refoundPaymentService.execute(Number(req.params.id));
+
+            if (data instanceof Error) {
+                this.logger('Error', data.message);
+                return res.status(422).json(data.message);
+            }
+
+            if (data.err) {
+                this.logger('Error', data.message);
+                return res.status(422).json(data.message);
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            this.logger(`Error`, error);
             return res.status(422).json(error);
 
         }
@@ -120,6 +146,21 @@ export class PaymentController {
         return res.status(200).json(data);
     };
 
+    public findCardById = async (req: Request, res: Response) => {
+        this.logger(`findCardById`);
+
+        const data = await this.findCardByIdService.execute(
+            Number(req.params.id),
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
 
 
     public CardRemove = async (req: Request, res: Response) => {
@@ -137,10 +178,10 @@ export class PaymentController {
         return res.status(200).json(data);
     };
 
-    public getByGatewayId = async (req: Request, res: Response) => {
+    public getById = async (req: Request, res: Response) => {
         this.logger(`Find payment by id ${req.params.id}`);
 
-        const data = await this.findPaymentByGatewayIdService.execute(
+        const data = await this.findPaymentByIdService.execute(
             Number(req.params.id),
         );
 

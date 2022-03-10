@@ -10,13 +10,43 @@ export default async (data, options) => {
         if (options && options.headers)
             options.headers['Content-Length'] = Buffer.byteLength(dataPost);
 
-        const response = await axios.post(
-            `${options.hostname}/${options.path}`,
-            dataPost,
-            {
-                headers: options.headers,
-            },
-        );
+        let response;
+
+        if (options.method == 'PUT') {
+            response = await axios.put(
+                `${options.hostname}/${options.path}`,
+                dataPost,
+                {
+                    headers: options.headers,
+                },
+            );
+        }
+        else if (options.method == 'GET') {
+            response = await axios.get(
+                `${options.hostname}/${options.path}`,
+                dataPost,
+                {
+                    headers: options.headers,
+                },
+            );
+        }
+        else if (options.method == 'POST') {
+            response = await axios.post(
+                `${options.hostname}/${options.path}`,
+                dataPost,
+                {
+                    headers: options.headers,
+                },
+            );
+        }
+        else {
+            return {
+                err: true,
+                data: {
+                    message: 'Method undefined'
+                },
+            }
+        }
 
         if (
             response.statusCode &&
@@ -25,7 +55,8 @@ export default async (data, options) => {
             return reject({
                 err: true,
                 data: {
-                    message: response.message || 'unexpected error',
+                    message: response.data,
+                    status: response.status
                 },
             });
 
@@ -39,7 +70,8 @@ export default async (data, options) => {
             err: true,
             data: {
                 message:
-                    typeof error?.response?.data == 'string'
+                    error?.response?.statusText ||
+                        typeof error?.response?.data == 'string'
                         ? error?.response?.data
                         : error?.message || 'unexpected error',
             },

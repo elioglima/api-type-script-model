@@ -17,6 +17,8 @@ import {
     resCardFind,
     resCardRemove,
     resMakePayment,
+    reqRefoundPayment,
+    resRefoundPayment
 } from '../../domain/IAdapter';
 
 import {
@@ -71,12 +73,12 @@ export class CieloAdapter implements ICardAdapter {
         );
     }
 
-    public cardRemove(payload: reqCardRemove): resCardRemove | TErrorGeneric {
+    public cardRemove(_payload: reqCardRemove): resCardRemove | TErrorGeneric {
         if (!this.util) return this.error('this.util not started')
         throw new Error('Method not implemented.');
     }
 
-    public cardFind(payload: reqCardFind): resCardFind | TErrorGeneric {
+    public cardFind(_payload: reqCardFind): resCardFind | TErrorGeneric {
         if (!this.util) return this.error('this.util not started')
         throw new Error('Method not implemented.');
     }
@@ -92,6 +94,14 @@ export class CieloAdapter implements ICardAdapter {
 
         return this.util.postToSales<resMakePayment, reqMakePayment>(
             transaction,
+        );
+    }
+
+    public refoundPayment(payload: reqRefoundPayment): Promise<resRefoundPayment | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started')
+        return this.util.put<resRefoundPayment, reqRefoundPayment | TErrorGeneric>(
+            { path: `/1/sales/${payload.paymentId}/void?amount=${payload.amount}` },
+            payload,
         );
     }
 
