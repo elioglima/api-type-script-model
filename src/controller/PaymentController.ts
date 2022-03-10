@@ -18,6 +18,7 @@ export class PaymentController {
     private CardListByFilterService = new service.CardListByFilterService();
     private CardAddService = new service.CardAddService();
     private CardRemoveService = new service.CardRemoveService();
+    private refoundPaymentService = new service.RefoundPaymentService();
 
     private updateByGatewayIdService = new UpdateByGatewayIdService();
     private findPaymentByIdService = new FindPaymentByIdService();
@@ -36,18 +37,41 @@ export class PaymentController {
 
             if (data instanceof Error) {
                 this.logger('Error', data.message);
-                return res.status(422).json({ ['Error']: data.message });
+                return res.status(422).json(data.message);
             }
 
-            if (data.error) {
+            if (data.err) {
                 this.logger('Error', data.message);
-                return res.status(422).json({ ['Error']: data.message });
+                return res.status(422).json(data.message );
             }
 
             return res.status(200).json(data);
         } catch (error) {
             console.log(error)
             this.logger(`Creating payment`, error);
+            return res.status(422).json(error);
+
+        }
+    };
+
+    public RefoundPayment = async (req: Request, res: Response) => {
+        try {
+            this.logger(`Refound payment`, req.body);
+            const data = await this.refoundPaymentService.execute(Number(req.params.id));
+
+            if (data instanceof Error) {
+                this.logger('Error', data.message);
+                return res.status(422).json(data.message);
+            }
+
+            if (data.err) {
+                this.logger('Error', data.message);
+                return res.status(422).json(data.message);
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            this.logger(`Error`, error);
             return res.status(422).json(error);
 
         }

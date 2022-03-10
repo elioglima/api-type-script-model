@@ -49,6 +49,23 @@ export class Utils {
         return this.request<T>(options, data);
     }
 
+    /**
+     * Realiza um put na API da Cielo
+     * @param params path do put
+     * @param data payload de envio
+     */
+     public put<T, U>(params: { path: string }, data: U): Promise<T | TErrorGeneric> {
+
+        const { path } = params;
+        const options: IHttpRequestOptions = this.getHttpRequestOptions({
+            method: HttpRequestMethodEnum.PUT,
+            path,
+            hostname: this.cieloConstructor.hostnameTransacao,
+        });
+
+        return this.request<T>(options, data);
+    }
+
     public getHttpRequestOptions(params: {
         hostname: string;
         path: string;
@@ -69,6 +86,7 @@ export class Utils {
             },
         } as IHttpRequestOptions;
     }
+    
 
     public request<T>(options: IHttpRequestOptions, data: any): Promise<T> {
         return new Promise(async (resolve) => resolve(requestAxios(data, options)));
