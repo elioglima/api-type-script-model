@@ -1,12 +1,13 @@
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics'
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
-import { TFirstPayment } from '../../domain/Tegrus'
-
+import { TFirstPayment, reqSendLinkResident } from '../../domain/Tegrus'
+import { reqCreateHash, resCreateHash } from '../../domain/Tegrus/TFirstPayment'
+// import sendLinkResident from './sendLinkResident'
 // import createHash from './createHash'
-// import { reqCreateHash, resCreateHash } from '../../domain/Tegrus/TFirstPayment'
+
 // import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 
-export default (payload: TFirstPayment): Promise<resFirstPaymentCreate | TErrorGeneric> => {
+export default (payload: TFirstPayment): Promise<TErrorGeneric | resFirstPaymentCreate> => {
 
     /* 
        
@@ -21,12 +22,19 @@ export default (payload: TFirstPayment): Promise<resFirstPaymentCreate | TErrorG
                    
    */
 
-    // const dataHash: reqCreateHash = {
-    //     invoiceId: number,
-    //     url?: any
-    // }
-    // const resultHash: resCreateHash | TErrorGeneric = createHash(dataHash)
+    const dataHash: reqCreateHash = {
+        invoiceId: 123,
+        // url?: any
+    }
 
+    // const resultHash: TErrorGeneric | resCreateHash = createHash(dataHash)
+
+    // if (resultHash?.err) {
+    //     return PromiseExec(resultHash)
+    // }
+
+    // const dataSendLinkResident: reqSendLinkResident = resultHash
+    // const resultSendLinkResident = sendLinkResident(dataSendLinkResident)
     return PromiseExec({
         err: true,
         data: {

@@ -27,3 +27,16 @@ export type resCreateHash = {
     link?: string,
     hash?: string
 }
+
+
+export type reqSendLinkResident = {
+    invoiceId: number,
+    url?: any
+}
+
+export type resSendLinkResident = {
+    success: boolean,
+    message: string,
+    link?: reqSendLinkResident
+}
+

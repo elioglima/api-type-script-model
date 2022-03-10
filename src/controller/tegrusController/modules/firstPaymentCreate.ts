@@ -14,7 +14,6 @@ import tegrusServices from '../../../service/tegrus.services'
 */
 
 
-
 const firstPaymentCreate = async (req: Request, res: Response) => {
     const logger = debug('payment-api:PaymentController');
 
