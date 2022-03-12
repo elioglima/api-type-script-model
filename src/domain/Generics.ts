@@ -1,6 +1,6 @@
 export type TErrorGeneric = {
     message: string;
-    error?: boolean;
+    err?: boolean;
     name?: string;
     stack?: string;
     data?: any;
@@ -9,7 +9,7 @@ export type TErrorGeneric = {
 
 export const returnError = (message: string): Promise<TErrorGeneric> => {
     return new Promise<TErrorGeneric>((resolve) => resolve({
-        error: true,
+        err: true,
         message: message || 'unexpected error did not return message'
     }))
 }

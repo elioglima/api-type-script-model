@@ -14,65 +14,53 @@ export class PreRegistrationRepository {
             .insert()
             .values([
                 {
+                    name: preReg.name,
+                    smartphone: preReg.smartphone,
                     nationality: preReg.nationality,
-                    
-                    // paymentCard: paymentRecurrence.paymentCard,
-                    // recurrenceId: paymentRecurrence.recurrenceId,
-                    // value: paymentRecurrence.value,
+                    nickname: preReg.nickname,
+                    email: preReg.email,
+                    birthDate: preReg.birthDate,
+                    description: preReg.description,
+                    document: preReg.document,
+                    documentType: preReg.documentType
                 },
             ])
             .execute()
-            // .then(
-            //     // response => {
-            //     //     paymentRecurrence.id = Number(response.identifiers[0].id);
-            //     //     return paymentRecurrence;
-            //     // },
-            //     // onRejected => {
-            //     //     this.logger('Error ', onRejected);
-            //     //     return onRejected;
-            //     // },
-            // );
+            .then(
+                response => {
+                    preReg.id = Number(response.identifiers[0].id);
+                    return preReg;
+                },
+                onRejected => {
+                    this.logger('Error ', onRejected);
+                    return onRejected;
+                },
+            );
 
-    // public getById = async (id: number) =>
-    //     await getConnection()
-    //         .getRepository(PaymentRecurrenceEntity)
-    //         .createQueryBuilder('paymentRecurrence')
-    //         .where('paymentRecurrence.id = :id', { id })
-    //         .getOne();
+    public getById = async (id: number) =>
+        await getConnection()
+            .getRepository(PreRegisterResidentEntity)
+            .createQueryBuilder('preRegisterResident')
+            .where('preRegisterResident.id = :id', { id })
+            .getOne();
 
-    // public getByRecurrenceId = async (recurrenceId: string) =>
-    //     await getConnection()
-    //         .getRepository(PaymentRecurrenceEntity)
-    //         .createQueryBuilder('paymentRecurrence')
-    //         .where('paymentRecurrence.recurrenceId = :recurrenceId', {
-    //             recurrenceId,
-    //         })
-    //         .getOne();
 
-    // public getUserRecurrence = async (userId: number) =>
-    //     await getConnection()
-    //         .getRepository(PaymentRecurrenceEntity)
-    //         .createQueryBuilder('paymentRecurrence')
-
-    //         .where('paymentRecurrence.userId = :userId', { userId })
-    //         .getMany();
-
-    // public update = async (paymentRecurrence: PaymentRecurrence) => {
-    //     return await getConnection()
-    //         .getRepository(PaymentRecurrenceEntity)
-    //         .createQueryBuilder('paymentRecurrence')
-    //         .update()
-    //         .set(paymentRecurrence)
-    //         .where('id = :id', { id: paymentRecurrence.id })
-    //         .execute()
-    //         .then(
-    //             () => {
-    //                 return paymentRecurrence;
-    //             },
-    //             onRejected => {
-    //                 this.logger('Error ', onRejected);
-    //                 return onRejected;
-    //             },
-    //         );
-    // };
+    public update = async (preReg: TResident) => {
+        return await getConnection()
+            .getRepository(PreRegisterResidentEntity)
+            .createQueryBuilder('preRegisterResident')
+            .update()
+            .set(preReg)
+            .where('id = :id', { id: preReg.id })
+            .execute()
+            .then(
+                () => {
+                    return preReg;
+                },
+                onRejected => {
+                    this.logger('Error ', onRejected);
+                    return onRejected;
+                },
+            );
+    };
 }

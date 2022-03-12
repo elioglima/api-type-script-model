@@ -2,19 +2,9 @@ import debug from 'debug';
 import { Payment } from '../../domain/Payment/Payment';
 import { getConnection } from 'typeorm';
 import { PaymentEntity } from '../entity/PaymentEntity';
-import { PaymentStatus } from '../../enum/PaymentStatusEnum';
 
 export class PaymentRepository {
     private logger = debug('service-api:PaymentRepository');
-
-    private getPaymentStatus = (code: number) => {
-
-        if ([4, 6].includes(code)) {
-            return 'PAGO'
-        }
-
-        return 'ERRO'
-    }
 
     public persist = async (payment: Payment) => {
 
@@ -25,11 +15,12 @@ export class PaymentRepository {
             .values([
                 {
                     userId: payment.userId,
+                    enterpriseId: payment.enterpriseId,
                     transactionId: payment.paymentId,
                     transactionMessage: payment.returnMessage,
                     transactionCode: payment.returnCode,
                     descriptionMessage: payment.returnMessage,
-                    status: this.getPaymentStatus(payment.returnCode),
+                    status: payment.status,
                     value: Number(payment?.amount) > 0 ? payment.amount : 0,
                 },
             ])

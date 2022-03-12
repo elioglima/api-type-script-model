@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { TErrorGeneric, returnError } from '../../../domain/Generics'
+import { TErrorGeneric } from '../../../domain/Generics'
 
 type reqInvoiceEngine = {
 

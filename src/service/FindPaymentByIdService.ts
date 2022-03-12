@@ -1,16 +1,16 @@
 import debug from 'debug';
 import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 
-export class FindPaymentByGatewayIdService {
-    private logger = debug('service-api:FindPaymentByGatewayIdService');
+export class FindPaymentByIdService {
+    private logger = debug('service-api:FindPaymentByIdService');
     private paymentRepository = new PaymentRepository();
 
-    public execute = async (gatewayId: number) => {
+    public execute = async (paymentId: number) => {
         this.logger(`Find payment by id`);
-        return this.paymentRepository.getById(gatewayId).then(
+        return this.paymentRepository.getById(paymentId).then(
             data => {
                 if (data === undefined) {
-                    this.logger(`Payment ${gatewayId} not found`);
+                    this.logger(`Payment ${paymentId} not found`);
                     return {};
                 }
 

@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TMethodPayment } from 'src/domain/Tegrus';
-import { PaymentStatus } from '../../enum/PaymentStatusEnum';
+import { TStatusInvoice } from 'src/domain/Tegrus';
 
 @Entity('invoice')
 export class InvoiceEntity {
@@ -8,29 +8,29 @@ export class InvoiceEntity {
     id: number | undefined;
 
     @Column({
-        name: 'invoice_id',
+        name: 'invoiceId',
         type: 'int',
     })
-    invoice_id: number | undefined;
+    invoiceId: number | undefined;
 
     @Column({
-        name: 'apartment_id',
+        name: 'apartmentId',
         type: 'int',        
     })
-    apartment_id: number | undefined;
+    apartmentId: number | undefined;
 
     @Column({
-        name: 'resident_id',
+        name: 'residentId',
         type: 'int',
     })
-    resident_id: number | undefined;
+    residentId: number | undefined;
 
 
     @Column({
-        name: 'enterprise_id',
+        name: 'enterpriseId',
         type: 'int',
     })
-    enterprise_id: number | undefined;
+    enterpriseId: number | undefined;
 
     @Column({ 
         name: 'value', 
@@ -73,7 +73,7 @@ export class InvoiceEntity {
         name: 'reference_date',
         type: 'timestamp',
     })
-    reference_date: Date | undefined;
+    referenceDate: Date | undefined;
 
     @Column({
         name: 'due_date',
@@ -95,25 +95,25 @@ export class InvoiceEntity {
 
     
     @Column({
-        name: 'first_payment',
+        name: 'firstPayment',
         type: 'boolean',
     })
-    first_payment: Boolean | undefined;
+    firstPayment: Boolean | undefined;
 
     @Column({
-        name: 'payment_method',
+        name: 'paymentMethod',
         type: 'enum',
         enum: TMethodPayment
     })
-    payment_method: TMethodPayment | undefined;
+    paymentMethod: TMethodPayment | undefined;
 
 
     @Column({
-        name: 'status_invoice',
+        name: 'statusInvoice',
         type: 'enum',
-        enum: TMethodPayment
+        enum: TStatusInvoice
     })
-    status_invoice: string | undefined;
+    statusInvoice: string | undefined;
 
 
 

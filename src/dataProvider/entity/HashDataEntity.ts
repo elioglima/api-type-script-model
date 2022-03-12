@@ -1,22 +1,30 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TDOC } from 'src/domain/Tegrus';
 
-@Entity('preRegisterResident')
-export class PreRegisterResidentEntity {
+@Entity('hashData')
+export class HashDataEntity {
     @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
     id: Number | undefined;
 
     @Column({
-        name: 'name',
+        name: 'hash',
         type: 'varchar',
     })
-    name: string | undefined;
+    hash: string | undefined;
 
     @Column({
-        name: 'nationality',
+        name: 'invoiceId',
+        type: 'int',
+    })
+    invoiceId: Number | undefined;
+
+
+    @Column({
+        name: 'link',
         type: 'varchar',
     })
-    nationality: string | undefined;
+    link: string | undefined;
+
 
     @Column({
         name: 'nickname',
@@ -32,10 +40,10 @@ export class PreRegisterResidentEntity {
     email: string | undefined;
 
     @Column({ 
-        name: 'birthDate',
+        name: 'lifeTime',
         type: 'timestamp', 
      })
-    birthDate: Date | undefined;
+     lifeTime: Date | undefined;
 
     @Column({
         name: 'smartphone',
@@ -56,10 +64,5 @@ export class PreRegisterResidentEntity {
     })
     document: string | undefined;
 
-    @Column({
-        name: 'description',
-        type: 'varchar',
-    })
-    description: string | undefined;
 
 }
