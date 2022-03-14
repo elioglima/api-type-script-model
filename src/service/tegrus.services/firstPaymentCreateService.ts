@@ -1,5 +1,5 @@
 import { HashDataRepository } from './../../dataProvider/repository/HashDataRepository';
-import { hashData } from './../../domain/Tegrus/TFirstPayment';
+import { hashData, link_invoice } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
 import { TFirstPayment, reqSendLinkResident } from '../../domain/Tegrus';
@@ -27,10 +27,7 @@ export default async (
     const resultPR: any = await PreReg.execute(resident);
 
     if (resultPR?.err) {
-        return {
-            err: true,
-            data: resultPR,
-        };
+        return resultPR
     }
 
     const resultIN: any = await InvRep.persist(invoice);
@@ -44,12 +41,19 @@ export default async (
         // url?: any
     };
 
-    const resultHash: any = await createHash(dataHash);
+    const resultHash: resCreateHash = await createHash(dataHash);
+
+    if (resultHash?.err) {
+        return {
+            err: true,
+            data: resultHash,
+        };
+    }
 
     const hashD: hashData = {
         hash: String(resultHash.hash),
         link: String(resultHash.link),
-        invoiceId: resultHash.invoiceId,
+        invoiceId: invoice.invoiceId,
         nickname: resident.nickname,
         email: resident.email,
         smartphone: resident.smartphone,
@@ -66,8 +70,11 @@ export default async (
 
     const dataSendLinkResident: reqSendLinkResident = resultHash;
     const resultSendLinkResident = sendLinkResident(dataSendLinkResident);
-    return PromiseExec({
-        err: false,
-        dataSendLinkResident,
-    });
+
+    const link_invoice: resFirstPaymentCreate = {
+        invoice_id: invoice.invoiceId,
+        link_credit: resultHash.link,
+    };
+
+    return PromiseExec(link_invoice);
 };

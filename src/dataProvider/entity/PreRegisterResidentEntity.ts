@@ -24,17 +24,16 @@ export class PreRegisterResidentEntity {
     })
     nickname: string | undefined;
 
-
     @Column({
         name: 'email',
         type: 'varchar',
     })
     email: string | undefined;
 
-    @Column({ 
+    @Column({
         name: 'birthDate',
-        type: 'timestamp', 
-     })
+        type: 'timestamp',
+    })
     birthDate: Date | undefined;
 
     @Column({
@@ -52,7 +51,7 @@ export class PreRegisterResidentEntity {
 
     @Column({
         name: 'document',
-        type: 'varchar',   
+        type: 'varchar',
     })
     document: string | undefined;
 
@@ -61,5 +60,4 @@ export class PreRegisterResidentEntity {
         type: 'varchar',
     })
     description: string | undefined;
-
 }

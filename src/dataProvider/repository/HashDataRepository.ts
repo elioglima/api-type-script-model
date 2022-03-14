@@ -27,7 +27,13 @@ export class HashDataRepository {
                 },
                 onRejected => {
                     //this.logger('Error ', onRejected);
-                    return onRejected;
+                    return {
+                        err: true,
+                        data: {
+                            code: onRejected.code,
+                            message: onRejected.sqlMessage
+                        }                        
+                    };
                 },
             );
 

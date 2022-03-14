@@ -11,11 +11,11 @@ export default class PreRegisterService {
     public async execute(resident: TResident) {
         try {
             this.logger('Starting method to create Payment');
-            const resp: any = await this.preRegister.persist(resident)
+            const resp: any = await this.preRegister.persist(resident)            
             if (resp?.error == true) {
                 return {
                     err: true,
-                    data: resp
+                    data: resp.data
                 }
             }
             return resp

@@ -24,13 +24,11 @@ export class InvoiceRepository {
                 },
                 onRejected => {
                     //this.logger('Error ', onRejected);
-                    return {
-                        err: true,
+                    return {                       
                         data: {
                             code: onRejected.code,
                             message: onRejected.sqlMessage
-                        }
-                        
+                        }                        
                     };
                 },
             );

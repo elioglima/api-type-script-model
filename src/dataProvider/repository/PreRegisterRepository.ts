@@ -3,7 +3,6 @@ import { PreRegisterResidentEntity } from '../entity/PreRegisterResidentEntity';
 import { TResident } from 'src/domain/Tegrus';
 import { getConnection } from 'typeorm';
 
-
 export class PreRegistrationRepository {
     private logger = debug('service-api:PreRegisterRepository');
 
@@ -14,15 +13,15 @@ export class PreRegistrationRepository {
             .insert()
             .values([
                 {
-                    name: preReg.name,
-                    smartphone: preReg.smartphone,
-                    nationality: preReg.nationality,
-                    nickname: preReg.nickname,
-                    email: preReg.email,
-                    birthDate: preReg.birthDate,
-                    description: preReg.description,
-                    document: preReg.document,
-                    documentType: preReg.documentType
+                    name: preReg?.name,
+                    smartphone: preReg?.smartphone,
+                    nationality: preReg?.nationality,
+                    nickname: preReg?.nickname,
+                    email: preReg?.email,
+                    birthDate: preReg?.birthDate,
+                    description: preReg?.description,
+                    document: preReg?.document,
+                    documentType: preReg?.documentType,
                 },
             ])
             .execute()
@@ -33,7 +32,13 @@ export class PreRegistrationRepository {
                 },
                 onRejected => {
                     this.logger('Error ', onRejected);
-                    return onRejected;
+                    return {
+                        err: true,
+                        data: {
+                            code: onRejected.code,
+                            message: onRejected.sqlMessage,
+                        },
+                    };
                 },
             );
 
@@ -43,7 +48,6 @@ export class PreRegistrationRepository {
             .createQueryBuilder('preRegisterResident')
             .where('preRegisterResident.id = :id', { id })
             .getOne();
-
 
     public update = async (preReg: TResident) => {
         return await getConnection()

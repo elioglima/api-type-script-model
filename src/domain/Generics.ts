@@ -1,5 +1,5 @@
 export type TErrorGeneric = {
-    message: string;
+    message?: string;
     err?: boolean;
     name?: string;
     stack?: string;

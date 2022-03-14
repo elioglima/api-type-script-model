@@ -15,7 +15,7 @@ export class InvoiceEntity {
 
     @Column({
         name: 'apartmentId',
-        type: 'int',        
+        type: 'int',
     })
     apartmentId: number | undefined;
 
@@ -25,17 +25,16 @@ export class InvoiceEntity {
     })
     residentId: number | undefined;
 
-
     @Column({
         name: 'enterpriseId',
         type: 'int',
     })
     enterpriseId: number | undefined;
 
-    @Column({ 
-        name: 'value', 
+    @Column({
+        name: 'value',
         type: 'decimal',
-     })
+    })
     value: number | undefined;
 
     @Column({
@@ -68,7 +67,6 @@ export class InvoiceEntity {
     })
     fine: number | undefined;
 
-
     @Column({
         name: 'reference_date',
         type: 'timestamp',
@@ -93,7 +91,6 @@ export class InvoiceEntity {
     })
     anticipation: Boolean | undefined;
 
-    
     @Column({
         name: 'firstPayment',
         type: 'boolean',
@@ -103,18 +100,14 @@ export class InvoiceEntity {
     @Column({
         name: 'paymentMethod',
         type: 'enum',
-        enum: TMethodPayment
+        enum: TMethodPayment,
     })
     paymentMethod: TMethodPayment | undefined;
-
 
     @Column({
         name: 'statusInvoice',
         type: 'enum',
-        enum: TStatusInvoice
+        enum: TStatusInvoice,
     })
     statusInvoice: string | undefined;
-
-
-
 }
