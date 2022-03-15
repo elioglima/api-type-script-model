@@ -25,6 +25,20 @@ export class PaymentCardsEntity {
     token: string | undefined;
 
     @Column({
+        name: 'holder',
+        type: 'varchar',
+        length: 70,
+    })
+    holder: string | undefined;
+
+    @Column({
+        name: 'firstFourNumbers',
+        type: 'varchar',
+        length: 10,
+    })
+    firstFourNumbers: string | undefined;
+
+    @Column({
         name: 'lastFourNumbers',
         type: 'varchar',
         length: 10,
