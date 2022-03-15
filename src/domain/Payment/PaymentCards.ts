@@ -5,6 +5,7 @@ export interface PaymentCards {
     token: string;
     cardNumber: string;
     lastFourNumbers: string;
+    firstFourNumbers: string;
     brand: EnumBrands;
     customerName: string;
     expirationDate: string;

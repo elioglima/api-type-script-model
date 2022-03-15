@@ -4,6 +4,7 @@ import { PaymentCardsRepository } from '../dataProvider/repository/PaymentCardsR
 import { reqCardAdd } from '../domain/IAdapter';
 import Adapter from '../domain/Adapter';
 import CryptIntegrationGateway from '../dataProvider/gateway/CryptIntegrationGateway';
+import { PaymentCardsEntity } from '../dataProvider/entity/PaymentCardsEntity';
 
 export default class CardAddService {
     private logger = debug('service-api:CardAddService');
@@ -14,6 +15,19 @@ export default class CardAddService {
     public execute = async (paymentCard: PaymentCards) => {
         try {
             this.logger(`Find Card Add`);
+
+            paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0,4);
+            paymentCard.lastFourNumbers = paymentCard.cardNumber.slice(-4);
+
+            const cardExists =
+                await this.paymentCardRepository.getCardAlreadyExists(
+                    paymentCard,
+                );
+
+            if (cardExists instanceof PaymentCardsEntity) {
+                return new Error('Card already registered');
+            }
+
             await this.paymentOperator.init(paymentCard.enterpriseId);
 
             const requestCardAdd: reqCardAdd = {
@@ -32,15 +46,13 @@ export default class CardAddService {
 
             if (!response?.cardToken) return new Error('Cannot instance Card');
 
-            paymentCard.hash =
-            await this.cryptIntegrationGateway.encryptData(
+            paymentCard.hash = await this.cryptIntegrationGateway.encryptData(
                 paymentCard.hash,
             );
 
             return await this.paymentCardRepository.persist({
                 ...paymentCard,
                 token: response.cardToken,
-                lastFourNumbers: paymentCard.cardNumber.slice(-4),
             });
         } catch (error) {
             return error;

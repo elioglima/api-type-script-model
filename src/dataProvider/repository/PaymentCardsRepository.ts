@@ -20,6 +20,8 @@ export class PaymentCardsRepository {
                     enterpriseId: paymentCards.enterpriseId,
                     active: paymentCards.active,
                     hash: paymentCards.hash,
+                    holder: paymentCards.holder,
+                    firstFourNumbers: paymentCards.firstFourNumbers,
                 },
             ])
             .execute()
@@ -48,6 +50,22 @@ export class PaymentCardsRepository {
             .createQueryBuilder('paymentCards')
             .where('paymentCards.deletedAt IS NULL')
             .getMany();
+
+    public getCardAlreadyExists = async (paymentCards: PaymentCards) =>
+        await getConnection()
+            .getRepository(PaymentCardsEntity)
+            .createQueryBuilder('paymentCards')
+            .where('paymentCards.firstFourNumbers = :firstFourNumbers', {
+                firstFourNumbers: paymentCards.firstFourNumbers,
+            })
+            .andWhere('paymentCards.lastFourNumbers = :lastFourNumbers', {
+                lastFourNumbers: paymentCards.lastFourNumbers,
+            })
+            .andWhere('paymentCards.userId = :userId', {
+                userId: paymentCards.userId,
+            })
+            .andWhere('paymentCards.deletedAt IS NULL')
+            .getOne();
 
     public getAllUserCards = async (userId: number) =>
         await getConnection()

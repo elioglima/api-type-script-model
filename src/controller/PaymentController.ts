@@ -31,7 +31,7 @@ export class PaymentController {
     public MakePayment = async (req: Request, res: Response) => {
         try {
             this.logger(`Creating payment`, req.body);
-            const dataRequest = camelcaseKeys(req.body, { deep: true })
+            const dataRequest = camelcaseKeys(req.body, { deep: true });
             const MakePaymentService = new service.MakePaymentService();
             const data = await MakePaymentService.execute(dataRequest);
 
@@ -42,22 +42,23 @@ export class PaymentController {
 
             if (data.err) {
                 this.logger('Error', data.message);
-                return res.status(422).json(data.message );
+                return res.status(422).json(data.message);
             }
 
             return res.status(200).json(data);
         } catch (error) {
-            console.log(error)
+            console.log(error);
             this.logger(`Creating payment`, error);
             return res.status(422).json(error);
-
         }
     };
 
     public RefoundPayment = async (req: Request, res: Response) => {
         try {
             this.logger(`Refound payment`, req.body);
-            const data = await this.refoundPaymentService.execute(Number(req.params.id));
+            const data = await this.refoundPaymentService.execute(
+                Number(req.params.id),
+            );
 
             if (data instanceof Error) {
                 this.logger('Error', data.message);
@@ -73,14 +74,12 @@ export class PaymentController {
         } catch (error) {
             this.logger(`Error`, error);
             return res.status(422).json(error);
-
         }
     };
 
-
     public CardAdd = async (req: Request, res: Response) => {
         this.logger(`CardAdd`);
-        const dataRequest = camelcaseKeys(req.body)
+        const dataRequest = camelcaseKeys(req.body);
         const data = await this.CardAddService.execute(dataRequest);
 
         if (data?.err == true) {
@@ -89,19 +88,18 @@ export class PaymentController {
 
         if (data instanceof Error) {
             this.logger('Error', data.message);
-            return res.status(422).json(data.message);
+            return res.status(422).json({ ['err']: data.message });
         }
 
         return res.status(200).json(data);
     };
 
-
     public getReceipt = async (req: Request, res: Response) => {
         this.logger(`getReceipt`);
         const dataRequest: {
-            paymentId?: string,
-            daysFilter?: number,
-        } = camelcaseKeys(req?.query)
+            paymentId?: string;
+            daysFilter?: number;
+        } = camelcaseKeys(req?.query);
 
         const data = await this.ReceiptIdService.execute(
             Number(req.params.userId),
@@ -116,7 +114,6 @@ export class PaymentController {
 
         return res.status(200).json(data);
     };
-
 
     public getAllPayments = async (_req: Request, res: Response) => {
         this.logger(`getAllPayments`);
@@ -160,8 +157,6 @@ export class PaymentController {
 
         return res.status(200).json(data);
     };
-
-
 
     public CardRemove = async (req: Request, res: Response) => {
         this.logger(`CardRemove`);
