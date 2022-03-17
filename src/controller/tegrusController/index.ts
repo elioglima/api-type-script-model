@@ -19,4 +19,9 @@ export class TegrusController {
     public cancelContract = async (req: Request, res: Response) => {
         return await md.cancelContract(req, res)
     };
+
+    public hashSearch =async (req: Request, res: Response) => {
+        return await md.hashSearch(req, res)
+        
+    }
 }

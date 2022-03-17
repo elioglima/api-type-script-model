@@ -1,26 +1,32 @@
+import debug from 'debug';
+import { resFirstPaymentCreate } from './../../../domain/Tegrus/TFirstPayment';
 import { Request, Response } from 'express';
 import { TErrorGeneric } from '../../../domain/Generics'
-import { TFirstPayment } from '../../../domain/Tegrus'
+import { TFirstPayment, } from '../../../domain/Tegrus'
+import tegrusServices from '../../../service/tegrus.services'
 
 /*
-            
+    * criar uma tabela para pre cadastro usuarios - preRegisterResident
+    * criar uma tabela para faturas usuario nao logado - invoices    
     * criar uma tabela para armazenamento do token
     * gerar um link para o cliente acessar a tela de paramento
-    * criar uma tabela para pre cadastro
-    * criar uma tabela para faturas
-    * criar recibos de faturas pagas
-
+    * criar recibos de faturas pagas comprovantes - receipts
 */
 
 
-type resFirstPaymentCreate = {
+const firstPaymentCreate = async (req: Request, res: Response) => {
+    const logger = debug('payment-api:PaymentController');
 
-}
-
-const firstPaymentCreate = (req: Request, res: Response): (resFirstPaymentCreate | TErrorGeneric) => {
     try {
         const body: TFirstPayment = req?.body;
-        return res.status(200).json(body);
+        const data: resFirstPaymentCreate | TErrorGeneric = await tegrusServices.firstPaymentCreateService(body)
+
+        if (data instanceof Error) {
+            logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
     } catch (error: any) {
         return res.status(422).json(error);
     }

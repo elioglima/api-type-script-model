@@ -12,8 +12,8 @@ export type TInvoice = {
     tax: number, // double,
     refund: number, // double,
     fine: number, // double,
-    referenceDate: string, //timestamp,
-    dueDate: string, //timestamp,
+    referenceDate: Date, //timestamp,
+    dueDate: Date, //timestamp,
     description: string,
     anticipation: boolean,
     firstPayment: boolean, // –caso seja a primeira fatura, deve vir preenchido true.
