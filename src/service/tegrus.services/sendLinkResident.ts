@@ -12,7 +12,8 @@ const sendLinkResident = (data: reqSendLinkResident): Promise<resSendLinkResiden
         return PromiseExec({
             success: true,
             message: 'Link enviado com sucesso',
-            // link?: reqSendLinkResident
+            // link?: reqSendLinkResident,
+            data
         });
 
     } catch (error: any) {

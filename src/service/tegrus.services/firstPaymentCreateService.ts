@@ -1,15 +1,18 @@
 import { HashDataRepository } from './../../dataProvider/repository/HashDataRepository';
-import { hashData, link_invoice } from './../../domain/Tegrus/TFirstPayment';
+import { hashData } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
-import { TFirstPayment, reqSendLinkResident } from '../../domain/Tegrus';
+import {
+    TFirstPayment,
+    // reqSendLinkResident 
+} from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
 } from '../../domain/Tegrus/TFirstPayment';
 import PreRegisterService from './PreRegisterService';
 import { InvoiceRepository } from 'src/dataProvider/repository/InvoiceRepository';
-import sendLinkResident from './sendLinkResident';
+// import sendLinkResident from './sendLinkResident';
 import createHash from './createHash';
 import moment from 'moment';
 
@@ -68,8 +71,8 @@ export default async (
         return resHashRep;
     }
 
-    const dataSendLinkResident: reqSendLinkResident = resultHash;
-    const resultSendLinkResident = sendLinkResident(dataSendLinkResident);
+    // const dataSendLinkResident: reqSendLinkResident = resultHash;
+    // const resultSendLinkResident = sendLinkResident(dataSendLinkResident);
 
     const link_invoice: resFirstPaymentCreate = {
         invoice_id: invoice.invoiceId,

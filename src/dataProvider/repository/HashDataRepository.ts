@@ -1,11 +1,9 @@
-import debug from 'debug';
 import { HashDataEntity } from '../entity/HashDataEntity';
 import { hashData } from 'src/domain/Tegrus';
 import { getConnection } from 'typeorm';
 
 
 export class HashDataRepository {
-    private logger = debug('service-api:HashDataRepository');
 
     public persist = async (data: hashData) =>
         await getConnection()
@@ -32,7 +30,7 @@ export class HashDataRepository {
                         data: {
                             code: onRejected.code,
                             message: onRejected.sqlMessage
-                        }                        
+                        }
                     };
                 },
             );

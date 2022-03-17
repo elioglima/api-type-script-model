@@ -1,4 +1,3 @@
-import { link_invoice } from './TFirstPayment';
 import { TDOC } from './TDOC';
 import { TResident } from './TResident';
 import { TInvoice } from './TInvoice';

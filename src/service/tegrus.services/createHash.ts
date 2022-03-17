@@ -1,4 +1,3 @@
-import { TErrorGeneric, returnError, PromiseExec } from '../../domain/Generics';
 import {
     reqCreateHash,
     resCreateHash,
