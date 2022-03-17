@@ -7,7 +7,6 @@ export class PaymentRepository {
     private logger = debug('service-api:PaymentRepository');
 
     public persist = async (payment: Payment) => {
-
         return await getConnection()
             .getRepository(PaymentEntity)
             .createQueryBuilder('payment')
@@ -35,7 +34,7 @@ export class PaymentRepository {
                     return onRejected;
                 },
             );
-    }
+    };
 
     public getById = async (id: number) =>
         await getConnection()
@@ -48,6 +47,7 @@ export class PaymentRepository {
         await getConnection()
             .getRepository(PaymentEntity)
             .createQueryBuilder('payment')
+            .orderBy('payment.id', 'DESC')
             .getMany();
 
     public getByTransactionId = async (transactionId: string) =>
@@ -95,7 +95,6 @@ export class PaymentRepository {
             );
     };
 }
-
 
 /*
     
