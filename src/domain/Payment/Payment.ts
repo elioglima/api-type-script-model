@@ -23,6 +23,7 @@ export interface TransactionCreditCardRequestModel {
     [x: string]: any;
 }
 
+//criar flag se primeiro pagamento nao obrigatoria
 export interface TransactionPaymentService {
     customer: CustomerModel;
     payment: PaymentRequestModel;

@@ -1,8 +1,8 @@
 import { HashDataRepository } from './../../dataProvider/repository/HashDataRepository';
-import { hashData, link_invoice } from './../../domain/Tegrus/TFirstPayment';
+import { hashData } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
-import { TFirstPayment, reqSendLinkResident } from '../../domain/Tegrus';
+import { TFirstPayment, dataSendLinkResident } from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
@@ -25,7 +25,7 @@ export default async (
     const { resident, invoice } = payload;
 
     const resultPR: any = await PreReg.execute(resident);
-
+    
     if (resultPR?.err) {
         return resultPR
     }
@@ -53,23 +53,29 @@ export default async (
     const hashD: hashData = {
         hash: String(resultHash.hash),
         link: String(resultHash.link),
-        invoiceId: invoice.invoiceId,
-        nickname: resident.nickname,
-        email: resident.email,
-        smartphone: resident.smartphone,
-        documentType: resident.documentType,
-        document: resident.document,
+        InvoiceEntity: resultIN,
+        PreRegisterResidentEntity: resultPR,
         lifeTime: moment().add('days', 3).toDate(),
     };
-
-    const resHashRep = await HashRep.persist(hashD);
+    
+    const resHashRep = await HashRep.persist(hashD);   
 
     if (resHashRep?.err) {
         return resHashRep;
     }
 
-    const dataSendLinkResident: reqSendLinkResident = resultHash;
-    const resultSendLinkResident = sendLinkResident(dataSendLinkResident);
+    const dataSendLinkResident: dataSendLinkResident = {
+        invoiceId: Number(resultHash.invoiceId),
+        url: String(resultHash.link),
+        email: String(resident.email),
+        smartphone: resident.smartphone,
+    };
+
+    const resultSendLinkResident = await sendLinkResident(dataSendLinkResident);
+
+    if(resultSendLinkResident instanceof Error ){
+        return resultSendLinkResident
+    }
 
     const link_invoice: resFirstPaymentCreate = {
         invoice_id: invoice.invoiceId,
