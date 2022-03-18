@@ -2,7 +2,7 @@ import { HashDataRepository } from './../../dataProvider/repository/HashDataRepo
 import { hashData } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
-import { TFirstPayment, dataSendLinkResident } from '../../domain/Tegrus';
+import { TFirstPayment } from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
