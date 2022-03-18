@@ -2,7 +2,7 @@ import debug from 'debug';
 import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 
 export default class ReceiptIdService {
-    private logger = debug('service-api:ReceiptIdService');
+    private logger = debug('payment-api:ReceiptIdService');
     private paymentRepository = new PaymentRepository();
 
     public execute = async (

@@ -1,25 +1,25 @@
-import { TErrorGeneric, returnError, PromiseExec } from '../../domain/Generics'
-import { reqSendLinkResident, resSendLinkResident } from '../../domain/Tegrus/TFirstPayment'
+import {
+    dataSendLinkResident,
+    resSendLinkResident,
+} from '../../domain/Tegrus/TFirstPayment';
 
-/*
-
-*/
-
-
-const sendLinkResident = (data: reqSendLinkResident): Promise<resSendLinkResident | TErrorGeneric> => {
+const sendLinkResident = async (
+    data: dataSendLinkResident,
+) => {
     try {
-
-        return PromiseExec({
+        const returnReq: resSendLinkResident = {
             success: true,
             message: 'Link enviado com sucesso',
-            // link?: reqSendLinkResident,
-            data
-        });
-
+            link: {
+                invoiceId: Number(data.invoiceId),
+                url: String(data.url)
+            },
+        };
+                
+        return returnReq;
     } catch (error: any) {
-        return returnError(error?.message);
+        throw new Error(error.message);       
     }
+};
 
-}
-
-export default sendLinkResident 
+export default sendLinkResident;

@@ -4,7 +4,7 @@ import { PaymentRepository } from '../dataProvider/repository/PaymentRepository'
 import { PaymentEntity } from '../dataProvider/entity/PaymentEntity';
 
 export class UpdateByGatewayIdService {
-    private logger = debug('service-api:UpdateByGatewayIdService');
+    private logger = debug('payment-api:UpdateByGatewayIdService');
     private paymentRepository = new PaymentRepository();
 
     public async execute(payment: Payment) {

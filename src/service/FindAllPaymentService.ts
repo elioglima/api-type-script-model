@@ -2,7 +2,7 @@ import debug from 'debug';
 import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 
 export class FindAllPaymentService {
-    private logger = debug('service-api:FindAllPaymentService');
+    private logger = debug('payment-api:FindAllPaymentService');
     private paymentRepository = new PaymentRepository();
 
     public execute = async () => {
