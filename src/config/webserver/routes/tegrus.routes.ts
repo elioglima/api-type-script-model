@@ -5,9 +5,9 @@ const PaymentTegrusController = new TegrusController();
 export const tegrus: Router = Router();
 
 tegrus
-    .post('/firstPayment/create', PaymentTegrusController.firstPaymentCreate)
+    .post('/topic/createResident', PaymentTegrusController.firstPaymentCreate)
+    .post('/topic/invoiceEngine', PaymentTegrusController.invoiceEngine)
     .get('/firstPayment/:hash', PaymentTegrusController.hashSearch)
     .post('/firstPayment/execute', PaymentTegrusController.firstPaymentExecute)
-    .post('/invoiceEngine', PaymentTegrusController.invoiceEngine)
     .post('/cancelContract', PaymentTegrusController.cancelContract);
 

@@ -1,6 +1,8 @@
-import { TDOC } from './TDOC';
+import { PreRegisterResidentEntity } from './../../dataProvider/entity/PreRegisterResidentEntity';
+import { InvoiceEntity } from 'src/dataProvider/entity/InvoiceEntity';
 import { TResident } from './TResident';
 import { TInvoice } from './TInvoice';
+
 
 export type TFirstPayment = {
     externalId: number;
@@ -15,9 +17,7 @@ export type TFirstPayment = {
 
 export type resFirstPaymentCreate = {
     invoice_id: number;
-    link_credit?: string;
-    link_pix?: string;
-    link_boleto?: string;
+    hash_credit?: string;
 };
 
 export type reqCreateHash = {
@@ -38,20 +38,33 @@ export type reqSendLinkResident = {
     url?: any;
 };
 
+export type dataSendLinkResident = {
+    invoiceId: Number,
+    url: string
+    email: string,
+    smartphone: string,
+}
+
 export type resSendLinkResident = {
     success: boolean;
     message: string;
-    link?: reqSendLinkResident;
+    link?: reqSendLinkResident;    
 };
 
 export interface hashData {
     hash: string;
     link: string;
-    nickname: string;
-    email: string;
     lifeTime: Date;
-    smartphone: string;
-    documentType: TDOC;
-    document: string;
-    invoiceId: Number;
+    InvoiceEntity: InvoiceEntity;
+    PreRegisterResidentEntity: PreRegisterResidentEntity; 
+    valid?: boolean
+}
+
+export interface resHashData {
+    hash: string;
+    link: string;
+    lifeTime: Date;
+    invoice: InvoiceEntity;
+    preResident: PreRegisterResidentEntity; 
+    valid: boolean;
 }

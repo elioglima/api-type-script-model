@@ -1,5 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { TDOC } from 'src/domain/Tegrus';
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { InvoiceEntity } from './InvoiceEntity';
+import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
+
 
 @Entity('hashData')
 export class HashDataEntity {
@@ -13,56 +15,30 @@ export class HashDataEntity {
     hash: string | undefined;
 
     @Column({
-        name: 'invoiceId',
-        type: 'int',
-    })
-    invoiceId: Number | undefined;
-
-
-    @Column({
         name: 'link',
         type: 'varchar',
     })
     link: string | undefined;
 
-
     @Column({
-        name: 'nickname',
-        type: 'varchar',
-    })
-    nickname: string | undefined;
-
-
-    @Column({
-        name: 'email',
-        type: 'varchar',
-    })
-    email: string | undefined;
-
-    @Column({ 
         name: 'lifeTime',
-        type: 'timestamp', 
-     })
-     lifeTime: Date | undefined;
+        type: 'timestamp',
+    })
+    lifeTime: Date | undefined;
+
+    @OneToOne(() => InvoiceEntity, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false })
+    @JoinColumn()
+    InvoiceEntity: InvoiceEntity | undefined;
+
+    @OneToOne(() => PreRegisterResidentEntity, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false })
+    @JoinColumn()
+    PreRegisterResidentEntity: PreRegisterResidentEntity | undefined;
 
     @Column({
-        name: 'smartphone',
-        type: 'varchar',
+        name: 'valid',
+        type: 'boolean',
+        default: 1,
     })
-    smartphone: string | undefined;
-
-    @Column({
-        name: 'documentType',
-        type: 'enum',
-        enum: TDOC,
-    })
-    documentType: string | undefined;
-
-    @Column({
-        name: 'document',
-        type: 'varchar',   
-    })
-    document: string | undefined;
-
+    valid: Boolean | undefined;
 
 }

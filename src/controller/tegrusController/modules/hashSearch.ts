@@ -17,7 +17,7 @@ const hashSearch = async (req: Request, res: Response) => {
             });
 
         const data = await new tegrusServices.HashSearchService().execute(hash);
-        
+
         if (data instanceof Error) {
             logger('Error', data.message);
             return res.status(500).json({
@@ -38,8 +38,10 @@ const hashSearch = async (req: Request, res: Response) => {
             });
         }
 
+        // localizar dados do pre cadastro
+
         return res.status(200).json(data);
-    } catch (error: any) {        
+    } catch (error: any) {
         return res.status(422).json(error);
     }
 };

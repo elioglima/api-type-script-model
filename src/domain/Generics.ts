@@ -1,9 +1,9 @@
-export type TErrorGeneric = {
-    message?: string;
-    err?: boolean;
-    name?: string;
-    stack?: string;
-    data?: any;
+export interface TErrorGeneric{
+    message?: string,
+    err?: boolean,
+    name?: string,
+    stack?: string,
+    data?: any
 }
 
 
