@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { TMethodPayment } from 'src/domain/Tegrus';
-import { TStatusInvoice } from 'src/domain/Tegrus';
+import { TMethodPayment } from '../../domain/Tegrus';
+import { TStatusInvoice } from '../../domain/Tegrus';
 
 @Entity('invoice')
 export class InvoiceEntity {
