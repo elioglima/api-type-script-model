@@ -2,6 +2,7 @@ import { TMethodPayment } from "./TMethodPayment"
 import { TStatusInvoice } from "./TStatusInvoice"
 
 export type TInvoice = {
+    id: number,
     invoiceId: number,
     apartmentId: number,
     residentId: number,

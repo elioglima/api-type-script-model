@@ -3,7 +3,7 @@ import { PaymentRecurrenceRepository } from '../dataProvider/repository/PaymentR
 import { PaymentRecurrence } from '../domain/Payment/PaymentRecurrence';
 
 export default class MakeRecurrenceService {
-    private logger = debug('service-api:MakeRecurrenceService');
+    private logger = debug('payment-api:MakeRecurrenceService');
     private paymentRecurrenceRepository = new PaymentRecurrenceRepository();
 
     public async execute(paymentRecurrence: PaymentRecurrence) {

@@ -74,10 +74,10 @@ export class InvoiceEntity {
     referenceDate: Date | undefined;
 
     @Column({
-        name: 'due_date',
+        name: 'dueDate',
         type: 'timestamp',
     })
-    due_date: Date | undefined;
+    dueDate: Date | undefined;
 
     @Column({
         name: 'description',

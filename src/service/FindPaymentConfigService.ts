@@ -3,7 +3,7 @@ import { PaymentConfigRepository } from '../dataProvider/repository/PaymentConfi
 import CryptIntegrationGateway from '../dataProvider/gateway/CryptIntegrationGateway';
 
 export class FindPaymentConfigService {
-    private logger = debug('service-api:FindPaymentConfigService');
+    private logger = debug('payment-api:FindPaymentConfigService');
     private paymentConfigRepository = new PaymentConfigRepository();
     private cryptIntegrationGateway = new CryptIntegrationGateway();
 
