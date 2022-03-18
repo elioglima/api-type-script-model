@@ -39,11 +39,11 @@ export class HashDataEntity {
     })
     email: string | undefined;
 
-    @Column({ 
+    @Column({
         name: 'lifeTime',
-        type: 'timestamp', 
-     })
-     lifeTime: Date | undefined;
+        type: 'timestamp',
+    })
+    lifeTime: Date | undefined;
 
     @Column({
         name: 'smartphone',
@@ -60,7 +60,7 @@ export class HashDataEntity {
 
     @Column({
         name: 'document',
-        type: 'varchar',   
+        type: 'varchar',
     })
     document: string | undefined;
 

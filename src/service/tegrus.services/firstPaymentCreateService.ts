@@ -53,6 +53,15 @@ export default async (
         };
     }
 
+    if (!resultHash?.hash) {
+        return {
+            err: true,
+            data: {
+                message: 'Error hash not created'
+            },
+        };
+    }
+
     const hashD: hashData = {
         hash: String(resultHash.hash),
         link: String(resultHash.link),
@@ -66,17 +75,22 @@ export default async (
     };
 
     const resHashRep = await HashRep.persist(hashD);
+    const resFindHash = await HashRep.getByHash(resultHash.hash);
+    console.log({ hashD, resHashRep, resFindHash })
 
     if (resHashRep?.err) {
         return resHashRep;
     }
 
     // const dataSendLinkResident: reqSendLinkResident = resultHash;
-    // const resultSendLinkResident = sendLinkResident(dataSendLinkResident);
+    // const resultSendLinkResident:any = sendLinkResident(dataSendLinkResident);
+    // if (resultSendLinkResident?.err) {
+    //     return resHashRep;
+    // }
 
     const link_invoice: resFirstPaymentCreate = {
         invoice_id: invoice.invoiceId,
-        link_credit: resultHash.link,
+        hash_credit: resultHash?.hash
     };
 
     return PromiseExec(link_invoice);

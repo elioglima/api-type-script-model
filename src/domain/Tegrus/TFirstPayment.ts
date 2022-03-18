@@ -15,9 +15,7 @@ export type TFirstPayment = {
 
 export type resFirstPaymentCreate = {
     invoice_id: number;
-    link_credit?: string;
-    link_pix?: string;
-    link_boleto?: string;
+    hash_credit?: string;
 };
 
 export type reqCreateHash = {
