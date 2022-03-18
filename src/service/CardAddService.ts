@@ -7,7 +7,7 @@ import CryptIntegrationGateway from '../dataProvider/gateway/CryptIntegrationGat
 import { PaymentCardsEntity } from '../dataProvider/entity/PaymentCardsEntity';
 
 export default class CardAddService {
-    private logger = debug('service-api:CardAddService');
+    private logger = debug('payment-api:CardAddService');
     private paymentCardRepository = new PaymentCardsRepository();
     private paymentOperator = new Adapter();
     private cryptIntegrationGateway = new CryptIntegrationGateway();

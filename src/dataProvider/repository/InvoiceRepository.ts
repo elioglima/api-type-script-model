@@ -19,7 +19,7 @@ export class InvoiceRepository {
             .execute()
             .then(
                 response => {
-                    invoice.invoiceId = Number(response.identifiers[0].id);
+                    invoice.id = Number(response.identifiers[0].id);
                     return invoice;
                 },
                 onRejected => {

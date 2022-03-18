@@ -4,7 +4,7 @@ import { PaymentCardsRepository } from '../dataProvider/repository/PaymentCardsR
 import { PaymentCardsEntity } from '../dataProvider/entity/PaymentCardsEntity';
 
 export class UpdatePaymentCardService {
-    private logger = debug('service-api:UpdatePaymentCardService');
+    private logger = debug('payment-api:UpdatePaymentCardService');
     private paymentCardsRepository = new PaymentCardsRepository();
 
     public async execute(paymentCards: PaymentCards) {

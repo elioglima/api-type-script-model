@@ -5,7 +5,7 @@ import Adapter from '../domain/Adapter';
 import { cieloStatusConverter } from '../utils/cieloStatus';
 
 export default class MakePaymentService {
-    private logger = debug('service-api:MakePaymentService');
+    private logger = debug('payment-api:MakePaymentService');
     private paymentRepository = new PaymentRepository();
     private paymentOperator = new Adapter();
 
@@ -16,7 +16,7 @@ export default class MakePaymentService {
 
             //pagamento em centavos
             const saveAmount = req.payment.amount;
-            req.payment.amount = req.payment.amount  * 100;
+            req.payment.amount = req.payment.amount * 100;
             const response: any = await this.paymentOperator.makePayment(req);
 
             if (response?.err == true) {
@@ -27,12 +27,17 @@ export default class MakePaymentService {
                 response.payment.status,
             );
 
+            /*
+              Cadastrar usuario se for primeiro pagamento
+                
+            */
+
             return await this.paymentRepository
                 .persist({
                     userId: req?.userId,
                     enterpriseId: req.enterpriseId,
                     ...response?.payment,
-                    amount: saveAmount
+                    amount: saveAmount,
                 })
                 .then(hasPersist => hasPersist);
         } catch (error) {

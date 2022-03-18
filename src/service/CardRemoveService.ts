@@ -3,7 +3,7 @@ import { PaymentCardsEntity } from '../dataProvider/entity/PaymentCardsEntity';
 import { PaymentCardsRepository } from '../dataProvider/repository/PaymentCardsRepository';
 
 export default class CardRemoveService {
-    private logger = debug('service-api:CardRemoveService');
+    private logger = debug('payment-api:CardRemoveService');
     private paymentCardsRepository = new PaymentCardsRepository();
 
     public execute = async (idCard: number) => {

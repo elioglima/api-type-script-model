@@ -2,10 +2,7 @@ import { HashDataRepository } from './../../dataProvider/repository/HashDataRepo
 import { hashData } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
-import {
-    TFirstPayment,
-    // reqSendLinkResident 
-} from '../../domain/Tegrus';
+import { TFirstPayment, dataSendLinkResident } from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
@@ -16,7 +13,6 @@ import { InvoiceRepository } from 'src/dataProvider/repository/InvoiceRepository
 import createHash from './createHash';
 import moment from 'moment';
 
-// import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 
 export default async (
     payload: TFirstPayment,
@@ -65,12 +61,8 @@ export default async (
     const hashD: hashData = {
         hash: String(resultHash.hash),
         link: String(resultHash.link),
-        invoiceId: invoice.invoiceId,
-        nickname: resident.nickname,
-        email: resident.email,
-        smartphone: resident.smartphone,
-        documentType: resident.documentType,
-        document: resident.document,
+        InvoiceEntity: resultIN,
+        PreRegisterResidentEntity: resultPR,
         lifeTime: moment().add('days', 3).toDate(),
     };
 
