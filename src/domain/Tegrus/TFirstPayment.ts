@@ -1,5 +1,5 @@
 import { PreRegisterResidentEntity } from './../../dataProvider/entity/PreRegisterResidentEntity';
-import { InvoiceEntity } from 'src/dataProvider/entity/InvoiceEntity';
+import { InvoiceEntity } from '../../dataProvider/entity/InvoiceEntity';
 import { TResident } from './TResident';
 import { TInvoice } from './TInvoice';
 
