@@ -1,12 +1,7 @@
-import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import {
     dataSendLinkResident,
     resSendLinkResident,
 } from '../../domain/Tegrus/TFirstPayment';
-
-/*
-
-*/
 
 const sendLinkResident = async (
     data: dataSendLinkResident,

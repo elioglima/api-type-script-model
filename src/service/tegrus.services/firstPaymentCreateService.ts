@@ -13,7 +13,6 @@ import sendLinkResident from './sendLinkResident';
 import createHash from './createHash';
 import moment from 'moment';
 
-// import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 
 export default async (
     payload: TFirstPayment,

@@ -5,7 +5,7 @@ import Adapter from '../domain/Adapter';
 import { cieloStatusConverter } from '../utils/cieloStatus';
 
 export default class MakePaymentService {
-    private logger = debug('service-api:MakePaymentService');
+    private logger = debug('payment-api:MakePaymentService');
     private paymentRepository = new PaymentRepository();
     private paymentOperator = new Adapter();
 
