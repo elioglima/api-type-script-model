@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { TDOC } from 'src/domain/Tegrus';
+import { TDOC } from '../../domain/Tegrus';
 
 @Entity('preRegisterResident')
 export class PreRegisterResidentEntity {

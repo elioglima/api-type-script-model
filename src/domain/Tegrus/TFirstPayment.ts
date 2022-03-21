@@ -1,5 +1,5 @@
 import { PreRegisterResidentEntity } from './../../dataProvider/entity/PreRegisterResidentEntity';
-import { InvoiceEntity } from 'src/dataProvider/entity/InvoiceEntity';
+import { InvoiceEntity } from '../../dataProvider/entity/InvoiceEntity';
 import { TResident } from './TResident';
 import { TInvoice } from './TInvoice';
 
@@ -17,9 +17,7 @@ export type TFirstPayment = {
 
 export type resFirstPaymentCreate = {
     invoice_id: number;
-    link_credit?: string;
-    link_pix?: string;
-    link_boleto?: string;
+    hash_credit?: string;
 };
 
 export type reqCreateHash = {

@@ -13,32 +13,31 @@ export class HashDataEntity {
         type: 'varchar',
     })
     hash: string | undefined;
- 
     @Column({
         name: 'link',
         type: 'varchar',
     })
     link: string | undefined;
 
-    @Column({ 
+    @Column({
         name: 'lifeTime',
-        type: 'timestamp', 
-     })
-     lifeTime: Date | undefined;
+        type: 'timestamp',
+    })
+    lifeTime: Date | undefined;
 
-     @OneToOne(() => InvoiceEntity, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false })
-     @JoinColumn()
-     InvoiceEntity: InvoiceEntity | undefined;
+    @OneToOne(() => InvoiceEntity, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false })
+    @JoinColumn()
+    InvoiceEntity: InvoiceEntity | undefined;
 
-     @OneToOne(() => PreRegisterResidentEntity, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false })
-     @JoinColumn()
-     PreRegisterResidentEntity: PreRegisterResidentEntity | undefined;      
+    @OneToOne(() => PreRegisterResidentEntity, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false })
+    @JoinColumn()
+    PreRegisterResidentEntity: PreRegisterResidentEntity | undefined;
 
-     @Column({ 
+    @Column({
         name: 'valid',
-        type: 'boolean', 
+        type: 'boolean',
         default: 1,
-     })
-     valid: Boolean | undefined;
+    })
+    valid: Boolean | undefined;
 
 }
