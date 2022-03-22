@@ -60,4 +60,40 @@ export class PreRegisterResidentEntity {
         type: 'varchar',
     })
     description: string | undefined;
+
+    @Column({
+        name: 'externalId',
+        type: "int"
+    })
+    externalId: Number | undefined;
+
+    @Column({
+        name: "apartamentId",
+        type: "int"
+    })    
+    apartamentId: Number | undefined;
+
+    @Column({
+        name: "enterpriseId",
+        type: "int"
+    })    
+    enterpriseId: Number | undefined;
+
+    @Column({
+        name: "contractCode",
+        type: "varchar"
+    })
+    contractCode: string | undefined;
+
+    @Column({
+        name: "startDateContract",
+        type: "timestamp"
+    })
+    startDateContract: Date | undefined;
+
+    @Column({
+        name: "endDateContract",
+        type: "timestamp"
+    })    
+    endDateContract:  Date | undefined;
 }

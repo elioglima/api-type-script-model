@@ -13,15 +13,7 @@ export class PreRegistrationRepository {
             .insert()
             .values([
                 {
-                    name: preReg?.name,
-                    smartphone: preReg?.smartphone,
-                    nationality: preReg?.nationality,
-                    nickname: preReg?.nickname,
-                    email: preReg?.email,
-                    birthDate: preReg?.birthDate,
-                    description: preReg?.description,
-                    document: preReg?.document,
-                    documentType: preReg?.documentType,
+                    ...preReg
                 },
             ])
             .execute()
