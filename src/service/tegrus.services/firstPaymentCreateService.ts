@@ -66,6 +66,8 @@ export default async (
     };
 
     const resHashRep = await HashRep.persist(hashD);
+    const resFindHash = await HashRep.getByHash(resultHash.hash);
+    console.log({ hashD, resHashRep, resFindHash })
 
     if (resHashRep?.err) {
         return resHashRep;
