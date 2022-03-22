@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { InvoiceEntity } from '../entity/InvoiceEntity';
 import { getConnection } from 'typeorm';
-import { TInvoice } from 'src/domain/Tegrus';
+import { TInvoice } from '../../domain/Tegrus';
 
 export class InvoiceRepository {
     private logger = debug('service-api:Invoice');

@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { PreRegisterResidentEntity } from '../entity/PreRegisterResidentEntity';
-import { TResident } from 'src/domain/Tegrus';
+import { TResident } from '../../domain/Tegrus';
 import { getConnection } from 'typeorm';
 
 export class PreRegistrationRepository {

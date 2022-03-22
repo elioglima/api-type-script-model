@@ -1,5 +1,5 @@
 import { HashDataEntity } from '../entity/HashDataEntity';
-import { hashData } from 'src/domain/Tegrus';
+import { hashData } from '../../domain/Tegrus';
 import { getConnection } from 'typeorm';
 
 export class HashDataRepository {

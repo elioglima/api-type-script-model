@@ -1,6 +1,6 @@
 import debug from 'debug';
-import { HashDataRepository } from 'src/dataProvider/repository/HashDataRepository';
-import { resHashData } from 'src/domain/Tegrus';
+import { HashDataRepository } from '../../dataProvider/repository/HashDataRepository';
+import { resHashData } from '../../domain/Tegrus';
 import moment from 'moment';
 
 export default class HashSearchService {
