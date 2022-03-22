@@ -9,7 +9,7 @@ import {
     dataSendLinkResident
 } from '../../domain/Tegrus/TFirstPayment';
 import PreRegisterService from './PreRegisterService';
-import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
+import { InvoiceRepository } from 'src/dataProvider/repository/InvoiceRepository';
 import sendLinkResident from './sendLinkResident';
 import createHash from './createHash';
 import moment from 'moment';
@@ -22,11 +22,10 @@ export default async (
     const HashRep = new HashDataRepository();
 
     const { resident, invoice } = payload;
-
     const resultPR: any = await PreReg.execute(resident);
-    
+
     if (resultPR?.err) {
-        return resultPR
+        return resultPR;
     }
 
     const resultIN: any = await InvRep.persist(invoice);
@@ -67,7 +66,7 @@ export default async (
     };
 
     const resHashRep = await HashRep.persist(hashD);
-        
+
     if (resHashRep?.err) {
         return resHashRep;
     }
@@ -81,8 +80,8 @@ export default async (
 
     const resultSendLinkResident = await sendLinkResident(dataSendLinkResident);
 
-    if(resultSendLinkResident instanceof Error ){
-        return resultSendLinkResident
+    if (resultSendLinkResident instanceof Error) {
+        return resultSendLinkResident;
     }
 
     const link_invoice: resFirstPaymentCreate = {
