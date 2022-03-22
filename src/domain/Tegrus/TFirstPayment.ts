@@ -5,12 +5,6 @@ import { TInvoice } from './TInvoice';
 
 
 export type TFirstPayment = {
-    externalId: number;
-    apartamentId: number;
-    enterpriseId: number;
-    contractCode: string;
-    startDateContract: string;
-    endDateContract: string;
     resident: TResident;
     invoice: TInvoice;
 };
@@ -61,10 +55,6 @@ export interface hashData {
 }
 
 export interface resHashData {
-    hash: string;
-    link: string;
-    lifeTime: Date;
     invoice: InvoiceEntity;
-    preResident: PreRegisterResidentEntity; 
-    valid: boolean;
+    resident: PreRegisterResidentEntity; 
 }

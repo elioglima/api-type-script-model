@@ -6,13 +6,13 @@ import { TFirstPayment } from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
+    dataSendLinkResident
 } from '../../domain/Tegrus/TFirstPayment';
 import PreRegisterService from './PreRegisterService';
-import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
-// import sendLinkResident from './sendLinkResident';
+import { InvoiceRepository } from 'src/dataProvider/repository/InvoiceRepository';
+import sendLinkResident from './sendLinkResident';
 import createHash from './createHash';
 import moment from 'moment';
-
 
 export default async (
     payload: TFirstPayment,
@@ -22,11 +22,10 @@ export default async (
     const HashRep = new HashDataRepository();
 
     const { resident, invoice } = payload;
-
     const resultPR: any = await PreReg.execute(resident);
 
     if (resultPR?.err) {
-        return resultPR
+        return resultPR;
     }
 
     const resultIN: any = await InvRep.persist(invoice);
@@ -74,11 +73,18 @@ export default async (
         return resHashRep;
     }
 
-    // const dataSendLinkResident: reqSendLinkResident = resultHash;
-    // const resultSendLinkResident:any = sendLinkResident(dataSendLinkResident);
-    // if (resultSendLinkResident?.err) {
-    //     return resHashRep;
-    // }
+    const dataSendLinkResident: dataSendLinkResident = {
+        invoiceId: Number(resultHash.invoiceId),
+        url: String(resultHash.link),
+        email: String(resident.email),
+        smartphone: resident.smartphone,
+    };
+
+    const resultSendLinkResident = await sendLinkResident(dataSendLinkResident);
+
+    if (resultSendLinkResident instanceof Error) {
+        return resultSendLinkResident;
+    }
 
     const link_invoice: resFirstPaymentCreate = {
         invoice_id: invoice.invoiceId,

@@ -30,12 +30,8 @@ export default class HashSearchService {
             }
 
             const res: resHashData = {
-                hash: resp.hash,
-                link: resp.Link,
-                lifeTime: resp.lifeTime,
-                valid: Boolean(resValidate?.data?.isValid),
                 invoice: resp.InvoiceEntity,
-                preResident: resp.PreRegisterResidentEntity,
+                resident: resp.PreRegisterResidentEntity,
             };
 
             return res;
