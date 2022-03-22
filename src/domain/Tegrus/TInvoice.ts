@@ -13,11 +13,14 @@ export type TInvoice = {
     tax: number, // double,
     refund: number, // double,
     fine: number, // double,
-    referenceDate: Date, //timestamp,
+    fineTicket: number,
+    startReferenceDate: number,
+    endReferenceDate: number,
     dueDate: Date, //timestamp,
     description: string,
     anticipation: boolean,
     firstPayment: boolean, // –caso seja a primeira fatura, deve vir preenchido true.
     paymentMethod: TMethodPayment,
     statusInvoice: TStatusInvoice
+    referenceDate: Date, //timestamp,
 }

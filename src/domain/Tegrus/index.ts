@@ -4,3 +4,5 @@ export * from './TInvoice';
 export * from './TMethodPayment';
 export * from './TResident';
 export * from './TStatusInvoice';
+export * from './TFirstPaymentExecute';
+

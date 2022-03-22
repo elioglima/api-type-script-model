@@ -10,4 +10,3 @@ tegrus
     .get('/firstPayment/:hash', PaymentTegrusController.hashSearch)
     .post('/firstPayment/execute', PaymentTegrusController.firstPaymentExecute)
     .post('/cancelContract', PaymentTegrusController.cancelContract);
-
