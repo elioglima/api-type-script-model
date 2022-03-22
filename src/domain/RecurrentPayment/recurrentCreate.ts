@@ -39,7 +39,6 @@ export interface recurrentePayment {
     softDescriptor: string;
     recurrentPayment: recurrentPayment,
     creditCard: CreditCardModel;
-
     serviceTaxAmount?: number;
     interest?: string;
     capture?: boolean;

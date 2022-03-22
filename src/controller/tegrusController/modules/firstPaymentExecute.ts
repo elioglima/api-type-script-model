@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { TFirstPaymentExecReq, } from '../../../domain/Tegrus'
-
+import { TFirstPaymentExecReq } from '../../../domain/Tegrus';
 
 const firstPaymentExecute = async (req: Request, res: Response) => {
     try {
@@ -22,16 +21,13 @@ const firstPaymentExecute = async (req: Request, res: Response) => {
             - 
         */
 
-
         return res.status(200).json(body);
     } catch (error: any) {
         return res.status(422).json(error);
     }
+};
 
-}
-
-export { firstPaymentExecute }
-
+export { firstPaymentExecute };
 
 /* 
 
@@ -47,11 +43,7 @@ tegrus
                             response:
                             {
                                 status: 200,
-                                data: {
-                                    "externalId": "123123",
-                                    "contractCode": "XD2545455",
-                                    "startDateContract": "XXXXX",
-                                    "endDateContract": "YYYY",
+                                data: {      
                                     "resident": {
                                         "id": 123,
                                         "name": "Roberto Mota",
@@ -62,7 +54,11 @@ tegrus
                                         "smartphone": "11982229534",
                                         "documentType": "CPF",
                                         "document": "922.909.940-65",
-                                        "description": "Teste teste"
+                                        "description": "Teste teste",
+                                        "externalId": "123123",
+                                        "contractCode": "XD2545455",
+                                        "startDateContract": "XXXXX",
+                                        "endDateContract": "YYYY",
                                     },
                                     "invoice":{
                                         "invoiceId": 4567,
