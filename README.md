@@ -9,7 +9,7 @@ npm install --save cielo
 ## <a name="howuse"></a> Como utilizar?
 
 ### Iniciando
-
+...
 ```ts
 import { CieloConstructor, Cielo } from 'cielo';
 
