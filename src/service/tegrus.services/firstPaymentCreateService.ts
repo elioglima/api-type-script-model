@@ -9,7 +9,7 @@ import {
     dataSendLinkResident
 } from '../../domain/Tegrus/TFirstPayment';
 import PreRegisterService from './PreRegisterService';
-import { InvoiceRepository } from 'src/dataProvider/repository/InvoiceRepository';
+import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import sendLinkResident from './sendLinkResident';
 import createHash from './createHash';
 import moment from 'moment';

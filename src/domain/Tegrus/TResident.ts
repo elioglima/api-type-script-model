@@ -1,4 +1,4 @@
-import { TDOC } from "./TDOC"
+import { TDOC } from './TDOC';
 
 export interface TResident {
     id: Number;
