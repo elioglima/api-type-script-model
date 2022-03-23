@@ -63,7 +63,7 @@ export class PreRegisterResidentEntity {
 
     @Column({
         name: 'externalId',
-        type: "int"
+        type: 'int',
     })
     externalId: Number | undefined;
 
@@ -74,26 +74,26 @@ export class PreRegisterResidentEntity {
     apartmentId: Number | undefined;
 
     @Column({
-        name: "enterpriseId",
-        type: "int"
-    })    
+        name: 'enterpriseId',
+        type: 'int',
+    })
     enterpriseId: Number | undefined;
 
     @Column({
-        name: "contractCode",
-        type: "varchar"
+        name: 'contractCode',
+        type: 'varchar',
     })
     contractCode: string | undefined;
 
     @Column({
-        name: "startDateContract",
-        type: "timestamp"
+        name: 'startDateContract',
+        type: 'timestamp',
     })
     startDateContract: Date | undefined;
 
     @Column({
-        name: "endDateContract",
-        type: "timestamp"
-    })    
-    endDateContract:  Date | undefined;
+        name: 'endDateContract',
+        type: 'timestamp',
+    })
+    endDateContract: Date | undefined;
 }

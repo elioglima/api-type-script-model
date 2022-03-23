@@ -3,7 +3,6 @@ import { InvoiceEntity } from '../../dataProvider/entity/InvoiceEntity';
 import { TResident } from './TResident';
 import { TInvoice } from './TInvoice';
 
-
 export type TFirstPayment = {
     resident: TResident;
     invoice: TInvoice;
@@ -33,16 +32,16 @@ export type reqSendLinkResident = {
 };
 
 export type dataSendLinkResident = {
-    invoiceId: Number,
-    url: string
-    email: string,
-    smartphone: string,
-}
+    invoiceId: Number;
+    url: string;
+    email: string;
+    smartphone: string;
+};
 
 export type resSendLinkResident = {
     success: boolean;
     message: string;
-    link?: reqSendLinkResident;    
+    link?: reqSendLinkResident;
 };
 
 export interface hashData {
@@ -50,13 +49,13 @@ export interface hashData {
     link: string;
     lifeTime: Date;
     InvoiceEntity: InvoiceEntity;
-    PreRegisterResidentEntity: PreRegisterResidentEntity; 
-    valid?: boolean
+    PreRegisterResidentEntity: PreRegisterResidentEntity;
+    valid?: boolean;
 }
 
 export interface resHashData {
     hash?: string;
     lifeTime?: Date;
     invoice: InvoiceEntity;
-    resident: PreRegisterResidentEntity; 
+    resident: PreRegisterResidentEntity;
 }
