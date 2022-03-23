@@ -6,7 +6,7 @@ import { TFirstPayment } from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
-    dataSendLinkResident
+    dataSendLinkResident,
 } from '../../domain/Tegrus/TFirstPayment';
 import PreRegisterService from './PreRegisterService';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
@@ -14,14 +14,28 @@ import sendLinkResident from './sendLinkResident';
 import createHash from './createHash';
 import moment from 'moment';
 
+type TFirstPaymentReq = {
+    createResident: TFirstPayment;
+};
 export default async (
-    payload: TFirstPayment,
+    payload: TFirstPaymentReq,
 ): Promise<TErrorGeneric | resFirstPaymentCreate> => {
     const PreReg = new PreRegisterService();
     const InvRep = new InvoiceRepository();
     const HashRep = new HashDataRepository();
 
-    const { resident, invoice } = payload;
+    if (!payload?.createResident) {
+        return {
+            err: true,
+            data: {
+                message: 'Error not createResident',
+            },
+        };
+    }
+
+    const { createResident } = payload;
+    const { resident, invoice } = createResident;
+    console.log({ resident, invoice });
     const resultPR: any = await PreReg.execute(resident);
 
     if (resultPR?.err) {
@@ -35,7 +49,7 @@ export default async (
     }
 
     const dataHash: reqCreateHash = {
-        invoiceId: 123,
+        invoiceId: invoice.invoiceId,
         // url?: any
     };
 
@@ -52,7 +66,7 @@ export default async (
         return {
             err: true,
             data: {
-                message: 'Error hash not created'
+                message: 'Error hash not created',
             },
         };
     }
@@ -67,7 +81,7 @@ export default async (
 
     const resHashRep = await HashRep.persist(hashD);
     const resFindHash = await HashRep.getByHash(resultHash.hash);
-    console.log({ hashD, resHashRep, resFindHash })
+    console.log({ hashD, resHashRep, resFindHash });
 
     if (resHashRep?.err) {
         return resHashRep;
@@ -88,7 +102,7 @@ export default async (
 
     const link_invoice: resFirstPaymentCreate = {
         invoice_id: invoice.invoiceId,
-        hash_credit: resultHash?.hash
+        hash_credit: resultHash?.hash,
     };
 
     return PromiseExec(link_invoice);
