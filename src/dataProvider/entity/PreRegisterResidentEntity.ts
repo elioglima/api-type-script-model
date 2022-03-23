@@ -68,9 +68,9 @@ export class PreRegisterResidentEntity {
     externalId: Number | undefined;
 
     @Column({
-        name: 'apartmentId',
-        type: 'int',
-    })
+        name: "apartmentId",
+        type: "int"
+    })    
     apartmentId: Number | undefined;
 
     @Column({

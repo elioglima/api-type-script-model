@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { TFirstPaymentExecReq } from '../../../domain/Tegrus';
+import recurrentPaymentService from 'src/service/tegrus.services/recurrentPaymentService';
 
 const paymentRecurrentExecute = async (req: Request, res: Response) => {
     try {
-        const body: TFirstPaymentExecReq = req?.body;
-
+        const body: TFirstPaymentExecReq = req?.body;        
         /*
             - consultar dados 
                 - tabela de hash
@@ -20,9 +20,13 @@ const paymentRecurrentExecute = async (req: Request, res: Response) => {
                 - verificar na hora de cadastrar o usuario 
             - 
         */
+        const resRecurrecy = await recurrentPaymentService(body)
+
+        console.log("resRecurrecy", resRecurrecy)
 
         return res.status(200).json(body);
     } catch (error: any) {
+        console.log("ERROR", error)
         return res.status(422).json(error);
     }
 };
