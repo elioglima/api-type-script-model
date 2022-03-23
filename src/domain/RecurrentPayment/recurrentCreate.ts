@@ -28,7 +28,7 @@ export interface customer {
 
 export interface recurrentPayment {
     authorizeNow: boolean,      // true or false
-    endDate: string,            // "2019-12-01",
+    endDate: Date,            // "2019-12-01",
     interval: string            // "SemiAnnual"
 }
 
@@ -39,7 +39,6 @@ export interface recurrentePayment {
     softDescriptor: string;
     recurrentPayment: recurrentPayment,
     creditCard: CreditCardModel;
-
     serviceTaxAmount?: number;
     interest?: string;
     capture?: boolean;
