@@ -1,4 +1,3 @@
-import { customer } from './../RecurrentPayment/recurrentCreate';
 import { CardOnFileModel } from '../Card/cardOnFile.model';
 import { EnumBrands } from '../../enum/BrandsEnum';
 
