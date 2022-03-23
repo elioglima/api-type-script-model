@@ -1,7 +1,7 @@
 import HashSearchService from './hashSearchService';
-import { TFirstPaymentExecReq } from '../../domain/Tegrus';
-import Payment from '../../domain/Adapter';
-import { reqRecurrentCreate } from '../../domain/RecurrentPayment';
+import { TFirstPaymentExecReq } from 'src/domain/Tegrus';
+import Payment from 'src/domain/Adapter';
+import { reqRecurrentCreate } from 'src/domain/RecurrentPayment';
 
 export default async (
     payload: TFirstPaymentExecReq,
@@ -26,7 +26,7 @@ export default async (
             softDescriptor: "Recorrencia JFL",
             recurrentPayment: {
                 authorizeNow: false,
-                endDate: resHash?.invoice?.endReferenceDate ,
+                endDate: resHash?.invoice?.endReferenceDate,
                 interval: "Monthly"
             },
             creditCard: {
