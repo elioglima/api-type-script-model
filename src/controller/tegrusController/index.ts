@@ -6,8 +6,8 @@ export class TegrusController {
         return await md.firstPaymentCreate(req, res)
     };
 
-    public firstPaymentExecute = async (req: Request, res: Response) => {
-        return await md.firstPaymentExecute(req, res)
+    public paymentRecurrentExecute = async (req: Request, res: Response) => {
+        return await md.paymentRecurrentExecute(req, res)
     };
 
 
