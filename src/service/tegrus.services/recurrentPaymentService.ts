@@ -26,7 +26,7 @@ export default async (
             softDescriptor: "Recorrencia JFL",
             recurrentPayment: {
                 authorizeNow: false,
-                endDate: resHash?.invoice?.endReferenceDate ,
+                endDate: resHash?.invoice?.endReferenceDate,
                 interval: "Monthly"
             },
             creditCard: {
