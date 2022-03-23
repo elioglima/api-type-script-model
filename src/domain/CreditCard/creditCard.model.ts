@@ -1,3 +1,4 @@
+import { customer } from './../RecurrentPayment/recurrentCreate';
 import { CardOnFileModel } from '../Card/cardOnFile.model';
 import { EnumBrands } from '../../enum/BrandsEnum';
 
@@ -40,4 +41,6 @@ export interface CreditCardModel {
      * Caso a bandeira não envie a informação o campo não será retornado.
      */
     PaymentAccountReference?: string;
+
+    customerName: string;
 }

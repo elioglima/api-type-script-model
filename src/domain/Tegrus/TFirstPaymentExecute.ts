@@ -2,12 +2,7 @@ import { EnumBrands } from '../../enum/BrandsEnum';
 
 
 export type TFirstPaymentExecReq = {
-    invoice: {
-        invoiceId: number,
-        apartmentId: number,
-        residentId: number,
-        enterpriseId: number,
-    },
+    hash: string,
     card: {
         cardNumber: string,
         brand: EnumBrands,

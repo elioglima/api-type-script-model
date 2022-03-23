@@ -110,4 +110,16 @@ export class InvoiceEntity {
         enum: TStatusInvoice,
     })
     statusInvoice: string | undefined;
+
+    @Column({
+        name: 'startReferenceDate',
+        type: 'timestamp',
+    })
+    startReferenceDate: Date | undefined;
+
+    @Column({
+        name: 'endReferenceDate',
+        type: 'timestamp',
+    })
+    endReferenceDate: Date | undefined;
 }
