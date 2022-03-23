@@ -8,6 +8,4 @@ tegrus
     .post('/topic/createResident', PaymentTegrusController.firstPaymentCreate)
     .post('/topic/invoiceEngine', PaymentTegrusController.invoiceEngine)
     .get('/firstPayment/:hash', PaymentTegrusController.hashSearch)
-    .post('/firstPayment/execute', PaymentTegrusController.firstPaymentExecute)
     .post('/cancelContract', PaymentTegrusController.cancelContract);
-

@@ -22,6 +22,7 @@ const hashSearch = async (req: Request, res: Response) => {
             logger('Error', data.message);
             return res.status(500).json({
                 err: true,
+                status: 500,
                 data: {
                     message: data.message,
                 },
@@ -32,15 +33,15 @@ const hashSearch = async (req: Request, res: Response) => {
             logger('Error', 'Nothing was found');
             return res.status(404).json({
                 err: true,
+                status: 404,
                 data: {
                     message: 'Nothing was found',
                 },
             });
         }
 
-        // localizar dados do pre cadastro
-
-        return res.status(200).json(data);
+        
+        return res.status(200).json({status: 200, data: data});
     } catch (error: any) {
         return res.status(422).json(error);
     }

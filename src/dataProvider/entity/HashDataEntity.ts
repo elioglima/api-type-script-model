@@ -13,7 +13,6 @@ export class HashDataEntity {
         type: 'varchar',
     })
     hash: string | undefined;
-
     @Column({
         name: 'link',
         type: 'varchar',

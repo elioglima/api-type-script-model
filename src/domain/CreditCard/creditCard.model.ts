@@ -40,4 +40,6 @@ export interface CreditCardModel {
      * Caso a bandeira não envie a informação o campo não será retornado.
      */
     PaymentAccountReference?: string;
+
+    customerName: string;
 }
