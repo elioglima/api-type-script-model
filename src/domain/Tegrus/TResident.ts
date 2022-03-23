@@ -12,7 +12,7 @@ export interface TResident {
     document: string;
     description: string;
     externalId: number;
-    apartamentId: number;
+    apartmentId: number;
     enterpriseId: number;
     contractCode: string;
     startDateContract: string;

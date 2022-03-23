@@ -68,10 +68,10 @@ export class PreRegisterResidentEntity {
     externalId: Number | undefined;
 
     @Column({
-        name: "apartamentId",
+        name: "apartmentId",
         type: "int"
     })    
-    apartamentId: Number | undefined;
+    apartmentId: Number | undefined;
 
     @Column({
         name: "enterpriseId",

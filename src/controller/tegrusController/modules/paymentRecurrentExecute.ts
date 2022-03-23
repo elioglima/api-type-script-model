@@ -24,7 +24,6 @@ const paymentRecurrentExecute = async (req: Request, res: Response) => {
 
         console.log("resRecurrecy", resRecurrecy)
 
-
         return res.status(200).json(body);
     } catch (error: any) {
         console.log("ERROR", error)
