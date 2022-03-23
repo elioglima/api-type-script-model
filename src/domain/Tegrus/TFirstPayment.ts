@@ -55,6 +55,8 @@ export interface hashData {
 }
 
 export interface resHashData {
+    hash?: string;
+    lifeTime?: Date;
     invoice: InvoiceEntity;
     resident: PreRegisterResidentEntity; 
 }

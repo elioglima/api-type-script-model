@@ -47,7 +47,7 @@ export default class HashSearchService {
     private async validateHashTTL(hashData: resHashData) {
         const timeNow: Date = moment().toDate();
         if (moment(hashData.lifeTime).isAfter(timeNow)) {
-            const resp = await this.terminateHashTTL(hashData.hash);
+            const resp = await this.terminateHashTTL(String(hashData.hash));
             if (resp.err) {
                 return {
                     err: true,

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { TFirstPaymentExecReq } from '../../../domain/Tegrus';
 
-const firstPaymentExecute = async (req: Request, res: Response) => {
+const paymentRecurrentExecute = async (req: Request, res: Response) => {
     try {
         const body: TFirstPaymentExecReq = req?.body;
 
@@ -27,7 +27,7 @@ const firstPaymentExecute = async (req: Request, res: Response) => {
     }
 };
 
-export { firstPaymentExecute };
+export { paymentRecurrentExecute };
 
 /* 
 

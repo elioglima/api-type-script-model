@@ -15,6 +15,7 @@ import {
 } from './IAdapter';
 
 import { FindPaymentConfigService } from '../service/FindPaymentConfigService';
+import { reqRecurrentCreate, resRecurrentCreate } from './RecurrentPayment';
 
 export class Payment implements IAdapter {
 
@@ -103,6 +104,14 @@ export class Payment implements IAdapter {
             throw new Error('Error Method makePayment.');
         }
     }
+    
+    public recurrentCreate(payload: reqRecurrentCreate): Promise<resRecurrentCreate | TErrorGeneric> {
+        if (!this.paymentProvider)
+            throw new Error('Error provider not found.');
+        return this.paymentProvider.recurrentCreate(payload)
+    }
+
+
 
     // public repayPayment(payload: reqRepayPayment): resRepayPayment {
     //     if (!this.paymentProvider)
