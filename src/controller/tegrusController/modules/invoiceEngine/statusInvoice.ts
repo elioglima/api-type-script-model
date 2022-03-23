@@ -1,5 +1,6 @@
-const statusInvoice = async (req) => {
+const statusInvoice = async (req: any) => {
     try {
+        console.log(req)
     } catch (error: any) {
     }
 }

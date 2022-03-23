@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { TInvoiceEngineReq } from '../../../../domain/Tegrus'
+import { TInvoiceEngineReq } from '../../../../domain/Tegrus/TInvoiceEngine'
 
 
 import { createInvoice } from './createInvoice'
