@@ -23,7 +23,8 @@ const firstPaymentInvoice = async (invoice: TInvoice) => {
         return {
             err: false,
             data: {
-                // resposta de sucesso
+                // invoiceId: invoice.invoiceId,
+                // hashCredit: resultHash?.hash,
             },
         };
     } catch (error: any) {
