@@ -1,6 +1,14 @@
-const statusInvoice = async (req: any) => {
+import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
+
+const spotInvoice = async (invoice: TInvoice) => {
     try {
-        console.log(req);
+        console.log('spotInvoice', invoice);
+        /*
+            .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
+                firstPayment = true = primeiro pagamento
+                firstPayment = false = uma fatura spot
+        */
+
         /* 
 
             return {
@@ -27,4 +35,4 @@ const statusInvoice = async (req: any) => {
     }
 };
 
-export { statusInvoice };
+export { spotInvoice };
