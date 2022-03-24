@@ -1,7 +1,7 @@
 import HashSearchService from './hashSearchService';
-import { TFirstPaymentExecReq } from 'src/domain/Tegrus';
-import Payment from 'src/domain/Adapter';
-import { reqRecurrentCreate } from 'src/domain/RecurrentPayment';
+import { TFirstPaymentExecReq } from '../../domain/Tegrus';
+import Payment from '../../domain/Adapter';
+import { reqRecurrentCreate } from '../../domain/RecurrentPayment';
 
 export default async (
     payload: TFirstPaymentExecReq,

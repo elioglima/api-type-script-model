@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { TFirstPaymentExecReq } from '../../../domain/Tegrus';
-import recurrentPaymentService from 'src/service/tegrus.services/recurrentPaymentService';
+import recurrentPaymentService from '../../../service/tegrus.services/recurrentPaymentService';
 
 const paymentRecurrentExecute = async (req: Request, res: Response) => {
     try {
