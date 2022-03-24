@@ -1,6 +1,6 @@
-const statusInvoice = async (req: any) => {
+const cancelContract = async (req: any) => {
     try {
-        console.log(req);
+        console.log('cancelContract ::', req);
         /* 
 
             return {
@@ -27,4 +27,4 @@ const statusInvoice = async (req: any) => {
     }
 };
 
-export { statusInvoice };
+export { cancelContract };

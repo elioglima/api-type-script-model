@@ -32,4 +32,11 @@ export type TInvoiceEngineReq = {
         statusInvoice: TStatusInvoice;
     };
     updateInvoice?: TInvoice;
+    cancelContract?: {
+        residentId: number;
+        description: string;
+        unitId: number;
+        entrepriseId: number;
+        finishDate: Date; //timestamp;
+    };
 };
