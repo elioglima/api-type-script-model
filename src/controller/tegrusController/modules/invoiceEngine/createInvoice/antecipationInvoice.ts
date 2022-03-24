@@ -15,6 +15,9 @@ const antecipationInvoice = async (invoice: TInvoice) => {
             err: true,
             data: {
                 // resposta de erro
+                createInvoice: {
+
+                }
             }
             }
 
@@ -22,7 +25,12 @@ const antecipationInvoice = async (invoice: TInvoice) => {
         return {
             err: false,
             data: {
-                // resposta de sucesso
+                createInvoice: {
+                    ...invoice,
+                    returnOpah: {
+                        message: 'success',
+                    },
+                },
             },
         };
     } catch (error: any) {

@@ -57,8 +57,6 @@ Devolutiva opah para tegrus :: Primeiro Pagamento
 "createResident": {
 …dados do payload,
 "returnOpah": {
-"anticipation": false,
-"firstPayment": true,
 "message": "success"  
  "linkInvoice": {
 "invoiceId": "number",
@@ -78,27 +76,8 @@ obs:
 "firstPayment": false,
 "anticipation": false,
 
-{
-"createResident": {
-"externalId": "123123",
-"apartmentId": 1,
-"enterpriseId": 1,
-"contractCode": "XABLAU",
-"startDateContract": "XXXXX",
-"endDateContract": "YYYY",
-"resident": {
-"id": 123,
-"name": "Roberto Mota",
-"nationality": "Brasil",
-"nickname": "Beto",
-"email": "roberto.mota@opah.com.br",
-"birthDate": "1991-11-22",
-"smartphone": "11982229534",
-"documentType": "CPF",
-"document": "922.909.940-65",
-"description": "Teste teste"
-},
-"invoice": {
+{  
+ "createInvoice": {
 "invoiceId": 4567,
 "apartmentId": 1,
 "residentId": 22,
@@ -118,16 +97,12 @@ obs:
 "statusInvoice": "PAID"
 }
 }
-}
-
 Devolutiva opah para tegrus :: Emissão de Faturas
 
 {
-"createResident": {
+"createInvoice": {
 …dados do payload,
 "returnOpah": {
-"anticipation": false,
-"firstPayment": false,
 "message": "success"  
  }
 }
@@ -142,26 +117,7 @@ obs:
 "anticipation": true,
 
 {
-"createResident": {
-"externalId": "123123",
-"apartmentId": 1,
-"enterpriseId": 1,
-"contractCode": "XABLAU",
-"startDateContract": "XXXXX",
-"endDateContract": "YYYY",
-"resident": {
-"id": 123,
-"name": "Roberto Mota",
-"nationality": "Brasil",
-"nickname": "Beto",
-"email": "roberto.mota@opah.com.br",
-"birthDate": "1991-11-22",
-"smartphone": "11982229534",
-"documentType": "CPF",
-"document": "922.909.940-65",
-"description": "Teste teste"
-},
-"invoice": {
+"createInvoice": {
 "invoiceId": 4567,
 "apartmentId": 1,
 "residentId": 22,
@@ -180,27 +136,15 @@ obs:
 "paymentMethod": "BOLETO",
 "statusInvoice": "PAID"
 }
-}
-}
 
 Devolutiva opah para tegrus :: Antecipação de Faturas
 
 {
-"createResident": {
+"createInvoice": {
+…dados do payload,
 "returnOpah": {
-"anticipation": true,
-"firstPayment": false,
 "message": "success" ,
-"linkInvoice": {
-"invoiceId": "number",
-"linkCredit": "string",
-"linkPix": "string",
-"linkBoleto": "string"
-}
-}
-
-      }
-
+}  
 }
 
 Atualiza status da fatura
@@ -328,7 +272,7 @@ Recebimento opah :: Pagamento Fora do app
 "description": "string",
 "paidAt": "timestamp",
 "paymentMethod": "'ticket' | 'transfer' | 'credit' 'international_transfer', ‘courtesy’",
-"status_invoice": "'paid'"
+"statusInvoice": "'paid'"
 }
 }
 
