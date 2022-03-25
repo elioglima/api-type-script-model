@@ -54,7 +54,6 @@ export default async (payload: TFirstPaymentExecReq) => {
         };        
 
         const resPaymentRecurrencyPersist = await paymentRecurrenceRepository.persist(persisRecurrency);
-
         if(resPaymentRecurrencyPersist instanceof Error){
             return resPaymentRecurrencyPersist;
         }
