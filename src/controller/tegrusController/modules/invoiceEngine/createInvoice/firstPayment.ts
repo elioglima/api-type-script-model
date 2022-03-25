@@ -1,10 +1,10 @@
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
 
-const firstPaymentInvoice = async (invoice: TInvoice) => {
+const firstPayment = async (invoice: TInvoice) => {
     try {
-        console.log('firstPaymentInvoice', invoice);
+        console.log('firstPayment', invoice);
         /*
-            .firstPaymentInvoice - determina quando a fatura sera uma spot ou primeiro pagamento
+            .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
                 firstPayment = true = primeiro pagamento
                 firstPayment = false = uma fatura spot
             .antecipation - determina caso seja uma antecipacao
@@ -22,10 +22,14 @@ const firstPaymentInvoice = async (invoice: TInvoice) => {
         */
         return {
             err: false,
-            data: {
-                // invoiceId: invoice.invoiceId,
-                // hashCredit: resultHash?.hash,
-            },
+            // data: statusInvoice: {
+            //     invoiceId: number,
+            //     description: string,
+            //     paidAt: timestamp,
+            //     paymentMethod: 'ticket' | 'transfer' | 'credit' 'international_transfer', ‘courtesy’
+            //     amountOfFailure: number,
+            //     statusInvoice: 'paid' | 'payment_problem'
+            // }
         };
     } catch (error: any) {
         return {
@@ -37,4 +41,4 @@ const firstPaymentInvoice = async (invoice: TInvoice) => {
     }
 };
 
-export { firstPaymentInvoice };
+export { firstPayment };

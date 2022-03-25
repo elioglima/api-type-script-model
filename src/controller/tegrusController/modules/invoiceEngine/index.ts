@@ -11,7 +11,7 @@ const invoiceEngine = async (req: Request, res: Response) => {
     try {
         const toReceive: TInvoiceEngineReq = req?.body;
         if (toReceive?.createResident) {
-            // Regra primeiro pagamento
+            // Regra primeiro pagamento - area logada
             // Emissão de Fatura
             // Antecipação de Faturas
             const response: any = await createInvoice(toReceive);
