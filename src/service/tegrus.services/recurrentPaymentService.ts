@@ -1,4 +1,3 @@
-import { TErrorGeneric } from './../../domain/Generics';
 import HashSearchService from './hashSearchService';
 import { TFirstPaymentExecReq } from 'src/domain/Tegrus';
 import Adapter from 'src/domain/Adapter';
