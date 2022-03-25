@@ -73,7 +73,7 @@ export class PaymentRepository {
             );
         }
 
-        return query.getRawMany();
+        return query.orderBy('payment.id','DESC').getRawMany();
     };
 
     public update = async (payment: Payment) => {
