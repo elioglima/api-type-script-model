@@ -24,11 +24,11 @@ export class InvoiceRepository {
                 },
                 onRejected => {
                     //this.logger('Error ', onRejected);
-                    return {                       
+                    return {
                         data: {
                             code: onRejected.code,
-                            message: onRejected.sqlMessage
-                        }                        
+                            message: onRejected.sqlMessage,
+                        },
                     };
                 },
             );
@@ -39,6 +39,13 @@ export class InvoiceRepository {
             .createQueryBuilder('invoice')
             .where('invoice.id = :id', { id })
             .getOne();
+
+    public getAll = async () =>
+        await getConnection()
+            .getRepository(InvoiceEntity)
+            .createQueryBuilder('invoice')
+            .orderBy('invoice.id', 'DESC')
+            .getMany();
 
     public update = async (invoice: TInvoice) => {
         return await getConnection()
