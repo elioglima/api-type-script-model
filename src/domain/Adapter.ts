@@ -29,7 +29,7 @@ export class Payment implements IAdapter {
 
     public async init(enterpriseId: number) {
 
-        const paymentConfig: any = await this.FindPaymentConfigService.execute(enterpriseId)
+        const paymentConfig: any = await this.FindPaymentConfigService.execute(enterpriseId)        
         if (paymentConfig instanceof Error) {
             return { error: paymentConfig.message }
         }

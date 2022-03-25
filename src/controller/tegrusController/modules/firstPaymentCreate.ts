@@ -18,12 +18,10 @@ type TFirstPaymentReq = {
 };
 
 const firstPaymentCreate = async (req: Request, res: Response) => {
-    const logger = debug('payment-api:PaymentController');
-
-    console.log(123, req?.body);
+    const logger = debug('payment-api:PaymentController');   
 
     try {
-        const body: TFirstPaymentReq = req?.body;
+        const body: TFirstPaymentReq = req?.body;        
         const data: resFirstPaymentCreate | TErrorGeneric =
             await tegrusServices.firstPaymentCreateService(body);
 

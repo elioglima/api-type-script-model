@@ -28,19 +28,20 @@ export default async (
         return {
             err: true,
             data: {
-                message: 'Error not createResident',
+                message: 'Error createResident not informed',
             },
         };
     }
 
+    console.log("ASDASDDA", payload)
     const { createResident } = payload;
-    const { resident, invoice } = createResident;
-    console.log({ resident, invoice });
-    const resultPR: any = await PreReg.execute(resident);
-
+    const { resident, invoice } = createResident;    
+    
+    const resultPR: any = await PreReg.execute(resident);    
+    
     if (resultPR?.err) {
         return resultPR;
-    }
+    }   
 
     const resultIN: any = await InvRep.persist(invoice);
 
@@ -51,8 +52,8 @@ export default async (
     const dataHash: reqCreateHash = {
         invoiceId: invoice.invoiceId,
         // url?: any
-    };
-
+    };   
+    
     const resultHash: resCreateHash = await createHash(dataHash);
 
     if (resultHash?.err) {

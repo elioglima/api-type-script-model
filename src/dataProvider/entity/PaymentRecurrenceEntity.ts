@@ -9,6 +9,7 @@ export class PaymentRecurrenceEntity {
     @Column({
         name: 'userId',
         type: 'int',
+        nullable: true
     })
     userId: number | undefined;
 
