@@ -102,8 +102,8 @@ export default async (
     }
 
     const link_invoice: resFirstPaymentCreate = {
-        invoice_id: invoice.invoiceId,
-        hash_credit: resultHash?.hash,
+        invoiceId: invoice.invoiceId,
+        hashCredit: resultHash?.hash,
     };
 
     return PromiseExec(link_invoice);
