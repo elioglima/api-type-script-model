@@ -1,7 +1,7 @@
-const updateInvoice = async (req: any) => {
+const updateInvoice = async (toReceive: any) => {
     try {
         // retorno do app >> bff >> tegrus
-        console.log(req);
+        console.log(toReceive);
         /* 
 
             return {
@@ -15,7 +15,12 @@ const updateInvoice = async (req: any) => {
         return {
             err: false,
             data: {
-                // resposta de sucessoss
+                updateInvoice: {
+                    ...toReceive?.updateInvoice,
+                    returnOpah: {
+                        message: 'success',
+                    },
+                },
             },
         };
     } catch (error: any) {

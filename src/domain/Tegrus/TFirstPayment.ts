@@ -9,8 +9,8 @@ export type TFirstPayment = {
 };
 
 export type resFirstPaymentCreate = {
-    invoice_id: number;
-    hash_credit?: string;
+    invoiceId: number;
+    hashCredit?: string;
 };
 
 export type reqCreateHash = {

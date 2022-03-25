@@ -22,7 +22,12 @@ const spotInvoice = async (invoice: TInvoice) => {
         return {
             err: false,
             data: {
-                // resposta de sucesso
+                createInvoice: {
+                    ...invoice,
+                    returnOpah: {
+                        message: 'success',
+                    },
+                },
             },
         };
     } catch (error: any) {
