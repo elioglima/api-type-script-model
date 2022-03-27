@@ -1,7 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
-import { InvoiceEntity } from './InvoiceEntity';
-import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
-
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('hashData')
 export class HashDataEntity {
@@ -13,6 +10,13 @@ export class HashDataEntity {
         type: 'varchar',
     })
     hash: string | undefined;
+
+    @Column({
+        name: 'invoiceId',
+        type: 'int',
+    })
+    invoiceId: number | undefined;
+
     @Column({
         name: 'link',
         type: 'varchar',
@@ -24,14 +28,6 @@ export class HashDataEntity {
         type: 'timestamp',
     })
     lifeTime: Date | undefined;
-
-    @OneToOne(() => InvoiceEntity, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false })
-    @JoinColumn()
-    InvoiceEntity: InvoiceEntity | undefined;
-
-    @OneToOne(() => PreRegisterResidentEntity, { onDelete: 'CASCADE', onUpdate: 'CASCADE', nullable: false })
-    @JoinColumn()
-    PreRegisterResidentEntity: PreRegisterResidentEntity | undefined;
 
     @Column({
         name: 'valid',

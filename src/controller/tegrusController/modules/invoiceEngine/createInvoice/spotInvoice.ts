@@ -1,6 +1,14 @@
-const statusInvoice = async (toReceive: any) => {
+import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
+
+const spotInvoice = async (invoice: TInvoice) => {
     try {
-        console.log(toReceive);
+        console.log('spotInvoice', invoice);
+        /*
+            .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
+                firstPayment = true = primeiro pagamento
+                firstPayment = false = uma fatura spot
+        */
+
         /* 
 
             return {
@@ -14,8 +22,8 @@ const statusInvoice = async (toReceive: any) => {
         return {
             err: false,
             data: {
-                statusInvoice: {
-                    ...toReceive.statusInvoice,
+                createInvoice: {
+                    ...invoice,
                     returnOpah: {
                         message: 'success',
                     },
@@ -32,4 +40,4 @@ const statusInvoice = async (toReceive: any) => {
     }
 };
 
-export { statusInvoice };
+export { spotInvoice };

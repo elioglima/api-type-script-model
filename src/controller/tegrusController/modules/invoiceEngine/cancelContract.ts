@@ -1,6 +1,6 @@
-const statusInvoice = async (toReceive: any) => {
+const cancelContract = async (req: any) => {
     try {
-        console.log(toReceive);
+        console.log('cancelContract ::', req);
         /* 
 
             return {
@@ -14,12 +14,7 @@ const statusInvoice = async (toReceive: any) => {
         return {
             err: false,
             data: {
-                statusInvoice: {
-                    ...toReceive.statusInvoice,
-                    returnOpah: {
-                        message: 'success',
-                    },
-                },
+                // resposta de sucesso
             },
         };
     } catch (error: any) {
@@ -32,4 +27,4 @@ const statusInvoice = async (toReceive: any) => {
     }
 };
 
-export { statusInvoice };
+export { cancelContract };

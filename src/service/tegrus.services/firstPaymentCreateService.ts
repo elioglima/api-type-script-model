@@ -3,6 +3,7 @@ import { hashData } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
 import { TFirstPayment } from '../../domain/Tegrus';
+import { TInvoice } from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
@@ -32,8 +33,7 @@ export default async (
             },
         };
     }
-
-    console.log("ASDASDDA", payload)
+    
     const { createResident } = payload;
     const { resident, invoice } = createResident;    
     
@@ -43,7 +43,13 @@ export default async (
         return resultPR;
     }   
 
-    const resultIN: any = await InvRep.persist(invoice);
+    const invoicePersist : TInvoice ={
+        ...invoice,
+        resident: resultPR.id
+    }
+    
+    
+    const resultIN: any = await InvRep.persist(invoicePersist);    
 
     if (resultIN?.err) {
         return resultIN;
@@ -75,14 +81,12 @@ export default async (
     const hashD: hashData = {
         hash: String(resultHash.hash),
         link: String(resultHash.link),
-        InvoiceEntity: resultIN,
-        PreRegisterResidentEntity: resultPR,
         lifeTime: moment().add('days', 3).toDate(),
+        invoiceId: Number(invoice.invoiceId)
     };
 
     const resHashRep = await HashRep.persist(hashD);
-    const resFindHash = await HashRep.getByHash(resultHash.hash);
-    console.log({ hashD, resHashRep, resFindHash });
+        
 
     if (resHashRep?.err) {
         return resHashRep;
@@ -102,8 +106,8 @@ export default async (
     }
 
     const link_invoice: resFirstPaymentCreate = {
-        invoice_id: invoice.invoiceId,
-        hash_credit: resultHash?.hash,
+        invoiceId: invoice.invoiceId,
+        hashCredit: resultHash?.hash,
     };
 
     return PromiseExec(link_invoice);

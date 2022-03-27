@@ -24,21 +24,43 @@ export class InvoiceRepository {
                 },
                 onRejected => {
                     //this.logger('Error ', onRejected);
-                    return {                       
+                    return {
                         data: {
                             code: onRejected.code,
-                            message: onRejected.sqlMessage
-                        }                        
+                            message: onRejected.sqlMessage,
+                        },
                     };
                 },
             );
 
     public getById = async (id: number) =>
         await getConnection()
-            .getRepository(InvoiceEntity)
+            .getRepository(InvoiceEntity)            
             .createQueryBuilder('invoice')
             .where('invoice.id = :id', { id })
+            .leftJoinAndSelect(
+                'invoice.PreRegisterResidentEntity',
+                'preresident',
+            )
             .getOne();
+
+    public getByInvoiceId = async (id: number) =>
+        await getConnection()
+            .getRepository(InvoiceEntity)
+            .createQueryBuilder('invoice')            
+            .where('invoice.invoiceId = :id', { id })            
+            .leftJoinAndSelect(
+                'invoice.resident',
+                'resident',
+            )
+            .getOne();
+
+    public getAll = async () =>
+        await getConnection()
+            .getRepository(InvoiceEntity)
+            .createQueryBuilder('invoice')
+            .orderBy('invoice.id', 'DESC')
+            .getMany();
 
     public update = async (invoice: TInvoice) => {
         return await getConnection()

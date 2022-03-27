@@ -33,11 +33,6 @@ export class HashDataRepository {
             .getRepository(HashDataEntity)
             .createQueryBuilder('hashData')
             .where('hashData.hash = :hash', { hash })
-            .leftJoinAndSelect('hashData.InvoiceEntity', 'invoice')
-            .leftJoinAndSelect(
-                'hashData.PreRegisterResidentEntity',
-                'preresident',
-            )
             .orderBy('hashData.id', 'DESC')                        
             .getOne();
 

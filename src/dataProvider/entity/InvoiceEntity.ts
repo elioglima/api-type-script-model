@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { TMethodPayment } from '../../domain/Tegrus';
 import { TStatusInvoice } from '../../domain/Tegrus';
+import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
 
 @Entity('invoice')
 export class InvoiceEntity {
@@ -12,6 +13,17 @@ export class InvoiceEntity {
         type: 'int',
     })
     invoiceId: number | undefined;
+
+    @Column({
+        name: 'idUser',
+        type: 'int',
+        nullable: true
+    })
+    idUser: number | undefined;
+
+    @ManyToOne(() => PreRegisterResidentEntity, (preUser) => preUser.id)
+    @JoinColumn({ name: 'resident' })
+    resident: number | undefined;
 
     @Column({
         name: 'apartmentId',
@@ -122,4 +134,12 @@ export class InvoiceEntity {
         type: 'timestamp',
     })
     endReferenceDate: Date | undefined;
+
+    @Column({
+        name: 'active',
+        type: 'boolean',
+        default: true
+    })
+    active: Boolean | undefined;
 }
+

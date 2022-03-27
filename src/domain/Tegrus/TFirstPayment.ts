@@ -9,8 +9,8 @@ export type TFirstPayment = {
 };
 
 export type resFirstPaymentCreate = {
-    invoice_id: number;
-    hash_credit?: string;
+    invoiceId: number;
+    hashCredit?: string;
 };
 
 export type reqCreateHash = {
@@ -48,9 +48,8 @@ export interface hashData {
     hash: string;
     link: string;
     lifeTime: Date;
-    InvoiceEntity: InvoiceEntity;
-    PreRegisterResidentEntity: PreRegisterResidentEntity;
     valid?: boolean;
+    invoiceId: number;
 }
 
 export interface resHashData {

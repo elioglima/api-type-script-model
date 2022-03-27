@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 import { TDOC } from '../../domain/Tegrus';
+import { InvoiceEntity } from './InvoiceEntity';
 
 @Entity('preRegisterResident')
 export class PreRegisterResidentEntity {
@@ -96,4 +97,8 @@ export class PreRegisterResidentEntity {
         type: 'timestamp',
     })
     endDateContract: Date | undefined;
+
+    @OneToMany(() => InvoiceEntity, (invoice) => invoice.id)
+    @JoinColumn({ name: 'invoice' })
+    invoice: InvoiceEntity[] | undefined;
 }

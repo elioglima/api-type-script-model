@@ -17,6 +17,7 @@ const hashSearch = async (req: Request, res: Response) => {
             });
 
         const data = await new tegrusServices.HashSearchService().execute(hash);
+    
 
         if (data instanceof Error) {
             logger('Error', data.message);

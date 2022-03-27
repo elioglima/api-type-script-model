@@ -1,16 +1,20 @@
 import debug from 'debug';
 import { HashDataRepository } from '../../dataProvider/repository/HashDataRepository';
+import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { resHashData } from '../../domain/Tegrus';
 import moment from 'moment';
 
 export default class HashSearchService {
     private logger = debug('service-api:HashSearchService');
     private HashRep = new HashDataRepository();
+    private InvRep = new InvoiceRepository();
 
     public async execute(hash: string) {
         try {
             this.logger('Starting method HashSearchService');
             const resp: any = await this.HashRep.getByHash(hash);
+
+            console.log('RESP', resp);
 
             if (resp?.error == true) {
                 return {
@@ -25,14 +29,30 @@ export default class HashSearchService {
                 return resValidate;
             }
 
+            console.log('resValidate', resValidate);
             if (!resValidate?.data?.isValid) {
-                return resValidate                
+                return resValidate;
             }
 
+            const resInvoicePreUser: any = await this.InvRep.getByInvoiceId(
+                resp.invoiceId,
+            );
+
+            const args = Object.keys(resInvoicePreUser).reduce((acc, at) => {
+                if (resInvoicePreUser[at] instanceof Object)
+                    return acc = { resident: resInvoicePreUser[at] };
+                else
+                    return acc = {
+                        ...acc,
+                        [at]: resInvoicePreUser[at],
+                    };                                
+            }, {});
+     
             const res: resHashData = {
-                invoice: resp.InvoiceEntity,
-                resident: resp.PreRegisterResidentEntity,
-            };
+                resident: resInvoicePreUser.resident,
+                invoice: delete resInvoicePreUser.resident && resInvoicePreUser,
+            }
+            
 
             return res;
         } catch (error) {
@@ -46,7 +66,7 @@ export default class HashSearchService {
 
     private async validateHashTTL(hashData: resHashData) {
         const timeNow: Date = moment().toDate();
-        if (moment(hashData.lifeTime).isAfter(timeNow)) {
+        if (moment(hashData.lifeTime).isBefore(timeNow)) {
             const resp = await this.terminateHashTTL(String(hashData.hash));
             if (resp.err) {
                 return {
@@ -59,14 +79,16 @@ export default class HashSearchService {
             return {
                 err: false,
                 data: {
-                    isValid: true,
-                }
+                    isValid: false,
+                },
             };
         }
 
         return {
             err: false,
-            isValid: false,
+            data: {
+                isValid: true,
+            },
         };
     }
 

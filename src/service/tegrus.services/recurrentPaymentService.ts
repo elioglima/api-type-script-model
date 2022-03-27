@@ -1,9 +1,10 @@
 import HashSearchService from './hashSearchService';
-import { TFirstPaymentExecReq } from 'src/domain/Tegrus';
-import Adapter from 'src/domain/Adapter';
+import { TFirstPaymentExecReq } from '../../domain/Tegrus';
+import Adapter from '../../domain/Adapter';
 import { reqRecurrentCreate } from '../../domain/RecurrentPayment';
-import {PaymentRecurrence} from "../../domain/Payment/PaymentRecurrence"
+import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
+import { TStatusRecurrency, EnumPayMethod, TStatusInvoice } from '../../domain/Tegrus';
 
 export default async (payload: TFirstPaymentExecReq) => {
     try {
@@ -42,23 +43,39 @@ export default async (payload: TFirstPaymentExecReq) => {
             },
         };
 
-        const resRecurrentCreate: any = await paymentAdapter.recurrentCreate(makeRecurrent);
-        
-        if(resRecurrentCreate?.err) return resRecurrentCreate
+        const resRecurrentCreate: any = await paymentAdapter.recurrentCreate(
+            makeRecurrent,
+        );
 
-        const persisRecurrency : PaymentRecurrence = {
+        if (resRecurrentCreate?.err) return resRecurrentCreate;
+
+        const persisRecurrency: PaymentRecurrence = {
             createdAt: new Date(),
             paymentCard: resRecurrentCreate?.payment?.creditCard,
-            recurrenceId: resRecurrentCreate?.payment?.recurrentPayment?.recurrentPaymentId,
-            value: resRecurrentCreate?.payment?.amount,
-        };        
+            recurrenceId:
+                resRecurrentCreate?.payment?.recurrentPayment
+                    ?.recurrentPaymentId,
+            value: resRecurrentCreate?.payment?.amount, 
+            preUserId: resHash?.resident?.id,      
+            residentId: resHash?.invoice?.residentId      
+        };
 
         const resPaymentRecurrencyPersist = await paymentRecurrenceRepository.persist(persisRecurrency);
         if(resPaymentRecurrencyPersist instanceof Error){
             return resPaymentRecurrencyPersist;
         }
 
-        return resRecurrentCreate
+        const resRecurrency: TStatusRecurrency = {
+            invoiceId: Number(resHash?.invoice?.invoiceId),
+            description: resRecurrentCreate?.payment?.softDescriptor,
+            paidAt: new Date(resRecurrentCreate?.payment?.recurrentPayment?.nextRecurrency),
+            paymentMethod: EnumPayMethod.CREDIT,
+            statusInvoice: TStatusInvoice.PUBLICADO
+        }
+
+        
+
+        return resRecurrency;
     } catch (error) {
         console.log('ERR', error);
     }
