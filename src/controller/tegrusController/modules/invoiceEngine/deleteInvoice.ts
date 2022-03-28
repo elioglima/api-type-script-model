@@ -5,7 +5,9 @@ type TDeleteInvoice = {
     };
 };
 
-const deleteInvoice = async (payload: TDeleteInvoice) => {
+const deleteInvoice = async (req: any) => {
+    const payload: TDeleteInvoice = req;
+
     const returnTopic = (
         response: any,
         error: boolean = false,
