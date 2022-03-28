@@ -9,15 +9,13 @@ export class HashDataRepository {
             .getRepository(HashDataEntity)
             .save(data)
             .then(
-                response => {
-                    console.log('response', response);
+                response => {                    
                     return {
                         err: false,
                         id: Number(response.id),
                     };
                 },
-                onRejected => {
-                    console.log('onRejected', onRejected);
+                onRejected => {                    
                     return {
                         err: true,
                         data: {

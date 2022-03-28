@@ -73,3 +73,8 @@ export type resRecurrentCreate = {
     payment: recurrentePayment;
     links?: Link[];
 }
+
+
+export type reqRecurrentDeactivate = {
+   recurrenceId: string;
+}

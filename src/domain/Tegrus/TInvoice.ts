@@ -7,6 +7,7 @@ export type TInvoice = {
     invoiceId: number;
     apartmentId: number;    
     residentId: number;
+    recurrenceId?: string;
     enterpriseId: number;
     value: number; // double,
     condominium: number; // double,

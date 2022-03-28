@@ -11,11 +11,11 @@ import {
     resCardFind,
     resCardRemove,
     reqRefoundPayment,
-    resRefoundPayment,
+    resRefoundPayment,    
 } from './IAdapter';
 
 import { FindPaymentConfigService } from '../service/FindPaymentConfigService';
-import { reqRecurrentCreate, resRecurrentCreate } from './RecurrentPayment';
+import { reqRecurrentCreate, reqRecurrentDeactivate, resRecurrentCreate, resRecurrentDeactivate } from './RecurrentPayment';
 
 export class Payment implements IAdapter {
 
@@ -109,6 +109,12 @@ export class Payment implements IAdapter {
         if (!this.paymentProvider)
             throw new Error('Error provider not found.');
         return this.paymentProvider.recurrentCreate(payload)
+    }
+
+    public recurrentDeactivate(payload: reqRecurrentDeactivate): Promise<resRecurrentDeactivate | TErrorGeneric> {
+        if (!this.paymentProvider)
+            throw new Error('Error provider not found.');
+        return this.paymentProvider.recurrentDeactivate(payload)
     }
 
 

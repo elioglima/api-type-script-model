@@ -54,15 +54,16 @@ export class Utils {
      * @param params path do put
      * @param data payload de envio
      */
-     public put<T, U>(params: { path: string }, data: U): Promise<T | TErrorGeneric> {
+     public async put<T, U>(params: { path: string }, data?: U): Promise<T | TErrorGeneric> {
 
         const { path } = params;
         const options: IHttpRequestOptions = this.getHttpRequestOptions({
             method: HttpRequestMethodEnum.PUT,
             path,
-            hostname: this.cieloConstructor.hostnameTransacao,
+            hostname: this.cieloConstructor.hostnameTransacao,            
         });
 
+        console.log("ASDASFASFASDFASDASD", await this.request<T>(options, data) )
         return this.request<T>(options, data);
     }
 

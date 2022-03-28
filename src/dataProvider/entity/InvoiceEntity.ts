@@ -136,6 +136,14 @@ export class InvoiceEntity {
     endReferenceDate: Date | undefined;
 
     @Column({
+        name: 'recurrenceId',
+        type: 'varchar',
+        nullable: true        
+    })
+    recurrenceId: string | undefined
+
+
+    @Column({
         name: 'active',
         type: 'boolean',
         default: true

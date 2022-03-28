@@ -12,11 +12,16 @@ export default class HashSearchService {
     public async execute(hash: string) {
         try {
             this.logger('Starting method HashSearchService');
-            const resp: any = await this.HashRep.getByHash(hash);
+            const resp: any = await this.HashRep.getByHash(hash);            
+            
+            if(!resp) {
+                return {
+                    err: true,
+                    data: 'Hash dont found.'
+                };
+            }
 
-            console.log('RESP', resp);
-
-            if (resp?.error == true) {
+            if (resp?.err) {
                 return {
                     err: true,
                     data: resp,
@@ -28,8 +33,7 @@ export default class HashSearchService {
             if (resValidate.err) {
                 return resValidate;
             }
-
-            console.log('resValidate', resValidate);
+            
             if (!resValidate?.data?.isValid) {
                 return resValidate;
             }

@@ -68,14 +68,13 @@ export class InvoiceRepository {
             .createQueryBuilder('invoice')
             .update()
             .set(invoice)
-            .where('id = :id', { id: invoice.invoiceId })
+            .where('id = :id', { id: invoice.id })
             .execute()
             .then(
-                () => {
+                (data) => {
                     return invoice;
                 },
-                onRejected => {
-                    this.logger('Error ', onRejected);
+                onRejected => {                    
                     return onRejected;
                 },
             );
