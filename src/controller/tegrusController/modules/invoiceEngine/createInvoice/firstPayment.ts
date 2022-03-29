@@ -4,6 +4,8 @@ const firstPayment = async (invoice: TInvoice) => {
     try {
         console.log('firstPayment', invoice);
         /*
+            obs: if (req.createInvoice?.type == EnumInvoiceType.booking) {
+
             .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
                 firstPayment = true = primeiro pagamento
                 firstPayment = false = uma fatura spot
