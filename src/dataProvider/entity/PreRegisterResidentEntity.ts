@@ -4,7 +4,10 @@ import {
     OneToMany,
     PrimaryGeneratedColumn,
     JoinColumn,
+    ManyToOne,
 } from 'typeorm';
+
+import { PaymentCardsEntity } from './PaymentCardsEntity';
 import { TDOC } from '../../domain/Tegrus';
 import { InvoiceEntity } from './InvoiceEntity';
 
@@ -108,43 +111,8 @@ export class PreRegisterResidentEntity {
     @JoinColumn({ name: 'invoice' })
     invoice: InvoiceEntity[] | undefined;
 
-    @Column({
-        name: 'cardHolder',
-        type: 'varchar',
-        length: 70,
+    @ManyToOne(() => PaymentCardsEntity, paymentCard => paymentCard, {
+        eager: true,
     })
-    holder: string | undefined;
-
-    @Column({
-        name: 'cardFirstFourNumbers',
-        type: 'varchar',
-        length: 10,
-    })
-    firstFourNumbers: string | undefined;
-
-    @Column({
-        name: 'cardFourNumbers',
-        type: 'varchar',
-        length: 10,
-    })
-    lastFourNumbers: string | undefined;
-
-    @Column({
-        name: 'brand',
-        type: 'varchar',
-        length: 30,
-    })
-    brand: string | undefined;
-
-    @Column({
-        name: 'cardToken',
-        type: 'varchar',
-        length: 200,
-    })
-    @Column({
-        name: 'cardHash',
-        type: 'varchar',
-        length: 200,
-    })
-    hash: string | undefined;
+    paymentCard: PaymentCardsEntity | undefined;
 }

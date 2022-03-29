@@ -15,7 +15,7 @@ export class PaymentRecurrenceEntity {
 
     @Column({
         name: 'preUserId',
-        type: 'int',        
+        type: 'int',
     })
     preUserId: number | undefined;
 
@@ -31,11 +31,6 @@ export class PaymentRecurrenceEntity {
         length: 50,
     })
     recurrenceId: string | undefined;
-
-    @ManyToOne(() => PaymentCardsEntity, paymentCard => paymentCard, {
-        eager: true,
-    })
-    paymentCard: PaymentCardsEntity | undefined;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     value: number | undefined;
