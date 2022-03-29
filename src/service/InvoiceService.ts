@@ -27,12 +27,18 @@ export default class InvoiceService {
             - incluir caso nao exista
         */
 
-        const data = await this.invoiceRepository.getById(invoice.invoiceId);
-        console.log({ data });
+        const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
+            invoice.invoiceId,
+        );
 
-        if (data == undefined) {
+        if (resInvoiceId) {
+            // fatura existe
             return new Error('FindOneInclude not found');
         }
-        return data;
+
+        const resPersist = await this.invoiceRepository.persist(invoice);
+
+        console.log({ resPersist });
+        return {};
     };
 }

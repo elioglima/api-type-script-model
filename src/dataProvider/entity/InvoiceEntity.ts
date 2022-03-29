@@ -1,7 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { TMethodPayment } from '../../domain/Tegrus';
-import { TStatusInvoice } from '../../domain/Tegrus';
+import {
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    ManyToOne,
+    JoinColumn,
+} from 'typeorm';
 import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
+
+import {
+    EnumInvoicePaymentMethod,
+    EnumTopicStatusInvoice,
+} from '../../domain/Tegrus';
 
 @Entity('invoice')
 export class InvoiceEntity {
@@ -17,11 +26,11 @@ export class InvoiceEntity {
     @Column({
         name: 'idUser',
         type: 'int',
-        nullable: true
+        nullable: true,
     })
     idUser: number | undefined;
 
-    @ManyToOne(() => PreRegisterResidentEntity, (preUser) => preUser.id)
+    @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'resident' })
     resident: number | undefined;
 
@@ -112,16 +121,16 @@ export class InvoiceEntity {
     @Column({
         name: 'paymentMethod',
         type: 'enum',
-        enum: TMethodPayment,
+        enum: EnumInvoicePaymentMethod,
     })
-    paymentMethod: TMethodPayment | undefined;
+    paymentMethod: EnumInvoicePaymentMethod | undefined;
 
     @Column({
         name: 'statusInvoice',
         type: 'enum',
-        enum: TStatusInvoice,
+        enum: EnumTopicStatusInvoice,
     })
-    statusInvoice: string | undefined;
+    statusInvoice: EnumTopicStatusInvoice | undefined;
 
     @Column({
         name: 'startReferenceDate',
@@ -138,16 +147,14 @@ export class InvoiceEntity {
     @Column({
         name: 'recurrenceId',
         type: 'varchar',
-        nullable: true        
+        nullable: true,
     })
-    recurrenceId: string | undefined
-
+    recurrenceId: string | undefined;
 
     @Column({
         name: 'active',
         type: 'boolean',
-        default: true
+        default: true,
     })
     active: Boolean | undefined;
 }
-
