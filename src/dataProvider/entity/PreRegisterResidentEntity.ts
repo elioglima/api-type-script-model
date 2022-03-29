@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    JoinColumn,
+} from 'typeorm';
 import { TDOC } from '../../domain/Tegrus';
 import { InvoiceEntity } from './InvoiceEntity';
 
@@ -69,9 +75,9 @@ export class PreRegisterResidentEntity {
     externalId: Number | undefined;
 
     @Column({
-        name: "apartmentId",
-        type: "int"
-    })    
+        name: 'apartmentId',
+        type: 'int',
+    })
     apartmentId: Number | undefined;
 
     @Column({
@@ -98,7 +104,47 @@ export class PreRegisterResidentEntity {
     })
     endDateContract: Date | undefined;
 
-    @OneToMany(() => InvoiceEntity, (invoice) => invoice.id)
+    @OneToMany(() => InvoiceEntity, invoice => invoice.id)
     @JoinColumn({ name: 'invoice' })
     invoice: InvoiceEntity[] | undefined;
+
+    @Column({
+        name: 'cardHolder',
+        type: 'varchar',
+        length: 70,
+    })
+    holder: string | undefined;
+
+    @Column({
+        name: 'cardFirstFourNumbers',
+        type: 'varchar',
+        length: 10,
+    })
+    firstFourNumbers: string | undefined;
+
+    @Column({
+        name: 'cardFourNumbers',
+        type: 'varchar',
+        length: 10,
+    })
+    lastFourNumbers: string | undefined;
+
+    @Column({
+        name: 'brand',
+        type: 'varchar',
+        length: 30,
+    })
+    brand: string | undefined;
+
+    @Column({
+        name: 'cardToken',
+        type: 'varchar',
+        length: 200,
+    })
+    @Column({
+        name: 'cardHash',
+        type: 'varchar',
+        length: 200,
+    })
+    hash: string | undefined;
 }
