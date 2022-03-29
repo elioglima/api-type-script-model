@@ -1,5 +1,15 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    JoinColumn,
+    ManyToOne,
+} from 'typeorm';
+
+import { PaymentCardsEntity } from './PaymentCardsEntity';
 import { TDOC } from '../../domain/Tegrus';
+import { InvoiceEntity } from './InvoiceEntity';
 
 @Entity('preRegisterResident')
 export class PreRegisterResidentEntity {
@@ -68,9 +78,9 @@ export class PreRegisterResidentEntity {
     externalId: Number | undefined;
 
     @Column({
-        name: "apartmentId",
-        type: "int"
-    })    
+        name: 'apartmentId',
+        type: 'int',
+    })
     apartmentId: Number | undefined;
 
     @Column({
@@ -96,4 +106,13 @@ export class PreRegisterResidentEntity {
         type: 'timestamp',
     })
     endDateContract: Date | undefined;
+
+    @OneToMany(() => InvoiceEntity, invoice => invoice.id)
+    @JoinColumn({ name: 'invoice' })
+    invoice: InvoiceEntity[] | undefined;
+
+    @ManyToOne(() => PaymentCardsEntity, paymentCard => paymentCard, {
+        eager: true,
+    })
+    paymentCard: PaymentCardsEntity | undefined;
 }

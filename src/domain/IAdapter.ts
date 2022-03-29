@@ -13,12 +13,10 @@ export type typePaymentCredentials = {
     merchantKey: string;
 };
 
-
 export type TEnterprise = {
     provider: string;
     id: number;
-}
-
+};
 
 export type TErrorGeneric = {
     message: string;
@@ -26,13 +24,12 @@ export type TErrorGeneric = {
     name?: string;
     stack?: string;
     data?: any;
-}
+};
 
 export type TLoaded = {
     error: boolean;
     message: string;
-}
-
+};
 
 export type TCieloTransactionInterface = {
     provider: string;
@@ -43,7 +40,7 @@ export type TCieloTransactionInterface = {
     merchantKey: string;
     requestId?: string;
     loaded?: TLoaded;
-}
+};
 
 // Add new Card Req and Response
 export type reqCardAdd = {
@@ -54,7 +51,6 @@ export type reqCardAdd = {
     brand: EnumBrands;
     [x: string]: any;
 };
-
 
 export type resCardAdd = {
     cardToken: string;

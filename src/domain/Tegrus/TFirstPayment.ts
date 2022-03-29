@@ -48,9 +48,8 @@ export interface hashData {
     hash: string;
     link: string;
     lifeTime: Date;
-    InvoiceEntity: InvoiceEntity;
-    PreRegisterResidentEntity: PreRegisterResidentEntity;
     valid?: boolean;
+    invoiceId: number;
 }
 
 export interface resHashData {

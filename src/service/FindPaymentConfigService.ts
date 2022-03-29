@@ -33,12 +33,12 @@ export class FindPaymentConfigService {
                     this.logger(`${data}`);
                     return data;
                 },
-                (err: string | undefined) => {
+                (err: string | undefined) => {                    
                     this.logger(`Error: ${err}`);
                     return new Error(err);
                 },
             );
-
+        
         return response
     };
 }

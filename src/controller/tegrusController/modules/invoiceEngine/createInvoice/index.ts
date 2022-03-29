@@ -2,7 +2,10 @@ import { firstPayment } from './firstPayment';
 import { invoicing } from './invoicing';
 import { antecipationInvoice } from './antecipationInvoice';
 import { spotInvoice } from './spotInvoice';
-import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import {
+    TInvoice,
+    EnumInvoiceType,
+} from '../../../../../domain/Tegrus/TInvoice';
 
 type CreateInvoiceReq = {
     createInvoice?: TInvoice;
@@ -19,7 +22,7 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             };
         }
 
-        if (req.createInvoice?.firstPayment == true) {
+        if (req.createInvoice?.type == EnumInvoiceType.booking) {
             /*
                 - area logada
                 .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
@@ -28,19 +31,19 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             */
             const response = await firstPayment(req.createInvoice);
             return response;
-        } else if (req.createInvoice?.anticipation == true) {
-            /*
-                .antecipation - determina caso seja uma antecipacao
-            */
-            const response = await antecipationInvoice(req.createInvoice);
-            return response;
-        } else if (req.createInvoice?.isSpot == false) {
+        } else if (req.createInvoice?.type == EnumInvoiceType.spot) {
             /*
             .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
             firstPayment = true = primeiro pagamento
             firstPayment = false = uma fatura spot
             */
             const response = await spotInvoice(req.createInvoice);
+            return response;
+        } else if (req.createInvoice?.anticipation == true) {
+            /*
+                .antecipation - determina caso seja uma antecipacao
+            */
+            const response = await antecipationInvoice(req.createInvoice);
             return response;
         } else {
             /*

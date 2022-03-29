@@ -3,6 +3,7 @@ import { hashData } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
 import { TFirstPayment } from '../../domain/Tegrus';
+import { TInvoice } from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
@@ -28,21 +29,27 @@ export default async (
         return {
             err: true,
             data: {
-                message: 'Error not createResident',
+                message: 'Error createResident not informed',
             },
         };
     }
-
+    
     const { createResident } = payload;
-    const { resident, invoice } = createResident;
-    console.log({ resident, invoice });
-    const resultPR: any = await PreReg.execute(resident);
-
+    const { resident, invoice } = createResident;    
+    
+    const resultPR: any = await PreReg.execute(resident);    
+    
     if (resultPR?.err) {
         return resultPR;
-    }
+    }   
 
-    const resultIN: any = await InvRep.persist(invoice);
+    const invoicePersist : TInvoice ={
+        ...invoice,
+        resident: resultPR.id
+    }
+    
+    
+    const resultIN: any = await InvRep.persist(invoicePersist);    
 
     if (resultIN?.err) {
         return resultIN;
@@ -51,8 +58,8 @@ export default async (
     const dataHash: reqCreateHash = {
         invoiceId: invoice.invoiceId,
         // url?: any
-    };
-
+    };   
+    
     const resultHash: resCreateHash = await createHash(dataHash);
 
     if (resultHash?.err) {
@@ -74,14 +81,12 @@ export default async (
     const hashD: hashData = {
         hash: String(resultHash.hash),
         link: String(resultHash.link),
-        InvoiceEntity: resultIN,
-        PreRegisterResidentEntity: resultPR,
         lifeTime: moment().add('days', 3).toDate(),
+        invoiceId: Number(invoice.invoiceId)
     };
 
     const resHashRep = await HashRep.persist(hashD);
-    const resFindHash = await HashRep.getByHash(resultHash.hash);
-    console.log({ hashD, resHashRep, resFindHash });
+        
 
     if (resHashRep?.err) {
         return resHashRep;

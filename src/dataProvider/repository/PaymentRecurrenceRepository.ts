@@ -13,10 +13,7 @@ export class PaymentRecurrenceRepository {
             .insert()
             .values([
                 {
-                    userId: paymentRecurrence.userId,
-                    paymentCard: paymentRecurrence.paymentCard,
-                    recurrenceId: paymentRecurrence.recurrenceId,
-                    value: paymentRecurrence.value,
+                    ...paymentRecurrence
                 },
             ])
             .execute()

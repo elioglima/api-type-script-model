@@ -9,4 +9,5 @@ tegrus
     .post('/topic/invoiceEngine', PaymentTegrusController.invoiceEngine)
     .get('/firstPayment/:hash', PaymentTegrusController.hashSearch)
     .post('/paymentRecurrent/execute', PaymentTegrusController.paymentRecurrentExecute)
-    .post('/cancelContract', PaymentTegrusController.cancelContract);
+    .post('/cancelContract', PaymentTegrusController.cancelContract)
+    .put('/deactivateRecurrence/:recurrenceId', PaymentTegrusController.deactivateRecurrence);
