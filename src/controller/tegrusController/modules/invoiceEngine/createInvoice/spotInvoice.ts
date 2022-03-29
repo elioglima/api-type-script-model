@@ -28,8 +28,6 @@ const spotInvoice = async (payload: TInvoice) => {
             1 - verificar se o invoiceId existe na base caso nao retornar erro
             2 - acessar servico de cancelamento de recorrencia unica reference dia atual e mes
                 caso erro retornar erro
-            3 - 
-
 
             - responta de erro 
                 return returnTopic({
