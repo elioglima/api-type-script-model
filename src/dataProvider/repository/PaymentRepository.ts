@@ -18,7 +18,7 @@ export class PaymentRepository {
                     transactionId: payment.paymentId,
                     transactionMessage: payment.returnMessage,
                     transactionCode: payment.returnCode,
-                    descriptionMessage: payment.returnMessage,
+                    descriptionMessage: payment.product,
                     status: payment.status,
                     value: Number(payment?.amount) > 0 ? payment.amount : 0,
                 },

@@ -27,6 +27,13 @@ export default class MakePaymentService {
                 response.payment.status,
             );
 
+            if (response.payment.status !== 'PAGO') {
+                return {
+                    err: true,
+                    message: `Payment ${response.payment.status}`,
+                };
+            }
+
             /*
               Cadastrar usuario se for primeiro pagamento
                 
@@ -38,6 +45,7 @@ export default class MakePaymentService {
                     enterpriseId: req.enterpriseId,
                     ...response?.payment,
                     amount: saveAmount,
+                    product: req.payment.product,
                 })
                 .then(hasPersist => hasPersist);
         } catch (error) {
