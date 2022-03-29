@@ -29,7 +29,7 @@ const hashSearch = async (req: Request, res: Response) => {
             });
         }
 
-        if (!data) {
+        if (!dataRes) {
             logger('Error', 'Nothing was found');
             return res.status(404).json({
                 err: true,
@@ -43,7 +43,7 @@ const hashSearch = async (req: Request, res: Response) => {
         return res.status(200).json({
             err: false,
             status: 200,
-            data: data,
+            data: dataRes,
         });
     } catch (error: any) {
         return res.status(422).json(error);

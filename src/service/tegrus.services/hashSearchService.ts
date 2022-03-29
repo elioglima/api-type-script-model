@@ -13,7 +13,7 @@ export default class HashSearchService {
         try {
             this.logger('Starting method HashSearchService');
             const resp: any = await this.HashRep.getByHash(hash);            
-            console.log("RESP", resp)
+            
             if(!resp) {
                 return {
                     err: true,
@@ -51,7 +51,6 @@ export default class HashSearchService {
                 invoice: delete resInvoicePreUser.resident && resInvoicePreUser,
             }
             
-
             return res;
         } catch (error) {
             console.log(error);
