@@ -25,7 +25,7 @@ const cielo = new Cielo(cieloParams);
 ```
 
 ### <a name="creditSimpleTransaction"></a> Criando uma transação
-
+ .
 Usando Promise
 
 ```ts
