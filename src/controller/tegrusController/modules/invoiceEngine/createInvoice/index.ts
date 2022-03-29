@@ -33,10 +33,11 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             return response;
         } else if (req.createInvoice?.type == EnumInvoiceType.spot) {
             /*
-            .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
-            firstPayment = true = primeiro pagamento
-            firstPayment = false = uma fatura spot
+                .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
+                firstPayment = true = primeiro pagamento
+                firstPayment = false = uma fatura spot
             */
+
             const response = await spotInvoice(req.createInvoice);
             return response;
         } else if (req.createInvoice?.anticipation == true) {

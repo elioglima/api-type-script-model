@@ -1,4 +1,5 @@
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import InvoiceService from '../../../../../service/InvoiceService';
 
 const spotInvoice = async (payload: TInvoice) => {
     const returnTopic = (
@@ -21,6 +22,10 @@ const spotInvoice = async (payload: TInvoice) => {
 
     try {
         console.log('spotInvoice', payload);
+        const invoiceService = new InvoiceService();
+        const resFindOneInclude = await invoiceService.FindOneInclude(payload);
+        console.log('resFindOneInclude', resFindOneInclude);
+
         /*
             Ao receber uma fatura spot e não paga no Pipefy, uma notificação é gerada para o barramento que por sua vez envia uma notificação para o App. Essa fatura deve ser removida do App, não deixando o morador pagar.
             Abaixo o payload de envio da remoção da fatura.
@@ -37,6 +42,7 @@ const spotInvoice = async (payload: TInvoice) => {
 
         return returnTopic(payload);
     } catch (error: any) {
+        console.log(error);
         return returnTopic({}, true, error?.message || 'Erro inesperado');
     }
 };

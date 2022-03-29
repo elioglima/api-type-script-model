@@ -10,8 +10,9 @@ import { cancelContract } from './cancelContract';
 const invoiceEngine = async (req: Request, res: Response) => {
     try {
         const toReceive: TInvoiceEngineReq = req?.body;
+        console.log({ toReceive });
 
-        if (toReceive?.createResident) {
+        if (toReceive?.createInvoice) {
             // Regra primeiro pagamento - area logada
             // Emissão de Fatura
             // Antecipação de Faturas
