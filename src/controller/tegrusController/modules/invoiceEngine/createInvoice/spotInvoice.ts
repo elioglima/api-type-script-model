@@ -21,11 +21,11 @@ const spotInvoice = async (payload: TInvoice) => {
     };
 
     try {
-        console.log('spotInvoice', payload);
+        //console.log('spotInvoice', payload);
         const invoiceService = new InvoiceService();
 
         const resFindOneInclude = await invoiceService.FindOneInclude(payload);
-        console.log('resFindOneInclude', resFindOneInclude);
+        //console.log('resFindOneInclude', resFindOneInclude);
 
         /*
             Ao receber uma fatura spot e não paga no Pipefy, uma notificação é gerada para o barramento que por sua vez envia uma notificação para o App. Essa fatura deve ser removida do App, não deixando o morador pagar.

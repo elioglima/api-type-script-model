@@ -22,6 +22,8 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             };
         }
 
+        console.log("req", req)
+
         if (req.createInvoice?.type == EnumInvoiceType.booking) {
             /*
                 - area logada

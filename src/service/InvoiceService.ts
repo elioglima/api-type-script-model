@@ -27,7 +27,8 @@ export default class InvoiceService {
             - incluir caso nao exista
         */
 
-        const data = await this.invoiceRepository.getById(invoice.invoiceId);
+        const data = await this.invoiceRepository.getById(invoice.residentId);
+
         console.log({ data });
 
         if (data == undefined) {
