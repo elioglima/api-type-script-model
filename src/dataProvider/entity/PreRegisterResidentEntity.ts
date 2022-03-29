@@ -3,8 +3,7 @@ import {
     Entity,
     OneToMany,
     PrimaryGeneratedColumn,
-    JoinColumn,
-    ManyToOne,
+    JoinColumn,    
 } from 'typeorm';
 
 import { PaymentCardsEntity } from './PaymentCardsEntity';
@@ -111,8 +110,9 @@ export class PreRegisterResidentEntity {
     @JoinColumn({ name: 'invoice' })
     invoice: InvoiceEntity[] | undefined;
 
-    @ManyToOne(() => PaymentCardsEntity, paymentCard => paymentCard, {
+    @OneToMany(() => PaymentCardsEntity, paymentCard => paymentCard, {
         eager: true,
     })
+    
     paymentCard: PaymentCardsEntity | undefined;
 }
