@@ -23,6 +23,7 @@ const spotInvoice = async (payload: TInvoice) => {
     try {
         console.log('spotInvoice', payload);
         const invoiceService = new InvoiceService();
+
         const resFindOneInclude = await invoiceService.FindOneInclude(payload);
         console.log('resFindOneInclude', resFindOneInclude);
 

@@ -65,7 +65,7 @@ export class InvoiceRepository {
             .where('id = :id', { id: invoice.id })
             .execute()
             .then(
-                data => {
+                () => {
                     return invoice;
                 },
                 onRejected => {
