@@ -13,7 +13,7 @@ export default class HashSearchService {
         try {
             this.logger('Starting method HashSearchService');
             const resp: any = await this.HashRep.getByHash(hash);            
-            
+            console.log("RESP", resp)
             if(!resp) {
                 return {
                     err: true,
@@ -42,16 +42,10 @@ export default class HashSearchService {
                 resp.invoiceId,
             );
 
-            const args = Object.keys(resInvoicePreUser).reduce((acc, at) => {
-                if (resInvoicePreUser[at] instanceof Object)
-                    return acc = { resident: resInvoicePreUser[at] };
-                else
-                    return acc = {
-                        ...acc,
-                        [at]: resInvoicePreUser[at],
-                    };                                
-            }, {});
-     
+            if(!resInvoicePreUser) return {err: true, data: "Invoice doesnt found."}
+
+            if(resInvoicePreUser instanceof Error) return {err: true, data: resInvoicePreUser}
+                 
             const res: resHashData = {
                 resident: resInvoicePreUser.resident,
                 invoice: delete resInvoicePreUser.resident && resInvoicePreUser,

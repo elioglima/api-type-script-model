@@ -16,15 +16,15 @@ const hashSearch = async (req: Request, res: Response) => {
                 },
             });
 
-        const data = await new tegrusServices.HashSearchService().execute(hash);
-
-        if (data instanceof Error) {
-            logger('Error', data.message);
+        const dataRes: any = await new tegrusServices.HashSearchService().execute(hash);
+        //console.log("data", data instanceof Error)
+        if (dataRes?.err) {
+            logger('Error', dataRes?.data);
             return res.status(500).json({
                 err: true,
                 status: 500,
                 data: {
-                    message: data.message,
+                    message: dataRes?.data,
                 },
             });
         }
