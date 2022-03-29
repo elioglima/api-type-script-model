@@ -1,18 +1,12 @@
 import { Request, Response } from 'express';
-import { TErrorGeneric } from '../../../domain/Generics';
-import deactivateRecurrenceService from '../../../service/tegrus.services/deactivateRecurrence'
+import deactivateRecurrenceService from '../../../service/tegrus.services/deactivateRecurrence';
 
-
-type resDeactivateRecurrence = {};
-
-
-const deactivateRecurrence = async (
-    req: Request,
-    res: Response,
-) => {
+const deactivateRecurrence = async (req: Request, res: Response) => {
     try {
-        const recurrenceId = req?.params?.recurrenceId;        
-        const statusRecurrence = await deactivateRecurrenceService(recurrenceId)
+        const recurrenceId = req?.params?.recurrenceId;
+        const statusRecurrence = await deactivateRecurrenceService(
+            recurrenceId,
+        );
 
         return res.status(200).json(statusRecurrence);
     } catch (error: any) {
@@ -20,4 +14,4 @@ const deactivateRecurrence = async (
     }
 };
 
-export { deactivateRecurrence  };
+export { deactivateRecurrence };

@@ -15,18 +15,11 @@ export class InvoiceRepository {
             ])
             .execute()
             .then(
-                response => {
-                    invoice.id = Number(response.identifiers[0].id);
+                () => {
                     return invoice;
                 },
                 onRejected => {
-                    //this.logger('Error ', onRejected);
-                    return {
-                        data: {
-                            code: onRejected.code,
-                            message: onRejected.sqlMessage,
-                        },
-                    };
+                    return onRejected;
                 },
             );
 

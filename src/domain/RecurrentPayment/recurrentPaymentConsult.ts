@@ -1,7 +1,6 @@
 import { Link } from '../IAdapter';
 import { RecurrentTransaction } from './recurrentTransaction';
 
-
 export interface CustomerModel {
     name?: string;
     [x: string]: any;
@@ -27,10 +26,10 @@ export interface RecurrentConsultRecurrentPaymentConsultResponseModel {
 }
 
 export type reqRecurrentPaymentConsult = {
-    RecurrentPaymentId: number;
-}
+    recurrenceId: number;
+};
 
 export type resRecurrentPaymentConsult = {
     customer: CustomerModel;
     recurrentPayment: RecurrentConsultRecurrentPaymentConsultResponseModel;
-}
+};

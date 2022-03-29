@@ -16,6 +16,42 @@ export default class InvoiceService {
         return data;
     };
 
+    public FindOne = async (invoiceId: number) => {
+        this.logger(`Find One Include`);
+
+        // TO-DO
+
+        /* 
+            - verificar se existe o pre usuario
+            - verificar se existe a fatura 
+            - incluir caso nao exista
+        */
+
+        // TO-DO
+        /* 
+            para cpf ja cadastrados buscar o userId
+            pelo pre-resident
+        */
+
+        const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
+            invoiceId,
+        );
+
+        if (resInvoiceId instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
+            };
+        }
+
+        return {
+            err: false,
+            data: resInvoiceId,
+        };
+    };
+
     public FindOneInclude = async (invoice: TInvoice) => {
         this.logger(`Find One Include`);
 
@@ -33,12 +69,27 @@ export default class InvoiceService {
 
         if (resInvoiceId) {
             // fatura existe
-            return new Error('FindOneInclude not found');
+            return {
+                err: true,
+                data: {
+                    message: 'Invoice is already processed',
+                },
+            };
         }
 
         const resPersist = await this.invoiceRepository.persist(invoice);
+        if (resPersist instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
+            };
+        }
 
-        console.log({ resPersist });
-        return {};
+        return {
+            err: false,
+            data: resPersist,
+        };
     };
 }

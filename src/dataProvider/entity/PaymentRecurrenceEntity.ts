@@ -1,5 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { PaymentCardsEntity } from './PaymentCardsEntity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('paymentRecurrence')
 export class PaymentRecurrenceEntity {

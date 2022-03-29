@@ -57,7 +57,7 @@ export default async (payload: TFirstPaymentExecReq) => {
                     holder: payload?.card?.holder,
                     expirationDate: payload?.card?.expirationDate,
                     customerName: payload?.card?.customerName,
-                    brand: payload?.card?.brand                    
+                    brand: payload?.card?.brand,
                 },
             },
         };
@@ -72,8 +72,7 @@ export default async (payload: TFirstPaymentExecReq) => {
             createdAt: new Date(),
             paymentCard: resRecurrentCreate?.payment?.creditCard,
             recurrenceId:
-                resRecurrentCreate?.payment?.recurrentPayment
-                    ?.recurrentPaymentId,
+                resRecurrentCreate?.payment?.recurrentPayment?.recurrenceId,
             value: resRecurrentCreate?.payment?.amount,
             preUserId: resHash?.resident?.id,
             residentId: resHash?.invoice?.residentId,

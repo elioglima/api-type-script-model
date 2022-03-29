@@ -49,12 +49,12 @@ export class RecurentMethods {
     ): Promise<resRecurrentPaymentConsult | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
 
-        if (!payload.RecurrentPaymentId)
-            return this.error('RecurrentPaymentId was not informed.');
+        if (!payload.recurrenceId)
+            return this.error('recurrenceId was not informed.');
 
         // consultando uma recorrencia
         return this.util.get<resRecurrentPaymentConsult | TErrorGeneric>({
-            path: `/1/sales/${payload.RecurrentPaymentId}`,
+            path: `/1/sales/${payload.recurrenceId}`,
         });
     }
 
@@ -63,11 +63,11 @@ export class RecurentMethods {
     ): Promise<resRecurrentDeactivate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
 
-        if (!payload.recurrenceId)
-            return this.error('recurrentPaymentId was not informed.');        
+        if (!payload?.recurrenceId)
+            return this.error('recurrenceId was not informed.');
 
         return this.util.put({
-            path: `/1/RecurrentPayment/${payload.recurrenceId}/Deactivate`,
+            path: `/1/RecurrentPayment/${payload?.recurrenceId}/Deactivate`,
         });
     }
 
@@ -76,11 +76,11 @@ export class RecurentMethods {
     ): Promise<resRecurrentReactivate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
 
-        if (!payload.recurrentPaymentId)
-            return this.error('recurrentPaymentId was not informed.');
+        if (!payload.recurrenceId)
+            return this.error('recurrenceId was not informed.');
 
         return this.util.get<resRecurrentReactivate | TErrorGeneric>({
-            path: `/1/RecurrentPayment/${payload.recurrentPaymentId}/Reactivate`,
+            path: `/1/RecurrentPayment/${payload.recurrenceId}/Reactivate`,
         });
     }
 }
