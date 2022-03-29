@@ -58,18 +58,17 @@ export class RecurentMethods {
         });
     }
 
-    public Deactivate(
+    public async Deactivate(
         payload: reqRecurrentDeactivate,
     ): Promise<resRecurrentDeactivate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
 
         if (!payload.recurrenceId)
             return this.error('recurrentPaymentId was not informed.');        
-        
-        return this.util.put<resRecurrentDeactivate | TErrorGeneric>(
-            { path: `/1/RecurrentPayment/${payload.recurrenceId}/Deactivate` },
-            {}            
-        );
+
+        return this.util.put({
+            path: `/1/RecurrentPayment/${payload.recurrenceId}/Deactivate`,
+        });
     }
 
     public Reactivate(

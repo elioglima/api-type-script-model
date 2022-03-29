@@ -57,7 +57,7 @@ export default async (payload: TFirstPaymentExecReq) => {
                     holder: payload?.card?.holder,
                     expirationDate: payload?.card?.expirationDate,
                     customerName: payload?.card?.customerName,
-                    brand: payload?.card?.brand,
+                    brand: payload?.card?.brand                    
                 },
             },
         };

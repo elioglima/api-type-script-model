@@ -62,8 +62,7 @@ export class Utils {
             path,
             hostname: this.cieloConstructor.hostnameTransacao,            
         });
-
-        console.log("ASDASFASFASDFASDASD", await this.request<T>(options, data) )
+        
         return this.request<T>(options, data);
     }
 
