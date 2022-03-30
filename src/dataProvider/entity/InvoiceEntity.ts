@@ -7,10 +7,8 @@ import {
 } from 'typeorm';
 import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
 
-import {
-    EnumInvoicePaymentMethod,
-    EnumTopicStatusInvoice,
-} from '../../domain/Tegrus';
+import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
+import { EnumTopicStatusInvoice } from '../../domain/Tegrus/TStatusInvoice';
 
 @Entity('invoice')
 export class InvoiceEntity {
@@ -149,6 +147,12 @@ export class InvoiceEntity {
         type: 'timestamp',
     })
     endReferenceDate: Date | undefined;
+
+    @Column({
+        name: 'paymentDate',
+        type: 'timestamp',
+    })
+    paymentDate: Date | undefined;
 
     @Column({
         name: 'recurrenceId',

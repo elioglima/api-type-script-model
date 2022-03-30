@@ -1,26 +1,6 @@
 import { EnumTopicStatusInvoice } from './TStatusInvoice';
-
-export enum EnumInvoiceType {
-    booking = 'booking', // primeiro aluguel
-    fine = 'fine', // multa
-    rent = 'rent', // aluguel
-    spot = 'spot', // pagamento fora do app
-}
-
-/*
-
-    O tipo booking é a fatura de reserva (primeiro pagamento)
-    O tipo rent são as faturas mensais de aluguel
-
-*/
-
-export enum EnumInvoicePaymentMethod {
-    ticket = 'ticket',
-    transfer = 'transfer',
-    credit = 'credit',
-    internationalTransfer = 'international_transfer',
-    courtesy = 'courtesy',
-}
+import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
+import { EnumInvoiceType } from './EnumInvoiceType';
 
 export type TInvoice = {
     id?: number;

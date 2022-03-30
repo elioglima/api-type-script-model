@@ -39,6 +39,10 @@ const antecipationInvoice = async (
         if (resFindOneInclude.err)
             return returnTopic(resFindOneInclude.data, true);
 
+        // TO-DO
+        // pesquisar a recorrencia e paralizala ou remover a do mes vigente
+        // "referenceDate": "2022-03-12",
+
         return returnTopic({
             message: 'Invoice successfully added',
         });

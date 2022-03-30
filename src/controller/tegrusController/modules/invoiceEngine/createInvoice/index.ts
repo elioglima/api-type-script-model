@@ -9,13 +9,8 @@ import {
     resCreateHash,
 } from '../../../../../domain/Tegrus/TFirstPayment';
 import { hashData } from './../../../../../domain/Tegrus/TFirstPayment';
-
-import {
-    TInvoice,
-    TLinkInvoice,
-    EnumInvoiceType,
-} from '../../../../../domain/Tegrus/TInvoice';
-
+import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import { EnumInvoiceType } from '../../../../../domain/Tegrus/EnumInvoiceType';
 import { HashDataRepository } from './../../../../../dataProvider/repository/HashDataRepository';
 import moment from 'moment';
 

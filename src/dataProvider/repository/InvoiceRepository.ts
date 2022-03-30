@@ -28,10 +28,7 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .where('invoice.invoiceId = :id', { id })
-            .leftJoinAndSelect(
-                'invoice.resident',
-                'preresident',
-            )
+            .leftJoinAndSelect('invoice.resident', 'preresident')
             .getOne();
 
     public getByInvoiceId = async (id: number) =>
