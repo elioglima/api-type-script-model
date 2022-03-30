@@ -3,7 +3,7 @@ import Adapter from '../../domain/Adapter';
 import { reqRecurrentCreate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
-import { InvoiceRepository } from 'src/dataProvider/repository/InvoiceRepository';
+import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import {
     TStatusRecurrency,
     EnumPayMethod,
@@ -57,7 +57,7 @@ export default async (payload: TFirstPaymentExecReq) => {
                     holder: payload?.card?.holder,
                     expirationDate: payload?.card?.expirationDate,
                     customerName: payload?.card?.customerName,
-                    brand: payload?.card?.brand                    
+                    brand: payload?.card?.brand,
                 },
             },
         };
@@ -72,8 +72,7 @@ export default async (payload: TFirstPaymentExecReq) => {
             createdAt: new Date(),
             paymentCard: resRecurrentCreate?.payment?.creditCard,
             recurrenceId:
-                resRecurrentCreate?.payment?.recurrentPayment
-                    ?.recurrentPaymentId,
+                resRecurrentCreate?.payment?.recurrentPayment?.recurrenceId,
             value: resRecurrentCreate?.payment?.amount,
             preUserId: resHash?.resident?.id,
             residentId: resHash?.invoice?.residentId,

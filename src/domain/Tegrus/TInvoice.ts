@@ -1,4 +1,3 @@
-import { TMethodPayment } from './TMethodPayment';
 import { EnumTopicStatusInvoice } from './TStatusInvoice';
 
 export enum EnumInvoiceType {

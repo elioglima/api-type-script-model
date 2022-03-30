@@ -1,3 +1,4 @@
+// import InvoiceService from '../../../../../service/InvoiceService';
 type TDeleteInvoice = {
     deleteInvoice: {
         invoiceId: string;
@@ -10,14 +11,15 @@ const deleteInvoice = async (req: any) => {
 
     const returnTopic = (
         response: any,
-        error: boolean = false,
+        err: boolean = false,
         message: string = 'Success',
     ) => {
         return {
-            error,
+            status: err ? 422 : 200,
+            err,
             ...(message ? { message } : {}),
             deleteInvoice: {
-                ...(payload ? { payload } : {}),
+                ...(payload ? { ...payload } : {}),
                 returnOpah: {
                     ...(response ? { response } : {}),
                     ...(message ? { message } : {}),

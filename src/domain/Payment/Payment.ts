@@ -12,6 +12,7 @@ export interface Payment { // payment
     amount: number;
     status: PaymentStatus;
     descriptionMessage: string;
+    product:string;
     descriptionIdReference: string;
     createdAt: Date;
     updatedAt: Date;

@@ -9,7 +9,9 @@ npm install --save cielo
 ## <a name="howuse"></a> Como utilizar?
 
 ### Iniciando
+
 ...
+
 ```ts
 import { CieloConstructor, Cielo } from 'cielo';
 
@@ -25,7 +27,8 @@ const cielo = new Cielo(cieloParams);
 ```
 
 ### <a name="creditSimpleTransaction"></a> Criando uma transação
- .
+
+.
 Usando Promise
 
 ```ts
@@ -158,7 +161,7 @@ cielo.recurrent
 
 ```ts
 const updateCustomer: RecurrentModifyCustomerModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
     customer: {
         name: 'Customer',
         email: 'customer@teste.com',
@@ -200,7 +203,7 @@ cielo.recurrent
 
 ```ts
 const updateEndDate: RecurrentModifyEndDateModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
     endDate: '2021-01-09',
 };
 
@@ -218,7 +221,7 @@ cielo.recurrent
 
 ```ts
 const modifyRecurrencyParams: RecurrentModifyIntervalModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
     interval: EnumRecurrentPaymentUpdateInterval.MONTHLY,
 };
 
@@ -236,7 +239,7 @@ cielo.recurrent
 
 ```ts
 const updateRecurrencyDay: RecurrentModifyDayModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
     recurrencyDay: 10,
 };
 
@@ -254,7 +257,7 @@ cielo.recurrent
 
 ```ts
 const updateAmount: RecurrentModifyAmountModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
     amount: 156, // Valor do Pedido em centavos: 156 equivale a R$ 1,56
 };
 
@@ -272,7 +275,7 @@ cielo.recurrent
 
 ```ts
 const updateNextPaymentDate: RecurrentModifyNextPaymentDateModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
     nextPaymentDate: '2020-05-20',
 };
 
@@ -289,7 +292,7 @@ cielo.recurrent.modifyNextPaymentDate
 
 ```ts
 const updatePayment: RecurrentModifyPaymentModel = {
-    recurrentPaymentId: RecurrentPaymentId,
+    recurrenceId: recurrenceId,
     payment: {
         type: EnumCardType.CREDIT,
         amount: '123',
@@ -320,7 +323,7 @@ cielo.recurrent
 
 ```ts
 const deactivateRecurrencyParams: RecurrentModifyModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
 };
 
 cielo.recurrent
@@ -337,7 +340,7 @@ cielo.recurrent
 
 ```ts
 const reactivateRecurrencyParams: RecurrentModifyModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
 };
 
 cielo.recurrent

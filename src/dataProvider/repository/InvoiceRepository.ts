@@ -1,11 +1,8 @@
-import debug from 'debug';
 import { InvoiceEntity } from '../entity/InvoiceEntity';
 import { getConnection } from 'typeorm';
 import { TInvoice } from '../../domain/Tegrus';
 
 export class InvoiceRepository {
-    private logger = debug('service-api:Invoice');
-
     public persist = async (invoice: TInvoice) =>
         await getConnection()
             .getRepository(InvoiceEntity)
@@ -18,24 +15,17 @@ export class InvoiceRepository {
             ])
             .execute()
             .then(
-                response => {
-                    invoice.id = Number(response.identifiers[0].id);
+                () => {
                     return invoice;
                 },
                 onRejected => {
-                    //this.logger('Error ', onRejected);
-                    return {
-                        data: {
-                            code: onRejected.code,
-                            message: onRejected.sqlMessage,
-                        },
-                    };
+                    return onRejected;
                 },
             );
 
     public getById = async (id: number) =>
         await getConnection()
-            .getRepository(InvoiceEntity)            
+            .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .where('invoice.id = :id', { id })
             .leftJoinAndSelect(
@@ -47,12 +37,9 @@ export class InvoiceRepository {
     public getByInvoiceId = async (id: number) =>
         await getConnection()
             .getRepository(InvoiceEntity)
-            .createQueryBuilder('invoice')            
-            .where('invoice.invoiceId = :id', { id })            
-            .leftJoinAndSelect(
-                'invoice.resident',
-                'resident',
-            )
+            .createQueryBuilder('invoice')
+            .where('invoice.invoiceId = :id', { id })
+            .leftJoinAndSelect('invoice.resident', 'resident')
             .getOne();
 
     public getAll = async () =>
@@ -71,10 +58,10 @@ export class InvoiceRepository {
             .where('id = :id', { id: invoice.id })
             .execute()
             .then(
-                (data) => {
+                () => {
                     return invoice;
                 },
-                onRejected => {                    
+                onRejected => {
                     return onRejected;
                 },
             );

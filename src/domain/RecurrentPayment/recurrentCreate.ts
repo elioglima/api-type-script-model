@@ -21,15 +21,14 @@
 import { CreditCardModel } from '../CreditCard/index';
 import { Link } from '../IAdapter';
 
-
 export interface customer {
     name: string;
 }
 
 export interface recurrentPayment {
-    authorizeNow: boolean,      // true or false
-    endDate: Date,            // "2019-12-01",
-    interval: string            // "SemiAnnual"
+    authorizeNow: boolean; // true or false
+    endDate: Date; // "2019-12-01",
+    interval: string; // "SemiAnnual"
 }
 
 export interface recurrentePayment {
@@ -37,7 +36,7 @@ export interface recurrentePayment {
     amount: number;
     installments: number;
     softDescriptor: string;
-    recurrentPayment: recurrentPayment,
+    recurrentPayment: recurrentPayment;
     creditCard: CreditCardModel;
     serviceTaxAmount?: number;
     interest?: string;
@@ -59,22 +58,20 @@ export interface recurrentePayment {
     links?: [Link];
 }
 
-
 export type reqRecurrentCreate = {
     merchantOrderId: string;
     customer: customer;
     payment: recurrentePayment;
     links?: Link[];
-}
+};
 
 export type resRecurrentCreate = {
     merchantOrderId: string;
     customer: customer;
     payment: recurrentePayment;
     links?: Link[];
-}
+};
 
-
-export type reqRecurrentDeactivate = {
-   recurrenceId: string;
-}
+// export type reqRecurrentCreate = {
+//     recurrenceId: string;
+// };

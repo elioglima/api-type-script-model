@@ -1,45 +1,44 @@
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
-const antecipationInvoice = async (invoice: TInvoice) => {
-    try {
-        console.log('antecipationInvoice', invoice);
-        /*
-            .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
-                firstPayment = true = primeiro pagamento
-                firstPayment = false = uma fatura spot
-            .antecipation - determina caso seja uma antecipacao
-        */
+import InvoiceService from '../../../../../service/InvoiceService';
 
-        /* 
-
-            return {
-            err: true,
-            data: {
-                // resposta de erro
-                createInvoice: {
-
-                }
-            }
-            }
-
-        */
+const antecipationInvoice = async (payload: TInvoice) => {
+    const returnTopic = (
+        response: any,
+        err: boolean = false,
+        message: string = 'Success',
+    ) => {
         return {
-            err: false,
+            status: err ? 422 : 200,
+            err,
+            ...(message ? { message } : {}),
             data: {
                 createInvoice: {
-                    ...invoice,
+                    ...(payload ? { ...payload } : {}),
                     returnOpah: {
-                        message: 'success',
+                        spotInvoice: false,
+                        anticipation: true,
+                        firstPayment: false,
+                        ...(message ? { message } : {}),
+                        ...(response ? { ...response } : {}),
                     },
                 },
             },
         };
+    };
+
+    try {
+        console.log('invoice.antecipation', payload);
+        const invoiceService = new InvoiceService();
+        const resFindOneInclude = await invoiceService.FindOneInclude(payload);
+        if (resFindOneInclude.err)
+            return returnTopic(resFindOneInclude.data, true);
+
+        return returnTopic({
+            message: 'Invoice successfully added',
+        });
     } catch (error: any) {
-        return {
-            err: true,
-            data: {
-                message: error?.message || 'Erro inesperado',
-            },
-        };
+        console.log(error);
+        return returnTopic({}, true, error?.message || 'Erro inesperado');
     }
 };
 

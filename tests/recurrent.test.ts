@@ -13,7 +13,7 @@
 //     RecurrentModifyCustomerModel,
 //     RecurrentModifyIntervalModel,
 // } from '../src/domain/RecurrentPayment';
-// import { ConsultTransactionRecurrentPaymentIdRequestModel } from '../src/domain/Payment';
+// import { ConsultTransactionrecurrenceIdRequestModel } from '../src/domain/Payment';
 // import { Cielo, CieloConstructor } from '../src/cielo';
 
 // const cieloParams: CieloConstructor = {
@@ -78,7 +78,7 @@
 //     );
 
 //     const modifyRecurrencyParams: RecurrentModifyIntervalModel = {
-//         paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+//         paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
 //         interval: EnumRecurrentPaymentUpdateInterval.MONTHLY,
 //     };
 //     const modifyRecurrency = await cielo.recurrent
@@ -92,7 +92,7 @@
 //     }
 
 //     const updateCustomer: RecurrentModifyCustomerModel = {
-//         paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+//         paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
 //         customer: {
 //             name: 'Customer',
 //             email: 'customer@teste.com',
@@ -133,7 +133,7 @@
 //     const endDate = await cielo.recurrent
 //         .modifyEndDate({
 //             paymentId:
-//                 firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+//                 firstRecurrency.payment.recurrentPayment.recurrenceId,
 //             endDate: '2021-01-09',
 //         })
 //         .catch(error);
@@ -147,7 +147,7 @@
 //     const recurrencyDay = await cielo.recurrent
 //         .modifyRecurrencyDay({
 //             paymentId:
-//                 firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+//                 firstRecurrency.payment.recurrentPayment.recurrenceId,
 //             recurrencyDay: 10,
 //         })
 //         .catch(error);
@@ -159,7 +159,7 @@
 //     }
 
 //     const updateAmount: RecurrentModifyAmountModel = {
-//         paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+//         paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
 //         amount: 156, // Valor do Pedido em centavos: 156 equivale a R$ 1,56
 //     };
 //     const amount = await cielo.recurrent
@@ -178,7 +178,7 @@
 //         newRecurrencyDate.getMonth() + 1
 //     }-${newRecurrencyDate.getDate()}`;
 //     const updateNextPaymentDate: RecurrentModifyNextPaymentDateModel = {
-//         paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+//         paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
 //         nextPaymentDate: nextRecurrency,
 //     };
 //     const nextPaymentDate = await cielo.recurrent
@@ -192,7 +192,7 @@
 //     }
 
 //     const deactivateRecurrencyParams: RecurrentModifyModel = {
-//         paymentId: firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+//         paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
 //     };
 //     const deactivateRecurrency = await cielo.recurrent
 //         .deactivate(deactivateRecurrencyParams)
@@ -204,10 +204,10 @@
 //         );
 //     }
 
-//     const recurrencyConsultingParams: ConsultTransactionRecurrentPaymentIdRequestModel =
+//     const recurrencyConsultingParams: ConsultTransactionrecurrenceIdRequestModel =
 //         {
-//             recurrentPaymentId:
-//                 firstRecurrency.payment.recurrentPayment.recurrentPaymentId,
+//             recurrenceId:
+//                 firstRecurrency.payment.recurrentPayment.recurrenceId,
 //         };
 //     const consulta = cielo.getConsult();
 //     const recurrencyConsulting = await consulta

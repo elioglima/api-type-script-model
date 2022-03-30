@@ -1,19 +1,27 @@
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import InvoiceService from '../../../../../service/InvoiceService';
 
 const spotInvoice = async (payload: TInvoice) => {
     const returnTopic = (
         response: any,
-        error: boolean = false,
+        err: boolean = false,
         message: string = 'Success',
     ) => {
         return {
-            error,
+            status: err ? 422 : 200,
+            err,
             ...(message ? { message } : {}),
-            deleteInvoice: {
-                ...(payload ? { payload } : {}),
-                returnOpah: {
-                    ...(response ? { response } : {}),
-                    ...(message ? { message } : {}),
+            data: {
+                createInvoice: {
+                    ...(payload ? { ...payload } : {}),
+                    returnOpah: {
+                        err,
+                        spotInvoice: true,
+                        anticipation: false,
+                        firstPayment: false,
+                        ...(message ? { message } : {}),
+                        ...(response ? { ...response } : {}),
+                    },
                 },
             },
         };
@@ -21,22 +29,16 @@ const spotInvoice = async (payload: TInvoice) => {
 
     try {
         console.log('spotInvoice', payload);
-        /*
-            Ao receber uma fatura spot e não paga no Pipefy, uma notificação é gerada para o barramento que por sua vez envia uma notificação para o App. Essa fatura deve ser removida do App, não deixando o morador pagar.
-            Abaixo o payload de envio da remoção da fatura.
+        const invoiceService = new InvoiceService();
+        const resFindOneInclude = await invoiceService.FindOneInclude(payload);
+        if (resFindOneInclude.err)
+            return returnTopic(resFindOneInclude.data, true);
 
-            1 - verificar se o invoiceId existe na base caso nao retornar erro
-            2 - acessar servico de cancelamento de recorrencia unica reference dia atual e mes
-                caso erro retornar erro
-
-            - responta de erro 
-                return returnTopic({
-                    ... payload do erro aqui
-                }, true, 'mensagem do erro');
-        */
-
-        return returnTopic(payload);
+        return returnTopic({
+            message: 'Invoice successfully added',
+        });
     } catch (error: any) {
+        console.log(error);
         return returnTopic({}, true, error?.message || 'Erro inesperado');
     }
 };
