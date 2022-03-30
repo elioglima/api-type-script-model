@@ -123,6 +123,18 @@ export default class InvoiceService {
         this.logger(`Find`);
 
         // necessario este residentId ou idUser,
+
+        /* 
+                dateStart: string; // 01/02/2022 00:00
+                dateEnd: string; // 01/02/2022 23:59
+                residentId?: number;
+                idUser?: number;
+            
+            invoiceId?: number;
+            paymentMethod?: EnumInvoicePaymentMethod;
+            statusInvoice?: EnumTopicStatusInvoice;
+            
+        */
         const where: string = 'invoice.id = :id';
         const data: Object = {
             // id: invoiceId,
