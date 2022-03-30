@@ -1,9 +1,6 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../dataProvider/repository/InvoiceRepository';
-import {
-    TInvoice,
-    // EnumInvoicePaymentMethod
-} from '../domain/Tegrus/TInvoice';
+import { TInvoice, TInvoiceFilter } from '../domain/Tegrus/TInvoice';
 // import { EnumTopicStatusInvoice } from '../domain/Tegrus/TStatusInvoice';
 
 export default class InvoiceService {
@@ -122,30 +119,13 @@ export default class InvoiceService {
         };
     };
 
-    public Find = async ({
-        // dateStart,
-        // dateEnd,
-        invoiceId,
-    }: // paymentMethod,
-    // statusInvoice,
-    // residentId,
-    // idUser,
-    {
-        // dateStart: string; // 01/02/2022 00:00
-        // dateEnd: string; // 01/02/2022 23:59
-        invoiceId?: number;
-        // residentId?: number;
-        // idUser?: number;
-        // paymentMethod?: EnumInvoicePaymentMethod;
-        // statusInvoice?: EnumTopicStatusInvoice;
-    }) => {
+    public Find = async (payload: TInvoiceFilter) => {
         this.logger(`Find`);
 
-        // necessario este ou esse: residentId, idUser,
-
+        // necessario este residentId ou idUser,
         const where: string = 'invoice.id = :id';
         const data: Object = {
-            id: invoiceId,
+            // id: invoiceId,
         };
         const resInvoiceFind = await this.invoiceRepository.Find(where, data);
 

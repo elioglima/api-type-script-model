@@ -89,10 +89,16 @@ export class InvoiceEntity {
     fine: number | undefined;
 
     @Column({
-        name: 'reference_date',
+        name: 'referenceDate',
         type: 'timestamp',
     })
     referenceDate: Date | undefined;
+
+    @Column({
+        name: 'startDateRecurrence',
+        type: 'timestamp',
+    })
+    startDateRecurrence: Date | undefined;
 
     @Column({
         name: 'dueDate',
