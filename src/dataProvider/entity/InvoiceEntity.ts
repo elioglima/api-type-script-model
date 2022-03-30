@@ -154,7 +154,7 @@ export class InvoiceEntity {
     @Column({
         name: 'date',
         type: 'timestamp',
-        nullable: true,
+        default: () => 'CURRENT_TIMESTAMP()'        
     })
     date: string | undefined;
 
