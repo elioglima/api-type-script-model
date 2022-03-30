@@ -89,6 +89,8 @@ export default class InvoiceService {
             - incluir caso nao exista
         */
 
+        try {
+        } catch (error) {}
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoice.invoiceId,
         );

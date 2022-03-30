@@ -50,10 +50,6 @@ export class InvoiceRepository {
         const db = getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice');
-        // .leftJoinAndSelect(
-        //     'invoice.PreRegisterResidentEntity',
-        //     'preresident',
-        // );
 
         db.andWhere('invoice.date >= :startDate', {
             startDate: filter.startDate,
