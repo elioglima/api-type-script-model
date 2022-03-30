@@ -1,7 +1,10 @@
-import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
-import InvoiceService from '../../../../../service/InvoiceService';
+import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import InvoiceService from '../../../../../service/invoiceService';
 
-const spotInvoice = async (payload: TInvoice) => {
+const spotInvoiceFine = async (
+    payload: TInvoice,
+    linkInvoice: TLinkInvoice,
+) => {
     const returnTopic = (
         response: any,
         err: boolean = false,
@@ -19,8 +22,12 @@ const spotInvoice = async (payload: TInvoice) => {
                         spotInvoice: true,
                         anticipation: false,
                         firstPayment: false,
+                        type: payload.type,
+                        status: err ? 'failed' : 'success',
+                        messageError: message || undefined,
                         ...(message ? { message } : {}),
                         ...(response ? { ...response } : {}),
+                        linkInvoice,
                     },
                 },
             },
@@ -28,7 +35,7 @@ const spotInvoice = async (payload: TInvoice) => {
     };
 
     try {
-        //console.log('spotInvoice', payload);
+        console.log('spotInvoiceFine', payload);
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOneInclude(payload);
         if (resFindOneInclude.err)
@@ -43,4 +50,4 @@ const spotInvoice = async (payload: TInvoice) => {
     }
 };
 
-export { spotInvoice };
+export { spotInvoiceFine };

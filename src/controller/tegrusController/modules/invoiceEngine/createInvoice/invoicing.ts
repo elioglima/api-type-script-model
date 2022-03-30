@@ -1,5 +1,5 @@
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
-import InvoiceService from '../../../../../service/InvoiceService';
+import InvoiceService from '../../../../../service/invoiceService';
 
 const invoicing = async (payload: TInvoice) => {
     const returnTopic = (

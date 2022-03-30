@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import InvoiceService from '../../service/InvoiceService';
+import InvoiceService from '../../service/invoiceService';
 import { TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
 
 export const getInvoices = async (req: Request, res: Response) => {

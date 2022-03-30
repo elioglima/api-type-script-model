@@ -61,3 +61,8 @@ export type TInvoiceFilter = {
     paymentMethod?: EnumInvoicePaymentMethod;
     statusInvoice?: EnumTopicStatusInvoice;
 };
+
+export type TLinkInvoice = {
+    invoiceId: number;
+    hashCredit: string;
+};

@@ -1,7 +1,10 @@
-import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
-import InvoiceService from '../../../../../service/InvoiceService';
+import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import InvoiceService from '../../../../../service/invoiceService';
 
-const antecipationInvoice = async (payload: TInvoice) => {
+const antecipationInvoice = async (
+    payload: TInvoice,
+    linkInvoice: TLinkInvoice,
+) => {
     const returnTopic = (
         response: any,
         err: boolean = false,
@@ -15,11 +18,14 @@ const antecipationInvoice = async (payload: TInvoice) => {
                 createInvoice: {
                     ...(payload ? { ...payload } : {}),
                     returnOpah: {
-                        spotInvoice: false,
+                        status: err ? 'failed' : 'success',
+                        messageError: message || undefined,
                         anticipation: true,
+                        spotInvoice: false,
                         firstPayment: false,
                         ...(message ? { message } : {}),
                         ...(response ? { ...response } : {}),
+                        linkInvoice,
                     },
                 },
             },
