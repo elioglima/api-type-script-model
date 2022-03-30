@@ -1,6 +1,6 @@
 import { InvoiceEntity } from '../entity/InvoiceEntity';
 import { getConnection } from 'typeorm';
-import { TInvoice } from '../../domain/Tegrus';
+import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus';
 
 export class InvoiceRepository {
     public persist = async (invoice: TInvoice) =>
@@ -49,16 +49,18 @@ export class InvoiceRepository {
             .orderBy('invoice.id', 'DESC')
             .getMany();
 
-    public Find = async (where: string, data: Object) =>
+    public Find = async (payload: TInvoiceFilter) =>
         await getConnection()
             .getRepository(InvoiceEntity)
-            .createQueryBuilder('invoice')
-            .where(where, data)
-            .leftJoinAndSelect(
-                'invoice.PreRegisterResidentEntity',
-                'preresident',
-            )
-            .getOne();
+            .find()            
+            .then(
+                (data) => {
+                    return data;
+                },
+                onRejected => {
+                    return onRejected;
+                },
+            );
 
     public update = async (invoice: TInvoice) => {
         return await getConnection()

@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import * as InvoicesController from '../../../controller/invoicesController';
+import { InvoicesController } from '../../../controller/invoicesController';
+
+const invoiceController = new InvoicesController();
 
 export const invoices: Router = Router();
-invoices.get('/', InvoicesController.getInvoices);
+
+invoices.get('/getInvoice', invoiceController.getInvoices);

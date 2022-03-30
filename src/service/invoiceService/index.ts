@@ -89,6 +89,11 @@ export default class InvoiceService {
             - incluir caso nao exista
         */
 
+        try {
+            
+        } catch (error) {
+            
+        }
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoice.invoiceId,
         );
@@ -121,7 +126,32 @@ export default class InvoiceService {
 
     public Find = async (payload: TInvoiceFilter) => {
         this.logger(`Find`);
+       
 
+        try {
+            const resInvoiceFind = await this.invoiceRepository.Find(payload);
+
+            console.log("resInvoiceFind", resInvoiceFind)
+            
+            
+            if (resInvoiceFind instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: "Invoice doesnt found.",
+                    },
+                };
+            }
+    
+            if(!resInvoiceFind) return {err: true, data: {message: "Invoice doesnt found."}}
+    
+            return {
+                err: false,
+                data: resInvoiceFind,
+            };
+        } catch (error) {
+            console.log("ERROR", error)
+        }
         // necessario este residentId ou idUser,
 
         /* 
@@ -135,24 +165,10 @@ export default class InvoiceService {
             statusInvoice?: EnumTopicStatusInvoice;
             
         */
-        const where: string = 'invoice.id = :id';
-        const data: Object = {
-            // id: invoiceId,
-        };
-        const resInvoiceFind = await this.invoiceRepository.Find(where, data);
+        // const where: string = 'invoice.id = :id';
+        // const data: Object = {
+        //     // id: invoiceId,
+        // };
 
-        if (resInvoiceFind instanceof Error) {
-            return {
-                err: true,
-                data: {
-                    message: 'Error writing invoice',
-                },
-            };
-        }
-
-        return {
-            err: false,
-            data: resInvoiceFind,
-        };
     };
 }
