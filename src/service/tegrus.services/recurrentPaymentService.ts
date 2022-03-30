@@ -3,7 +3,7 @@ import Adapter from '../../domain/Adapter';
 import { reqRecurrentCreate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
-import { InvoiceRepository } from 'src/dataProvider/repository/InvoiceRepository';
+import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import {
     TStatusRecurrency,
     EnumPayMethod,

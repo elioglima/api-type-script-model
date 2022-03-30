@@ -1,8 +1,8 @@
 import Adapter from '../../domain/Adapter';
-import { PaymentRecurrenceRepository } from 'src/dataProvider/repository/PaymentRecurrenceRepository';
-import { PreRegistrationRepository } from 'src/dataProvider/repository/PreRegisterRepository';
-import { reqRecurrentDeactivate } from 'src/domain/RecurrentPayment';
-import { PaymentRecurrence } from 'src/domain/Payment/PaymentRecurrence';
+import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
+import { PreRegistrationRepository } from '../../dataProvider/repository/PreRegisterRepository';
+import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
+import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 
 export default async (recurrenceId: string) => {
     try {
