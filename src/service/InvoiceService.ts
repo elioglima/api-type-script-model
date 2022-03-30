@@ -1,6 +1,10 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../dataProvider/repository/InvoiceRepository';
-import { TInvoice } from '../domain/Tegrus/TInvoice';
+import {
+    TInvoice,
+    // EnumInvoicePaymentMethod
+} from '../domain/Tegrus/TInvoice';
+// import { EnumTopicStatusInvoice } from '../domain/Tegrus/TStatusInvoice';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -52,6 +56,31 @@ export default class InvoiceService {
         };
     };
 
+    public FindOneRemove = async (invoiceId: number) => {
+        this.logger(`Find One Remove`);
+
+        const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
+            invoiceId,
+        );
+
+        if (resInvoiceId instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
+            };
+        }
+
+        // TO-DO atualizar a flag active = false
+        // const resInvoiceId = await this.invoiceRepository.update();
+
+        return {
+            err: false,
+            data: resInvoiceId,
+        };
+    };
+
     public FindOneInclude = async (invoice: TInvoice) => {
         this.logger(`Find One Include`);
 
@@ -90,6 +119,48 @@ export default class InvoiceService {
         return {
             err: false,
             data: resPersist,
+        };
+    };
+
+    public Find = async ({
+        // dateStart,
+        // dateEnd,
+        invoiceId,
+    }: // paymentMethod,
+    // statusInvoice,
+    // residentId,
+    // idUser,
+    {
+        // dateStart: string; // 01/02/2022 00:00
+        // dateEnd: string; // 01/02/2022 23:59
+        invoiceId?: number;
+        // residentId?: number;
+        // idUser?: number;
+        // paymentMethod?: EnumInvoicePaymentMethod;
+        // statusInvoice?: EnumTopicStatusInvoice;
+    }) => {
+        this.logger(`Find`);
+
+        // necessario este ou esse: residentId, idUser,
+
+        const where: string = 'invoice.id = :id';
+        const data: Object = {
+            id: invoiceId,
+        };
+        const resInvoiceFind = await this.invoiceRepository.Find(where, data);
+
+        if (resInvoiceFind instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
+            };
+        }
+
+        return {
+            err: false,
+            data: resInvoiceFind,
         };
     };
 }
