@@ -44,9 +44,20 @@ export type TInvoice = {
     anticipation: boolean;
     firstPayment: boolean; // –caso seja a primeira fatura, deve vir preenchido true.
     referenceDate: Date; //timestamp,
+    startDateRecurrence: Date; //timestamp,
     isSpot?: boolean;
     active?: boolean;
     type: EnumInvoiceType;
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumTopicStatusInvoice;
+};
+
+export type TInvoiceFilter = {
+    dateStart: string; // 01/02/2022 00:00
+    dateEnd: string; // 01/02/2022 23:59
+    invoiceId?: number;
+    residentId?: number;
+    idUser?: number;
+    paymentMethod?: EnumInvoicePaymentMethod;
+    statusInvoice?: EnumTopicStatusInvoice;
 };
