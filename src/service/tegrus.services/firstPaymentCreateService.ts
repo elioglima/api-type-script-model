@@ -80,7 +80,6 @@ export default async (
 
     const hashD: hashData = {
         hash: String(resultHash.hash),
-        link: String(resultHash.link),
         lifeTime: moment().add('days', 3).toDate(),
         invoiceId: Number(invoice.invoiceId),
     };
@@ -91,18 +90,18 @@ export default async (
         return resHashRep;
     }
 
-    const dataSendLinkResident: dataSendLinkResident = {
-        invoiceId: Number(resultHash.invoiceId),
-        url: String(resultHash.link),
-        email: String(resident.email),
-        smartphone: resident.smartphone,
-    };
+    // const dataSendLinkResident: dataSendLinkResident = {
+    //     invoiceId: Number(resultHash.invoiceId),
+    //     url: String(resultHash.link),
+    //     email: String(resident.email),
+    //     smartphone: resident.smartphone,
+    // };
 
-    const resultSendLinkResident = await sendLinkResident(dataSendLinkResident);
+    // const resultSendLinkResident = await sendLinkResident(dataSendLinkResident);
 
-    if (resultSendLinkResident instanceof Error) {
-        return resultSendLinkResident;
-    }
+    // if (resultSendLinkResident instanceof Error) {
+    //     return resultSendLinkResident;
+    // }
 
     const link_invoice: resFirstPaymentCreate = {
         invoiceId: invoice.invoiceId,
