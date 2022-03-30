@@ -13,42 +13,22 @@ export const getInvoices = async (req: Request, res: Response) => {
             return res.status(422).json(response);
         }
 
-        // aplicar filtro
-        // invoiceId, residentId, idUser, data, statusInvoice, paymentMethod, statusInvoice
-        // o filtro deve respeitar as que tenham active = true
-        // integrar com os bff web e mobile
+        const result = response.data.map((m: any) => ({
+            id: m.id,
+            date: m.date,
+            invoiceId: m.invoiceId,
+            residentId: m.residentId,
+            idUser: m.idUser,
+            description: m.description,
+            paymentMethod: m.paymentMethod,
+            statusInvoice: m.statusInvoice,
+            value: m.value,
+        }));
 
-        // {
-        //     err: false,
-        //     data: [
-        //         {
-        //             id,
-        //             date,
-        //             invoiceId,
-        //             residentId,
-        //             idUser,
-        //             description,
-        //             paymentMethod: {
-        //                 ticket = 'ticket',
-        //                 transfer = 'transfer',
-        //                 credit = 'credit',
-        //                 internationalTransfer = 'international_transfer',
-        //                 courtesy = 'courtesy',
-        //             },
-        //             statusInvoice: {
-        //                 canceled = 'canceled',
-        //                 issued = 'issued',
-        //                 credit = 'credit',
-        //                 reject = 'reject',
-        //                 pay = 'pay',
-        //                 paused = 'paused',
-        //             },
-        //             value
-        //         }
-        //     ]
-        //  }
-
-        return res.status(200).json(response);
+        return res.status(200).json({
+            err: true,
+            data: result,
+        });
     } catch (error) {
         return res.status(422).json(error);
     }
