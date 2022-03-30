@@ -1,10 +1,5 @@
-
-
-
 export type reqRecurrentDeactivate = {
-    recurrentPaymentId: string;
-}
+    recurrenceId: string;
+};
 
-export type resRecurrentDeactivate = {
-
-}
+export type resRecurrentDeactivate = {};

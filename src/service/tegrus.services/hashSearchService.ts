@@ -14,6 +14,8 @@ export default class HashSearchService {
             this.logger('Starting method HashSearchService');
             const resp: any = await this.HashRep.getByHash(hash);            
             
+            console.log("RESP", resp)
+
             if(!resp) {
                 return {
                     err: true,

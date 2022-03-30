@@ -15,18 +15,11 @@ export class InvoiceRepository {
             ])
             .execute()
             .then(
-                response => {
-                    invoice.id = Number(response.identifiers[0].id);
+                () => {
                     return invoice;
                 },
                 onRejected => {
-                    //this.logger('Error ', onRejected);
-                    return {
-                        data: {
-                            code: onRejected.code,
-                            message: onRejected.sqlMessage,
-                        },
-                    };
+                    return onRejected;
                 },
             );
 
@@ -55,6 +48,17 @@ export class InvoiceRepository {
             .createQueryBuilder('invoice')
             .orderBy('invoice.id', 'DESC')
             .getMany();
+
+    public Find = async (where: string, data: Object) =>
+        await getConnection()
+            .getRepository(InvoiceEntity)
+            .createQueryBuilder('invoice')
+            .where(where, data)
+            .leftJoinAndSelect(
+                'invoice.PreRegisterResidentEntity',
+                'preresident',
+            )
+            .getOne();
 
     public update = async (invoice: TInvoice) => {
         return await getConnection()

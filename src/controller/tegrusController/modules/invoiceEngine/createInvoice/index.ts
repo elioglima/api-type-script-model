@@ -16,15 +16,20 @@ const createInvoice = async (req: CreateInvoiceReq) => {
         if (!req.createInvoice) {
             return {
                 err: true,
+                status: 422,
                 data: {
                     message: 'Tag createInvoice not found',
                 },
             };
         }
 
-        console.log("req", req)
-
-        if (req.createInvoice?.type == EnumInvoiceType.booking) {
+        if (req.createInvoice?.anticipation == true) {
+            /*
+                .antecipation - determina caso seja uma antecipacao
+            */
+            const response = await antecipationInvoice(req.createInvoice);
+            return response;
+        } else if (req.createInvoice?.type == EnumInvoiceType.booking) {
             /*
                 - area logada
                 .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
@@ -42,18 +47,18 @@ const createInvoice = async (req: CreateInvoiceReq) => {
 
             const response = await spotInvoice(req.createInvoice);
             return response;
-        } else if (req.createInvoice?.anticipation == true) {
-            /*
-                .antecipation - determina caso seja uma antecipacao
-            */
-            const response = await antecipationInvoice(req.createInvoice);
-            return response;
-        } else {
+        } else if (req.createInvoice?.type == EnumInvoiceType.rent) {
             /*
                 apenas uma emissao de faturas
             */
             const response = await invoicing(req.createInvoice);
             return response;
+        } else {
+            /*
+                apenas uma emissao de faturas
+            */
+            // const response = await invoicing(req.createInvoice);
+            // return response;
         }
 
         /* 
@@ -73,6 +78,7 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             },
         };
     } catch (error: any) {
+        console.log(error);
         return {
             err: true,
             data: {

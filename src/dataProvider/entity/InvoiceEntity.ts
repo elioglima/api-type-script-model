@@ -152,6 +152,13 @@ export class InvoiceEntity {
     recurrenceId: string | undefined;
 
     @Column({
+        name: 'date',
+        type: 'timestamp',
+        nullable: true,
+    })
+    date: string | undefined;
+
+    @Column({
         name: 'active',
         type: 'boolean',
         default: true,

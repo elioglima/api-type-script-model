@@ -13,7 +13,7 @@ export class PaymentRecurrenceRepository {
             .insert()
             .values([
                 {
-                    ...paymentRecurrence
+                    ...paymentRecurrence,
                 },
             ])
             .execute()
@@ -35,12 +35,12 @@ export class PaymentRecurrenceRepository {
             .where('paymentRecurrence.id = :id', { id })
             .getOne();
 
-    public getByRecurrenceId = async (recurrenceId: string) =>
+    public getByRecurrenceId = async (recurrentPaymentId: string) =>
         await getConnection()
             .getRepository(PaymentRecurrenceEntity)
             .createQueryBuilder('paymentRecurrence')
             .where('paymentRecurrence.recurrenceId = :recurrenceId', {
-                recurrenceId,
+                recurrentPaymentId,
             })
             .getOne();
 
