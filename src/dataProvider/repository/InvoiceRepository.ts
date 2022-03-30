@@ -49,6 +49,17 @@ export class InvoiceRepository {
             .orderBy('invoice.id', 'DESC')
             .getMany();
 
+    public Find = async (where: string, data: Object) =>
+        await getConnection()
+            .getRepository(InvoiceEntity)
+            .createQueryBuilder('invoice')
+            .where(where, data)
+            .leftJoinAndSelect(
+                'invoice.PreRegisterResidentEntity',
+                'preresident',
+            )
+            .getOne();
+
     public update = async (invoice: TInvoice) => {
         return await getConnection()
             .getRepository(InvoiceEntity)
