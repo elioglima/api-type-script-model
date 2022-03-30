@@ -33,33 +33,33 @@ export default async (
             },
         };
     }
-    
+
     const { createResident } = payload;
-    const { resident, invoice } = createResident;    
-    
-    const resultPR: any = await PreReg.execute(resident);    
-    
+    const { resident, invoice } = createResident;
+
+    const resultPR: any = await PreReg.execute(resident);
+
     if (resultPR?.err) {
         return resultPR;
-    }   
+    }
 
-    const invoicePersist : TInvoice ={
+    const invoicePersist: TInvoice = {
         ...invoice,
-        resident: resultPR.id
-    }
-    
-    
-    const resultIN: any = await InvRep.persist(invoicePersist);    
+        resident: resultPR.id,
+    };
 
-    if (resultIN?.err) {
-        return resultIN;
-    }
+    const resultIN: any = await InvRep.persist(invoicePersist);
+
+    console.log('ASDAD', resultIN);
+
+    if (resultIN instanceof Error)
+        return { err: true, data: { message: 'Error to create invoice' } };
 
     const dataHash: reqCreateHash = {
         invoiceId: invoice.invoiceId,
         // url?: any
-    };   
-    
+    };
+
     const resultHash: resCreateHash = await createHash(dataHash);
 
     if (resultHash?.err) {
@@ -82,11 +82,10 @@ export default async (
         hash: String(resultHash.hash),
         link: String(resultHash.link),
         lifeTime: moment().add('days', 3).toDate(),
-        invoiceId: Number(invoice.invoiceId)
+        invoiceId: Number(invoice.invoiceId),
     };
 
     const resHashRep = await HashRep.persist(hashD);
-        
 
     if (resHashRep?.err) {
         return resHashRep;

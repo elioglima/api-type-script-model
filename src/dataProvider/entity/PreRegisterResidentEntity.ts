@@ -5,8 +5,6 @@ import {
     PrimaryGeneratedColumn,
     JoinColumn,    
 } from 'typeorm';
-
-import { PaymentCardsEntity } from './PaymentCardsEntity';
 import { TDOC } from '../../domain/Tegrus';
 import { InvoiceEntity } from './InvoiceEntity';
 
@@ -110,9 +108,4 @@ export class PreRegisterResidentEntity {
     @JoinColumn({ name: 'invoice' })
     invoice: InvoiceEntity[] | undefined;
 
-    @OneToMany(() => PaymentCardsEntity, paymentCard => paymentCard, {
-        eager: true,
-    })
-    
-    paymentCard: PaymentCardsEntity | undefined;
 }

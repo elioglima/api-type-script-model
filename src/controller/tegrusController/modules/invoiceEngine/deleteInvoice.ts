@@ -31,8 +31,7 @@ const deleteInvoice = async (req: any) => {
         };
     };
 
-    try {
-        console.log('deleteInvoice', payload);
+    try {        
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOneRemove(
             Number(payload.invoiceId),

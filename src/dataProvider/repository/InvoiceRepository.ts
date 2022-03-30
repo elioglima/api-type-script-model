@@ -27,9 +27,9 @@ export class InvoiceRepository {
         await getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
-            .where('invoice.id = :id', { id })
+            .where('invoice.invoiceId = :id', { id })
             .leftJoinAndSelect(
-                'invoice.PreRegisterResidentEntity',
+                'invoice.resident',
                 'preresident',
             )
             .getOne();
