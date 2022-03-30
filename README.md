@@ -237,21 +237,21 @@ cielo.recurrent
 
 #### <a name="modifyRecurrenceRecurrencyDay"></a> Modificando dia da Recorrência
 
-```ts
 const updateRecurrencyDay: RecurrentModifyDayModel = {
-    paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
-    recurrencyDay: 10,
+paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
+recurrencyDay: 10,
 };
 
 cielo.recurrent
-    .modifyRecurrencyDay(updateRecurrencyDay)
-    .then(data => {
-        return console.log(data);
-    })
-    .catch(err => {
-        return console.error('ERRO', err);
-    });
-```
+.modifyRecurrencyDay(updateRecurrencyDay)
+.then(data => {
+return console.log(data);
+})
+.catch(err => {
+return console.error('ERRO', err);
+});
+
+````
 
 #### <a name="modifyRecurrenceAmount"></a> Modificando o valor da Recorrência
 
@@ -269,7 +269,7 @@ cielo.recurrent
     .catch(err => {
         return console.error('ERRO', err);
     });
-```
+````
 
 #### <a name="modifyRecurrenceNextPaymentDate"></a> Modificando data do próximo Pagamento
 
