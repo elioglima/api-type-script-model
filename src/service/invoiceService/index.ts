@@ -1,6 +1,6 @@
 import debug from 'debug';
-import { InvoiceRepository } from '../dataProvider/repository/InvoiceRepository';
-import { TInvoice, TInvoiceFilter } from '../domain/Tegrus/TInvoice';
+import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
+import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
 // import { EnumTopicStatusInvoice } from '../domain/Tegrus/TStatusInvoice';
 
 export default class InvoiceService {
