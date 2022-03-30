@@ -1,7 +1,7 @@
 import {
     reqCreateHash,
     resCreateHash,
-} from '../../domain/Tegrus/TFirstPayment';
+} from '../../../../../domain/Tegrus/TFirstPayment';
 
 import crypto from 'crypto';
 /*

@@ -7,15 +7,21 @@ import {
 } from 'typeorm';
 import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
 
-import {
-    EnumInvoicePaymentMethod,
-    EnumTopicStatusInvoice,
-} from '../../domain/Tegrus';
+import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
+import { EnumTopicStatusInvoice } from '../../domain/Tegrus/TStatusInvoice';
+import { EnumInvoiceType } from '../../domain/Tegrus/EnumInvoiceType';
 
 @Entity('invoice')
 export class InvoiceEntity {
     @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
     id: number | undefined;
+
+    @Column({
+        name: 'date',
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP()',
+    })
+    date: string | undefined;
 
     @Column({
         name: 'invoiceId',
@@ -24,11 +30,11 @@ export class InvoiceEntity {
     invoiceId: number | undefined;
 
     @Column({
-        name: 'idUser',
+        name: 'userId',
         type: 'int',
         nullable: true,
     })
-    idUser: number | undefined;
+    userId: number | undefined;
 
     @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'resident' })
@@ -89,10 +95,16 @@ export class InvoiceEntity {
     fine: number | undefined;
 
     @Column({
-        name: 'reference_date',
+        name: 'referenceDate',
         type: 'timestamp',
     })
     referenceDate: Date | undefined;
+
+    @Column({
+        name: 'startDateRecurrence',
+        type: 'timestamp',
+    })
+    startDateRecurrence: Date | undefined;
 
     @Column({
         name: 'dueDate',
@@ -133,6 +145,13 @@ export class InvoiceEntity {
     statusInvoice: EnumTopicStatusInvoice | undefined;
 
     @Column({
+        name: 'type',
+        type: 'enum',
+        enum: EnumInvoiceType,
+    })
+    type: EnumInvoiceType | undefined;
+
+    @Column({
         name: 'startReferenceDate',
         type: 'timestamp',
     })
@@ -145,18 +164,17 @@ export class InvoiceEntity {
     endReferenceDate: Date | undefined;
 
     @Column({
+        name: 'paymentDate',
+        type: 'timestamp',
+    })
+    paymentDate: Date | undefined;
+
+    @Column({
         name: 'recurrenceId',
         type: 'varchar',
         nullable: true,
     })
     recurrenceId: string | undefined;
-
-    @Column({
-        name: 'date',
-        type: 'timestamp',
-        nullable: true,
-    })
-    date: string | undefined;
 
     @Column({
         name: 'active',

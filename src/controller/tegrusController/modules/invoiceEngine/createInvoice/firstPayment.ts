@@ -1,8 +1,8 @@
-import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 
-const firstPayment = async (invoice: TInvoice) => {
+const firstPayment = async (invoice: TInvoice, linkInvoice: TLinkInvoice) => {
     try {
-        console.log('firstPayment', invoice);
+        console.log('firstPayment', invoice, linkInvoice);
         /*
             obs: if (req.createInvoice?.type == EnumInvoiceType.booking) {
 

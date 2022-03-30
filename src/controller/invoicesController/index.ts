@@ -1,52 +1,38 @@
 import { Request, Response } from 'express';
-import InvoiceService from '../../service/InvoiceService';
+import InvoiceService from '../../service/invoiceService';
+import { TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
 
-export const getInvoices = async (req: Request, res: Response) => {
+export const invoicesFilter = async (req: Request, res: Response) => {
     try {
         console.log(req?.body);
+        const invoicesFilter: TInvoiceFilter = req?.body;
+
         const invoiceService = new InvoiceService();
-
-        // aplicar filtro
-        // invoiceId, residentId, idUser, data, statusInvoice, paymentMethod, statusInvoice
-        // o filtro deve respeitar as que tenham active = true
-        // integrar com os bff web e mobile
-
-        // {
-        //     err: false,
-        //     data: [
-        //         {
-        //             id,
-        //             date,
-        //             invoiceId,
-        //             residentId,
-        //             idUser,
-        //             description,
-        //             paymentMethod: {
-        //                 ticket = 'ticket',
-        //                 transfer = 'transfer',
-        //                 credit = 'credit',
-        //                 internationalTransfer = 'international_transfer',
-        //                 courtesy = 'courtesy',
-        //             },
-        //             statusInvoice: {
-        //                 canceled = 'canceled',
-        //                 issued = 'issued',
-        //                 credit = 'credit',
-        //                 reject = 'reject',
-        //                 pay = 'pay',
-        //                 paused = 'paused',
-        //             },
-        //             value
-        //         }
-        //     ]
-        //  }
-
-        const response = await invoiceService.getAll();
-        if (response instanceof Error) {
+        const response = await invoiceService.Find(invoicesFilter);
+        if (response.err) {
             return res.status(422).json(response);
         }
-        return res.status(200).json(response);
+
+        console.log(response.data);
+        const result = response.data.map((m: any) => ({
+            id: m.id,
+            date: m.date,
+            invoiceId: m.invoiceId,
+            residentId: m.residentId,
+            idUser: m.idUser,
+            description: m.description,
+            paymentMethod: m.paymentMethod,
+            statusInvoice: m.statusInvoice,
+            type: m.type,
+            value: m.value,
+        }));
+
+        return res.status(200).json({
+            err: true,
+            data: result,
+        });
     } catch (error) {
+        console.log(error);
         return res.status(422).json(error);
     }
 };

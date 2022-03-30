@@ -46,7 +46,6 @@ export type resSendLinkResident = {
 
 export interface hashData {
     hash: string;
-    link: string;
     lifeTime: Date;
     valid?: boolean;
     invoiceId: number;

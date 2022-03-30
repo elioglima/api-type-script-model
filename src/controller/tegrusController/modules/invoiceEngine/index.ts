@@ -6,6 +6,7 @@ import { deleteInvoice } from './deleteInvoice';
 import { statusInvoice } from './statusInvoice';
 import { updateInvoice } from './updateInvoice';
 import { cancelContract } from './cancelContract';
+import { externalPayment } from './externalPayment';
 
 const invoiceEngine = async (req: Request, res: Response) => {
     try {
@@ -18,12 +19,16 @@ const invoiceEngine = async (req: Request, res: Response) => {
             // Antecipação de Faturas
             const response: any = await createInvoice(toReceive);
             return res.status(response?.status || 422).json(response?.data);
+        } else if (toReceive?.externalPayment) {
+            // Remover de Fatura Emitida
+            const response: any = await externalPayment(toReceive);
+            return res.status(response?.status || 422).json(response?.data);
         } else if (toReceive?.deleteInvoice) {
             // Remover de Fatura Emitida
             const response: any = await deleteInvoice(toReceive);
             return res.status(response?.status || 422).json(response?.data);
         } else if (toReceive?.statusInvoice) {
-            // Atualizar Status da Fatura (Pagamento/Problemas no Pagamento)
+            // Atualiza status da fatura
             const response: any = await statusInvoice(toReceive);
             return res.status(response?.status || 422).json(response?.data);
         } else if (toReceive?.updateInvoice) {

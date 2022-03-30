@@ -1,6 +1,7 @@
 import { TResident } from './TResident';
 import { TInvoice } from './TInvoice';
-import { TMethodPayment } from './TMethodPayment';
+import { TStatusInvoiceData } from './TStatusInvoice';
+import { TExternalPayment } from './TExternalPayment';
 
 export enum TStatusInvoice {
     PAYMENT_PROBLEM = 'PROBLEMA NO PAGAMENTO',
@@ -19,18 +20,12 @@ export type TInvoiceEngineReq = {
         invoice: TInvoice;
     };
     createInvoice?: TInvoice;
+    externalPayment?: TExternalPayment;
     deleteInvoice?: {
         invoiceId: string;
         description: string;
     };
-    statusInvoice?: {
-        invoiceId: number;
-        description: string;
-        paidAt: Date; // timestamp
-        paymentMethod: TMethodPayment;
-        amountOfDailure: number;
-        statusInvoice: TStatusInvoice;
-    };
+    statusInvoice?: TStatusInvoiceData;
     updateInvoice?: TInvoice;
     cancelContract?: {
         residentId: number;

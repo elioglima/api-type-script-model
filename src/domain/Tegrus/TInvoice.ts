@@ -1,26 +1,6 @@
 import { EnumTopicStatusInvoice } from './TStatusInvoice';
-
-export enum EnumInvoiceType {
-    booking = 'booking', // primeiro aluguel
-    fine = 'fine', // multa
-    rent = 'rent', // aluguel
-    spot = 'spot', // pagamento fora do app
-}
-
-/*
-
-    O tipo booking é a fatura de reserva (primeiro pagamento)
-    O tipo rent são as faturas mensais de aluguel
-
-*/
-
-export enum EnumInvoicePaymentMethod {
-    ticket = 'ticket',
-    transfer = 'transfer',
-    credit = 'credit',
-    internationalTransfer = 'international_transfer',
-    courtesy = 'courtesy',
-}
+import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
+import { EnumInvoiceType } from './EnumInvoiceType';
 
 export type TInvoice = {
     id?: number;
@@ -44,9 +24,25 @@ export type TInvoice = {
     anticipation: boolean;
     firstPayment: boolean; // –caso seja a primeira fatura, deve vir preenchido true.
     referenceDate: Date; //timestamp,
+    startDateRecurrence: Date; //timestamp,
     isSpot?: boolean;
     active?: boolean;
     type: EnumInvoiceType;
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumTopicStatusInvoice;
+};
+
+export type TInvoiceFilter = {
+    startDate: string; // 01/02/2022 00:00
+    endDate: string; // 01/02/2022 23:59
+    invoiceId?: number;
+    residentId?: number;
+    userId?: number;
+    paymentMethod?: EnumInvoicePaymentMethod;
+    statusInvoice?: EnumTopicStatusInvoice;
+};
+
+export type TLinkInvoice = {
+    invoiceId: number;
+    hashCredit: string;
 };

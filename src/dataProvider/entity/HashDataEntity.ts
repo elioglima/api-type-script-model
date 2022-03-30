@@ -20,6 +20,7 @@ export class HashDataEntity {
     @Column({
         name: 'link',
         type: 'varchar',
+        nullable: true,
     })
     link: string | undefined;
 
@@ -35,5 +36,4 @@ export class HashDataEntity {
         default: 1,
     })
     valid: Boolean | undefined;
-
 }
