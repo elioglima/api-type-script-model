@@ -33,11 +33,11 @@ export type TInvoice = {
 };
 
 export type TInvoiceFilter = {
-    dateStart: string; // 01/02/2022 00:00
-    dateEnd: string; // 01/02/2022 23:59
+    startDate: string; // 01/02/2022 00:00
+    endDate: string; // 01/02/2022 23:59
     invoiceId?: number;
     residentId?: number;
-    idUser?: number;
+    userId?: number;
     paymentMethod?: EnumInvoicePaymentMethod;
     statusInvoice?: EnumTopicStatusInvoice;
 };

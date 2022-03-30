@@ -2,7 +2,7 @@ export enum EnumInvoicePaymentMethod {
     ticket = 'ticket',
     transfer = 'transfer',
     credit = 'credit',
-    internationalTransfer = 'international_transfer',
+    internationalTransfer = 'internationalTransfer',
     courtesy = 'courtesy',
 }
 

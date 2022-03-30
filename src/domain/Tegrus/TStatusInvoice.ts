@@ -9,7 +9,7 @@ export enum EnumTopicStatusInvoice {
     canceled = 'canceled',
     issued = 'issued',
     paid = 'paid',
-    paymentError = 'payment_error',
+    paymentError = 'paymentError',
 }
 
 export type TStatusInvoiceData = {

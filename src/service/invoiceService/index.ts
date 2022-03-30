@@ -122,24 +122,7 @@ export default class InvoiceService {
     public Find = async (payload: TInvoiceFilter) => {
         this.logger(`Find`);
 
-        // necessario este residentId ou idUser,
-
-        /* 
-                dateStart: string; // 01/02/2022 00:00
-                dateEnd: string; // 01/02/2022 23:59
-                residentId?: number;
-                idUser?: number;
-            
-            invoiceId?: number;
-            paymentMethod?: EnumInvoicePaymentMethod;
-            statusInvoice?: EnumTopicStatusInvoice;
-            
-        */
-        const where: string = 'invoice.id = :id';
-        const data: Object = {
-            // id: invoiceId,
-        };
-        const resInvoiceFind = await this.invoiceRepository.Find(where, data);
+        const resInvoiceFind: any = await this.invoiceRepository.Find(payload);
 
         if (resInvoiceFind instanceof Error) {
             return {
@@ -150,6 +133,7 @@ export default class InvoiceService {
             };
         }
 
+        if (resInvoiceFind.err) return resInvoiceFind;
         return {
             err: false,
             data: resInvoiceFind,

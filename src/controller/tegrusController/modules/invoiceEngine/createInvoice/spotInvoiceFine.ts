@@ -43,6 +43,7 @@ const spotInvoiceFine = async (
 
         return returnTopic({
             message: 'Invoice successfully added',
+            resident: resFindOneInclude,
         });
     } catch (error: any) {
         console.log(error);

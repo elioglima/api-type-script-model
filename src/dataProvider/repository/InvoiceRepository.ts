@@ -1,6 +1,6 @@
 import { InvoiceEntity } from '../entity/InvoiceEntity';
 import { getConnection } from 'typeorm';
-import { TInvoice } from '../../domain/Tegrus';
+import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
 
 export class InvoiceRepository {
     public persist = async (invoice: TInvoice) =>
@@ -46,16 +46,55 @@ export class InvoiceRepository {
             .orderBy('invoice.id', 'DESC')
             .getMany();
 
-    public Find = async (where: string, data: Object) =>
-        await getConnection()
+    public Find = (filter: TInvoiceFilter) => {
+        const db = getConnection()
             .getRepository(InvoiceEntity)
-            .createQueryBuilder('invoice')
-            .where(where, data)
-            .leftJoinAndSelect(
-                'invoice.PreRegisterResidentEntity',
-                'preresident',
-            )
-            .getOne();
+            .createQueryBuilder('invoice');
+        // .leftJoinAndSelect(
+        //     'invoice.PreRegisterResidentEntity',
+        //     'preresident',
+        // );
+
+        db.andWhere('invoice.date >= :startDate', {
+            startDate: filter.startDate,
+        });
+        db.andWhere('invoice.date <= :endDate', {
+            endDate: filter.endDate,
+        });
+
+        console.log({ filter });
+
+        if (filter.userId) {
+            db.andWhere('invoice.userId = :userId', {
+                userId: filter.userId,
+            });
+        } else if (filter.residentId) {
+            db.andWhere('invoice.residentId = :residentId', {
+                residentId: filter.residentId,
+            });
+        } else {
+            return {
+                err: true,
+                data: {
+                    message: 'invalid parameters',
+                },
+            };
+        }
+
+        if (filter.paymentMethod) {
+            db.andWhere('invoice.paymentMethod = :paymentMethod', {
+                paymentMethod: filter.paymentMethod,
+            });
+        }
+
+        if (filter.statusInvoice) {
+            db.andWhere('invoice.statusInvoice = :statusInvoice', {
+                statusInvoice: filter.statusInvoice,
+            });
+        }
+
+        return db.getMany();
+    };
 
     public update = async (invoice: TInvoice) => {
         return await getConnection()

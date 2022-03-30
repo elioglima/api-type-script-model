@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import InvoiceService from '../../service/invoiceService';
 import { TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
 
-export const getInvoices = async (req: Request, res: Response) => {
+export const invoicesFilter = async (req: Request, res: Response) => {
     try {
         console.log(req?.body);
         const invoicesFilter: TInvoiceFilter = req?.body;
@@ -13,6 +13,7 @@ export const getInvoices = async (req: Request, res: Response) => {
             return res.status(422).json(response);
         }
 
+        console.log(response.data);
         const result = response.data.map((m: any) => ({
             id: m.id,
             date: m.date,
@@ -22,6 +23,7 @@ export const getInvoices = async (req: Request, res: Response) => {
             description: m.description,
             paymentMethod: m.paymentMethod,
             statusInvoice: m.statusInvoice,
+            type: m.type,
             value: m.value,
         }));
 
@@ -30,6 +32,7 @@ export const getInvoices = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error) {
+        console.log(error);
         return res.status(422).json(error);
     }
 };

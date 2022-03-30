@@ -9,11 +9,19 @@ import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
 
 import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumTopicStatusInvoice } from '../../domain/Tegrus/TStatusInvoice';
+import { EnumInvoiceType } from '../../domain/Tegrus/EnumInvoiceType';
 
 @Entity('invoice')
 export class InvoiceEntity {
     @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
     id: number | undefined;
+
+    @Column({
+        name: 'date',
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP()',
+    })
+    date: string | undefined;
 
     @Column({
         name: 'invoiceId',
@@ -22,11 +30,11 @@ export class InvoiceEntity {
     invoiceId: number | undefined;
 
     @Column({
-        name: 'idUser',
+        name: 'userId',
         type: 'int',
         nullable: true,
     })
-    idUser: number | undefined;
+    userId: number | undefined;
 
     @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'resident' })
@@ -137,6 +145,13 @@ export class InvoiceEntity {
     statusInvoice: EnumTopicStatusInvoice | undefined;
 
     @Column({
+        name: 'type',
+        type: 'enum',
+        enum: EnumInvoiceType,
+    })
+    type: EnumInvoiceType | undefined;
+
+    @Column({
         name: 'startReferenceDate',
         type: 'timestamp',
     })
@@ -160,13 +175,6 @@ export class InvoiceEntity {
         nullable: true,
     })
     recurrenceId: string | undefined;
-
-    @Column({
-        name: 'date',
-        type: 'timestamp',
-        nullable: true,
-    })
-    date: string | undefined;
 
     @Column({
         name: 'active',
