@@ -20,23 +20,9 @@ export default class InvoiceService {
     public FindOne = async (invoiceId: number) => {
         this.logger(`Find One Include`);
 
-        // TO-DO
-
-        /* 
-            - verificar se existe o pre usuario
-            - verificar se existe a fatura 
-            - incluir caso nao exista
-        */
-
-        // TO-DO
-        /* 
-            para cpf ja cadastrados buscar o userId
-            pelo pre-resident
-        */
-
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoiceId,
-        );
+        );              
 
         if (resInvoiceId instanceof Error) {
             return {

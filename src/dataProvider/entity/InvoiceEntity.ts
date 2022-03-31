@@ -95,6 +95,7 @@ export class InvoiceEntity {
     @Column({
         name: 'fineTicket',
         type: 'decimal',
+        nullable: true
     })
     fineTicket: number | undefined;
 
