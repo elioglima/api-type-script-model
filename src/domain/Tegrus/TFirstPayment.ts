@@ -57,3 +57,7 @@ export interface resHashData {
     invoice: InvoiceEntity;
     resident: PreRegisterResidentEntity;
 }
+
+export type TFirstPaymentReq = {
+    createResident: TFirstPayment;
+};

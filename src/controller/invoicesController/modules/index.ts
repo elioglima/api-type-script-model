@@ -1,5 +1,5 @@
-import { getInvoices } from "./getInvoices";
+import { invoicesFilter } from "./invoicesFilter";
 
 export {
-    getInvoices
+    invoicesFilter
 }
