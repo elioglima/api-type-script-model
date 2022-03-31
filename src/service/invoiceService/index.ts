@@ -42,7 +42,7 @@ export default class InvoiceService {
             return {
                 err: true,
                 data: {
-                    message: 'Error writing invoice',
+                    message: 'no invoice found',
                 },
             };
         }

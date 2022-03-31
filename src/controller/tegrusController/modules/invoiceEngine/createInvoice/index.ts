@@ -1,8 +1,7 @@
-import { schedulingRecurrence } from './schedulingRecurrence';
+import { booking } from './booking';
 import { invoicing } from './invoicing';
 import { antecipationInvoice } from './antecipationInvoice';
 import { spotInvoiceFine } from './spotInvoiceFine';
-import createHash from './createHash';
 
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import { EnumInvoiceType } from '../../../../../domain/Tegrus/EnumInvoiceType';
@@ -29,16 +28,13 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             [EnumInvoiceType.spot].includes(invoice?.type) &&
             invoice?.anticipation == true
         ) {
-            return await antecipationInvoice(invoice, createHash);
-        } else if (
-            invoice?.type == EnumInvoiceType.booking &&
-            invoice.isRecurrence
-        ) {
-            return await schedulingRecurrence(invoice, createHash);
+            return await antecipationInvoice(invoice);
+        } else if (invoice?.type == EnumInvoiceType.booking) {
+            return await booking(invoice);
         } else if (
             [EnumInvoiceType.spot, EnumInvoiceType.fine].includes(invoice?.type)
         ) {
-            return await spotInvoiceFine(invoice, createHash);
+            return await spotInvoiceFine(invoice);
         } else if (invoice?.type == EnumInvoiceType.rent) {
             return await invoicing(invoice);
         } else {
