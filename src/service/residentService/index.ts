@@ -8,7 +8,6 @@ export default class ResidentService {
 
     public async add(resident: TResident) {
         try {
-            console.log(1232);
             const resFindOne = await this.FindOne(resident.id);
             if (!resFindOne?.err && resFindOne?.data) return resFindOne;
 

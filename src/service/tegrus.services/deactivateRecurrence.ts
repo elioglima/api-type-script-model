@@ -1,26 +1,27 @@
 import Adapter from '../../domain/Adapter';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
-import { PreRegistrationRepository } from '../../dataProvider/repository/PreRegisterRepository';
 import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
+import { TInvoice } from '../../domain/Tegrus';
 
-export default async (residentId: number) => {
+export default async (invoice: TInvoice) => {
     try {
         const paymentAdapter = new Adapter();
         const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
 
-        const resRecu: any = await paymentRecurrenceRepo.getById(residentId);
-
-        if (resRecu instanceof Error) return { err: true, data: resRecu };
-
-        if (!resRecu) return { err: true, data: 'Recurrence not found.' };
-
-        const resPreReg = await new PreRegistrationRepository().getById(
-            Number(resRecu?.preUserId),
+        const resRecu: any = await paymentRecurrenceRepo.getById(
+            invoice.resident.id,
         );
+        if (resRecu instanceof Error) return { err: true, data: resRecu };
+        if (!resRecu)
+            return {
+                err: true,
+                data: {
+                    message: 'Recurrence not found.',
+                },
+            };
 
-        await paymentAdapter.init(Number(resPreReg?.enterpriseId));
-
+        await paymentAdapter.init(Number(invoice.resident.enterpriseId));
         const deactivateRecu: reqRecurrentDeactivate = {
             recurrenceId: resRecu.recurrenceId,
         };
@@ -32,7 +33,9 @@ export default async (residentId: number) => {
         if (resDeactivate?.err)
             return {
                 err: true,
-                data: 'It was not possible deactivate recurrece',
+                data: {
+                    message: 'It was not possible deactivate recurrece',
+                },
             };
 
         const updateRecu: PaymentRecurrence = {
@@ -44,8 +47,17 @@ export default async (residentId: number) => {
 
         if (updateRecu instanceof Error) return { err: true, data: updateRecu };
 
-        return resRecuUpdate;
-    } catch (error) {
+        return {
+            err: false,
+            data: resRecuUpdate,
+        };
+    } catch (error: any) {
         console.log('ERR', error);
+        return {
+            err: false,
+            data: {
+                message: error?.message || 'unexpected error',
+            },
+        };
     }
 };
