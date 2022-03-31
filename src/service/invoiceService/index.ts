@@ -1,7 +1,6 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
-// import deactivateRecurrence from '../tegrus.services/deactivateRecurrence';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -69,8 +68,6 @@ export default class InvoiceService {
             };
         }
 
-        // await deactivateRecurrence(Number(resInvoiceId?.recurrenceId));
-
         return {
             err: false,
             data: resInvoiceId,
@@ -79,14 +76,6 @@ export default class InvoiceService {
 
     public FindOneInclude = async (invoice: TInvoice) => {
         this.logger(`Find One Include`);
-
-        // TO-DO
-
-        /* 
-            - verificar se existe o pre usuario
-            - verificar se existe a fatura 
-            - incluir caso nao exista
-        */
 
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoice.invoiceId,
@@ -122,7 +111,6 @@ export default class InvoiceService {
         this.logger(`Find`);
 
         const resInvoiceFind: any = await this.invoiceRepository.Find(payload);
-
         if (resInvoiceFind instanceof Error) {
             return {
                 err: true,
@@ -142,7 +130,9 @@ export default class InvoiceService {
     public Update = async (payload: TInvoice) => {
         this.logger(`Update`);
 
-        const resInvoiceUpdate: any = await this.invoiceRepository.update(payload);
+        const resInvoiceUpdate: any = await this.invoiceRepository.update(
+            payload,
+        );
 
         if (resInvoiceUpdate instanceof Error) {
             return {

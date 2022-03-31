@@ -7,6 +7,7 @@ import {
     JoinColumn,
     OneToOne,
 } from 'typeorm';
+
 import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
 
 import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
@@ -43,12 +44,6 @@ export class InvoiceEntity {
         type: 'int',
     })
     apartmentId: number | undefined;
-
-    @Column({
-        name: 'residentId',
-        type: 'int',
-    })
-    residentId: number | undefined;
 
     @Column({
         name: 'enterpriseId',

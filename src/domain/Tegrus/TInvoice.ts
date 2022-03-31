@@ -9,7 +9,6 @@ export type TInvoice = {
     invoiceId: number;
     userId?: number;
     apartmentId: number;
-    residentId: number;
     enterpriseId: number;
     value: number; // double,
     condominium: number; // double,
@@ -27,7 +26,7 @@ export type TInvoice = {
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumTopicStatusInvoice;
     isRecurrence: boolean;
-    resident?: TResident;
+    resident: TResident;
     residentIdenty?: number;
     recurrenceId?: number;
 };
@@ -47,4 +46,5 @@ export type TLinkInvoice = {
     hashCredit?: string;
     err?: boolean;
     message?: string;
+    data?: any;
 };
