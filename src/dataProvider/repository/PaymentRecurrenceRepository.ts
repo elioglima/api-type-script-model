@@ -44,14 +44,22 @@ export class PaymentRecurrenceRepository {
             })
             .getOne();
 
-    public getByResidentId = async (id: number) =>
+    public getByPreUserId = async (preUserId: number) =>
         await getConnection()
             .getRepository(PaymentRecurrenceEntity)
             .createQueryBuilder('paymentRecurrence')
-            .where('paymentRecurrence.residentId = :residentId', {
-                id,
+            .where('paymentRecurrence.preUserId = :preUserId', {
+                preUserId,
             })
-            .getOne();
+            .getOne()
+            .then(
+                data => {
+                    return data;
+                },
+                onRejected => {
+                    return onRejected;
+                },
+            );
 
     public getUserRecurrence = async (userId: number) =>
         await getConnection()

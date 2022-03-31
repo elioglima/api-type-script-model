@@ -9,9 +9,7 @@ export default async (residentId: number) => {
         const paymentAdapter = new Adapter();
         const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
 
-        const resRecu: any = await paymentRecurrenceRepo.getByResidentId(
-            residentId,
-        );
+        const resRecu: any = await paymentRecurrenceRepo.getById(residentId);
 
         if (resRecu instanceof Error) return { err: true, data: resRecu };
 

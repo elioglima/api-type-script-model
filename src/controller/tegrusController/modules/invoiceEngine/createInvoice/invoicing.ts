@@ -1,35 +1,45 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
-import PreRegisterResidentService from '../../../../../service/preRegisterResidentService';
+// import PreRegisterResidentService from '../../../../../service/tegrus.services/PreRegisterService';
 import createHash from './createHash';
 import { returnTopic } from './returnTopic';
+import { PaymentRecurrenceRepository } from '../../../../../dataProvider/repository/PaymentRecurrenceRepository';
 
 const invoicing = async (payload: TInvoice) => {
     const linkInvoice: TLinkInvoice = await createHash(
         Number(payload.invoiceId),
     );
+    const paymentRecurrenceRepository = new PaymentRecurrenceRepository();
 
     try {
-        console.log('invoicing', payload);
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOne(
             payload.invoiceId,
         );
+        if (payload?.resident)
+            returnTopic(
+                payload,
+                { message: 'Resident was not informed' },
+                true,
+            );
 
         if (resFindOneInclude.err) {
             // consultar residente
-            const preRegisterResidentService = new PreRegisterResidentService();
-            const resPreRegisterResidentServiceFindOne =
-                await preRegisterResidentService.FindOne(
-                    Number(payload?.resident?.id),
-                );
+            // const preRegisterResidentService = new PreRegisterResidentService();
+            const resPreRegisterResidentServiceFindOne: any = {};
+            // await preRegisterResidentService.getById(
+            //     Number(payload?.resident?.id),
+            // );
 
             const isResidentExist = !!resPreRegisterResidentServiceFindOne.err;
-            let isRecurrenceCreated = false;
+            let isRecurrenceCreated: any = null;
 
             if (isResidentExist == true) {
                 // verificar se existe uma recorrencia criada
-                isRecurrenceCreated = true;
+                isRecurrenceCreated =
+                    await paymentRecurrenceRepository.getByPreUserId(
+                        resPreRegisterResidentServiceFindOne.id,
+                    );
 
                 if (
                     isResidentExist &&

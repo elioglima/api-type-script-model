@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
-import deactivateRecurrence from '../tegrus.services/deactivateRecurrence';
+// import deactivateRecurrence from '../tegrus.services/deactivateRecurrence';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -69,7 +69,7 @@ export default class InvoiceService {
             };
         }
 
-        await deactivateRecurrence(resInvoiceId?.recurrenceId);
+        // await deactivateRecurrence(Number(resInvoiceId?.recurrenceId));
 
         return {
             err: false,
