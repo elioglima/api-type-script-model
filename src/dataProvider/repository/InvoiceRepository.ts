@@ -106,7 +106,7 @@ export class InvoiceRepository {
             .createQueryBuilder('invoice')
             .update()
             .set(invoice)
-            .where('id = :id', { id: invoice.id })
+            .where('invoiceId = :invoiceId', { invoiceId: invoice.invoiceId })
             .execute()
             .then(
                 () => {
