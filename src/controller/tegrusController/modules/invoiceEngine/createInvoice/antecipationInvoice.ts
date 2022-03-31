@@ -1,6 +1,7 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
 import createHash from './createHash';
+import { returnTopic } from './returnTopic';
 
 const antecipationInvoice = async (payload: TInvoice) => {
     console.log('invoice.antecipation', payload);
@@ -9,36 +10,10 @@ const antecipationInvoice = async (payload: TInvoice) => {
         Number(payload.invoiceId),
     );
 
-    const returnTopic = (
-        response: any,
-        err: boolean = false,
-        message: string = 'Success',
-    ) => {
-        return {
-            status: err ? 422 : 200,
-            err,
-            ...(message ? { message } : {}),
-            data: {
-                createInvoice: {
-                    ...(payload ? { ...payload } : {}),
-                    returnOpah: {
-                        status: err ? 'failed' : 'success',
-                        messageError: message || undefined,
-                        anticipation: true,
-                        spotInvoice: false,
-                        firstPayment: false,
-                        ...(message ? { message } : {}),
-                        ...(response ? { ...response } : {}),
-                        linkInvoice,
-                    },
-                },
-            },
-        };
-    };
-
     try {
         if (linkInvoice.err)
             return returnTopic(
+                payload,
                 {
                     message: 'error generating hash for link',
                 },
@@ -50,16 +25,25 @@ const antecipationInvoice = async (payload: TInvoice) => {
         if (resFindOneInclude.err)
             return returnTopic(resFindOneInclude.data, true);
 
-        // TO-DO
+        // TO-DO-BETO
         // pesquisar a recorrencia e paralizala ou remover a do mes vigente
         // "referenceDate": "2022-03-12",
 
-        return returnTopic({
-            message: 'Invoice successfully added',
-        });
+        return returnTopic(
+            payload,
+            {
+                message: 'Invoice successfully added',
+            },
+            false,
+            linkInvoice,
+        );
     } catch (error: any) {
         console.log(error);
-        return returnTopic({}, true, error?.message || 'Erro inesperado');
+        return returnTopic(
+            payload,
+            { message: error?.message || 'Erro inesperado' },
+            true,
+        );
     }
 };
 
