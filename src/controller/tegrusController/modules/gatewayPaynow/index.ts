@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import HashSearchService from './hashSearchService';
 import InvoiceService from '../../../../service/invoiceService';
-import ResidentService from '../../../../service/residentService';
 
 import {
     TFirstPaymentExecReq,
@@ -69,19 +68,8 @@ const servicePrivate = async (payload: TFirstPaymentExecReq) => {
                 true,
             );
 
-        const residentService = new ResidentService();
-        const resResident: {
-            err?: boolean;
-            data: TResident;
-        } = await residentService.FindOne(resInvoice.data.residentId);
-        if (resResident?.err)
-            return returnTopic(
-                { message: 'resident not found in database, unexpected error' },
-                true,
-            );
-
         const invoice: TInvoice = resInvoice.data;
-        const resident: TResident = resResident.data;
+        const resident: TResident = invoice.resident;
 
         if (
             [

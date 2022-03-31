@@ -1,7 +1,6 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
-// import deactivateRecurrence from '../tegrus.services/deactivateRecurrence';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -69,8 +68,6 @@ export default class InvoiceService {
             };
         }
 
-        // await deactivateRecurrence(Number(resInvoiceId?.recurrenceId));
-
         return {
             err: false,
             data: resInvoiceId,
@@ -127,6 +124,29 @@ export default class InvoiceService {
         return {
             err: false,
             data: resInvoiceFind,
+        };
+    };
+
+    public Update = async (payload: TInvoice) => {
+        this.logger(`Update`);
+
+        const resInvoiceUpdate: any = await this.invoiceRepository.update(
+            payload,
+        );
+
+        if (resInvoiceUpdate instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
+            };
+        }
+
+        if (resInvoiceUpdate.err) return resInvoiceUpdate;
+        return {
+            err: false,
+            data: resInvoiceUpdate,
         };
     };
 }

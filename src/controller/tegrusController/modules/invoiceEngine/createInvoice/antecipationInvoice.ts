@@ -10,24 +10,19 @@ const antecipationInvoice = async (payload: TInvoice) => {
         Number(payload.invoiceId),
     );
 
+    if (linkInvoice?.err)
+        return returnTopic(
+            payload,
+            {
+                message: 'error generating hash for link',
+            },
+            true,
+        );
     try {
-        if (linkInvoice.err)
-            return returnTopic(
-                payload,
-                {
-                    message: 'error generating hash for link',
-                },
-                true,
-            );
-
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOneInclude(payload);
         if (resFindOneInclude.err)
             return returnTopic(resFindOneInclude.data, true);
-
-        // TO-DO-BETO
-        // pesquisar a recorrencia e paralizala ou remover a do mes vigente
-        // "referenceDate": "2022-03-12",
 
         return returnTopic(
             payload,

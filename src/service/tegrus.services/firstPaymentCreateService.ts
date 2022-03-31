@@ -21,13 +21,16 @@ export default async (
 
     const { resident, ...invoice } = payload;
 
-    const resultPR: any = await residentService.add(resident);    
+    const resultPR: any = await residentService.add(resident);
 
     if (resultPR?.err) {
         return resultPR;
     }
 
-    const resultIN: any = await invoiceService.FindOneInclude({...payload, residentIdenty: payload.resident.id});
+    const resultIN: any = await invoiceService.FindOneInclude({
+        ...payload,
+        residentIdenty: payload.resident.id,
+    });
     if (resultIN?.err) {
         return resultPR;
     }
