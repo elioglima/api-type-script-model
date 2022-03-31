@@ -52,7 +52,7 @@ export class InvoiceRepository {
     public Find = async (payload: TInvoiceFilter) =>
         await getConnection()
             .getRepository(InvoiceEntity)
-            .find()            
+            .find(payload)            
             .then(
                 (data) => {
                     return data;
