@@ -1,10 +1,12 @@
-// import InvoiceService from '../../../../../service/InvoiceService';
+import deactivateRecurrence from '../../../../service/tegrus.services/deactivateRecurrence';
+
 type TDeleteInvoiceData = {
     invoiceId: string;
     description: string;
 };
 
 import InvoiceService from '../../../../service/invoiceService';
+import { TInvoice } from '../../../../domain/Tegrus';
 
 const deleteInvoice = async (req: any) => {
     const payload: TDeleteInvoiceData = req?.deleteInvoice;
@@ -33,15 +35,48 @@ const deleteInvoice = async (req: any) => {
 
     try {
         const invoiceService = new InvoiceService();
-        const resFindOneInclude = await invoiceService.FindOneDisabled(
+        const resInvoice = await invoiceService.FindOne(
             Number(payload.invoiceId),
         );
-        if (resFindOneInclude.err)
-            return returnTopic(resFindOneInclude.data, true);
 
-        return returnTopic(resFindOneInclude.data);
+        if (resInvoice?.err)
+            return returnTopic(
+                { message: 'Failed to disable invoice deletion' },
+                true,
+            );
+
+        const invoice: TInvoice = resInvoice.data;
+        const resDeactivateRecurrence = await deactivateRecurrence(invoice);
+
+        if (resDeactivateRecurrence?.err)
+            return returnTopic(
+                {
+                    message:
+                        resDeactivateRecurrence?.data?.message ||
+                        'unexpected error, when canceling recurrence in cielo',
+                },
+                true,
+            );
+
+        const resFindOneDisabled = await invoiceService.FindOneDisabled(
+            invoice.invoiceId,
+        );
+
+        if (resFindOneDisabled?.err)
+            return returnTopic(
+                { message: 'Failed to disable invoice deletion' },
+                true,
+            );
+
+        if (resFindOneDisabled.err)
+            return returnTopic(resFindOneDisabled.data, true);
+
+        return returnTopic(resFindOneDisabled.data);
     } catch (error: any) {
-        return returnTopic({}, true, error?.message || 'Erro inesperado');
+        return returnTopic(
+            { message: error.message || 'unexpected error' },
+            true,
+        );
     }
 };
 

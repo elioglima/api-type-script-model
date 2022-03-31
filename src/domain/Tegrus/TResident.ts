@@ -17,7 +17,6 @@ export interface TResident {
     contractCode: string;
     startDateContract: string;
     endDateContract: string;
-    startDateRecurrence: string;
     recurrenceId?: string;
     startReferenceDate: Date;
     endReferenceDate: Date;
