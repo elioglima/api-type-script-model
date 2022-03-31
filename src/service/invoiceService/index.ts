@@ -138,4 +138,25 @@ export default class InvoiceService {
             data: resInvoiceFind,
         };
     };
+
+    public Update = async (payload: TInvoice) => {
+        this.logger(`Update`);
+
+        const resInvoiceUpdate: any = await this.invoiceRepository.update(payload);
+
+        if (resInvoiceUpdate instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
+            };
+        }
+
+        if (resInvoiceUpdate.err) return resInvoiceUpdate;
+        return {
+            err: false,
+            data: resInvoiceUpdate,
+        };
+    };
 }
