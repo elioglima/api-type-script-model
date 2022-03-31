@@ -2,14 +2,11 @@ import { HashDataRepository } from './../../dataProvider/repository/HashDataRepo
 import { hashData } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
-import { TFirstPaymentReq } from '../../domain/Tegrus';
 import { TInvoice } from '../../domain/Tegrus';
 import {
     reqCreateHash,
     resCreateHash,
 } from '../../domain/Tegrus/TFirstPayment';
-import PreRegisterService from './PreRegisterService';
-import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import createHash from './createHash';
 import moment from 'moment';
 import ResidentService from '../../service/residentService';
@@ -24,13 +21,13 @@ export default async (
 
     const { resident, ...invoice } = payload;
 
-    const resultPR: any = await residentService.add(resident);
+    const resultPR: any = await residentService.add(resident);    
 
     if (resultPR?.err) {
         return resultPR;
     }
 
-    const resultIN: any = await invoiceService.FindOneInclude(payload);
+    const resultIN: any = await invoiceService.FindOneInclude({...payload, residentIdenty: payload.resident.id});
     if (resultIN?.err) {
         return resultPR;
     }

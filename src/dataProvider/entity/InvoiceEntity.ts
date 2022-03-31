@@ -45,12 +45,6 @@ export class InvoiceEntity {
     apartmentId: number | undefined;
 
     @Column({
-        name: 'residentId',
-        type: 'int',
-    })
-    residentId: number | undefined;
-
-    @Column({
         name: 'enterpriseId',
         type: 'int',
     })

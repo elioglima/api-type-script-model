@@ -80,14 +80,6 @@ export default class InvoiceService {
     public FindOneInclude = async (invoice: TInvoice) => {
         this.logger(`Find One Include`);
 
-        // TO-DO
-
-        /* 
-            - verificar se existe o pre usuario
-            - verificar se existe a fatura 
-            - incluir caso nao exista
-        */
-
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoice.invoiceId,
         );
