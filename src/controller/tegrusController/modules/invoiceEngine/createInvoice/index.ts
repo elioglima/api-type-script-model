@@ -1,4 +1,4 @@
-import { schedulingRecurrence } from './schedulingRecurrence';
+import { booking } from './booking';
 import { invoicing } from './invoicing';
 import { antecipationInvoice } from './antecipationInvoice';
 import { spotInvoiceFine } from './spotInvoiceFine';
@@ -30,7 +30,7 @@ const createInvoice = async (req: CreateInvoiceReq) => {
         ) {
             return await antecipationInvoice(invoice);
         } else if (invoice?.type == EnumInvoiceType.booking) {
-            return await schedulingRecurrence(invoice);
+            return await booking(invoice);
         } else if (
             [EnumInvoiceType.spot, EnumInvoiceType.fine].includes(invoice?.type)
         ) {
