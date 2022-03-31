@@ -11,7 +11,6 @@ import { externalPayment } from './externalPayment';
 const invoiceEngine = async (req: Request, res: Response) => {
     try {
         const toReceive: TInvoiceEngineReq = req?.body;
-        console.log({ toReceive });
 
         if (toReceive?.createInvoice) {
             // Regra primeiro pagamento - area logada

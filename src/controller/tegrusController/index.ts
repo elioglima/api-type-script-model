@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import * as md from './modules';
 
 export class TegrusController {
-    public firstPaymentCreate = async (req: Request, res: Response) => {
-        return await md.firstPaymentCreate(req, res);
+    public gatewayPaynow = async (req: Request, res: Response) => {
+        return await md.gatewayPaynow(req, res);
     };
 
     public paymentRecurrentExecute = async (req: Request, res: Response) => {

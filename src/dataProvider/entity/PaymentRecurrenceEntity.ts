@@ -34,6 +34,9 @@ export class PaymentRecurrenceEntity {
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     value: number | undefined;
 
+    @Column({name: "active", type: 'boolean', default: 1})
+    active: boolean |undefined
+
     @Column({
         name: 'createdAt',
         type: 'timestamp',
