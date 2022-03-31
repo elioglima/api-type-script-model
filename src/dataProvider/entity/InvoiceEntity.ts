@@ -1,12 +1,11 @@
-import { PaymentRecurrenceEntity } from './PaymentRecurrenceEntity';
 import {
     Column,
     Entity,
     PrimaryGeneratedColumn,
     ManyToOne,
     JoinColumn,
-    OneToOne,
 } from 'typeorm';
+
 import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
 
 import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
