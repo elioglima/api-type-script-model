@@ -1,7 +1,7 @@
 import { TDOC } from './TDOC';
 
 export interface TResident {
-    id: Number;
+    id: number;
     name: string;
     nationality: string;
     nickname: string;

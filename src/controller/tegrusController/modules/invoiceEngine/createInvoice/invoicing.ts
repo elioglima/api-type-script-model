@@ -1,39 +1,13 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
+import PreRegisterResidentService from '../../../../../service/preRegisterResidentService';
 import createHash from './createHash';
+import { returnTopic } from './returnTopic';
 
 const invoicing = async (payload: TInvoice) => {
     const linkInvoice: TLinkInvoice = await createHash(
         Number(payload.invoiceId),
     );
-
-    const returnTopic = (
-        response: any,
-        err: boolean = false,
-        message: string = 'Success',
-    ) => {
-        return {
-            status: err ? 422 : 200,
-            err,
-            ...(message ? { message } : {}),
-            data: {
-                createInvoice: {
-                    ...(payload ? { ...payload } : {}),
-                    returnOpah: {
-                        err,
-                        spotInvoice: false,
-                        anticipation: false,
-                        type: payload.type,
-                        status: err ? 'failed' : 'success',
-                        messageError: message || undefined,
-                        ...(message ? { message } : {}),
-                        ...(response ? { ...response } : {}),
-                        linkInvoice,
-                    },
-                },
-            },
-        };
-    };
 
     try {
         console.log('invoicing', payload);
@@ -42,24 +16,86 @@ const invoicing = async (payload: TInvoice) => {
             payload.invoiceId,
         );
 
-        if (resFindOneInclude.err)
-            return returnTopic(resFindOneInclude.data, false);
+        if (resFindOneInclude.err) {
+            // consultar residente
+            const preRegisterResidentService = new PreRegisterResidentService();
+            const resPreRegisterResidentServiceFindOne =
+                await preRegisterResidentService.FindOne(payload.resident.id);
 
-        if (payload.isRecurrence == true) {
-            // neste caso devemos cadastrar o residente e a fatura
-            // regra do roberto
-            return returnTopic(resFindOneInclude.data, false);
+            const isResidentExist = !!resPreRegisterResidentServiceFindOne.err;
+            let isRecurrenceCreated = false;
+
+            if (isResidentExist == true) {
+                // verificar se existe uma recorrencia criada
+                isRecurrenceCreated = true;
+
+                if (
+                    isResidentExist &&
+                    isRecurrenceCreated &&
+                    payload.isRecurrence == true
+                ) {
+                    return returnTopic(
+                        payload,
+                        { message: 'recurrence is already active' },
+                        true,
+                    );
+                }
+            }
+
+            // cadastrar fatura
+
+            if (isResidentExist && isRecurrenceCreated) {
+                // verificar recorrencia na cielo se esta efetiva
+
+                // caso a fatura estiver paga atualizar o status da fatura
+                // statusInvoice.paid = 'paid',
+                // consultar invoice atualizada e retornar no topco
+                return returnTopic(
+                    payload,
+                    { message: 'recurrence is already active' },
+                    false,
+                );
+            }
+
+            linkInvoice;
+            return returnTopic(
+                payload,
+                {
+                    message: 'Invoice successfully added',
+                },
+                false,
+                linkInvoice,
+            );
         }
 
-        return returnTopic({
-            message: 'Invoice successfully added ',
-            paidAt: 'timestamp',
-            amountOfFailure: 'number',
-            statusInvoice: "'paid' | 'payment_problem'",
-        });
+        // verificar se existe uma recorrencia criada
+        const isRecurrenceCreated = true;
+
+        if (isRecurrenceCreated && payload.isRecurrence == true) {
+            return returnTopic(
+                payload,
+                { message: 'recurrence is already active' },
+                true,
+            );
+        }
+
+        // verificar recorrencia na cielo se esta efetiva
+
+        // caso a fatura estiver paga atualizar o status da fatura
+        // statusInvoice.paid = 'paid',
+        // consultar invoice atualizada e retornar no topco
+        return returnTopic(
+            payload,
+            { message: 'recurrence is already active' },
+            false,
+        );
     } catch (error: any) {
         console.log(error);
-        return returnTopic({}, true, error?.message || 'Erro inesperado');
+        return returnTopic(
+            payload,
+            { message: error?.message || 'unexpected error' },
+            true,
+        );
     }
 };
 

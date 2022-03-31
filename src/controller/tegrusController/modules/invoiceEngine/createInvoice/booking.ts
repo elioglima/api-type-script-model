@@ -24,9 +24,6 @@ const booking = async (payload: TInvoice) => {
                     ...(payload ? { ...payload } : {}),
                     returnOpah: {
                         err,
-                        spotInvoice: true,
-                        anticipation: false,
-                        firstPayment: false,
                         type: payload.type,
                         status: err ? 'failed' : 'success',
                         messageError: message || undefined,
