@@ -40,7 +40,7 @@ const returnTopic = (
     };
 };
 
-export const payNowCredit = (
+export const payNowRecurrence = (
     payload: TReq,
     invoice: TInvoice,
     resident: TResident,

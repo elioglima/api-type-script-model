@@ -25,7 +25,6 @@ export default async (
     const { resident, ...invoice } = payload;
 
     const resultPR: any = await residentService.add(resident);
-
     if (resultPR?.err) {
         return resultPR;
     }

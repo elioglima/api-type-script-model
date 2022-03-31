@@ -39,7 +39,15 @@ export class PreRegistrationRepository {
             .getRepository(PreRegisterResidentEntity)
             .createQueryBuilder('preRegisterResident')
             .where('preRegisterResident.id = :id', { id })
-            .getOne();
+            .getOne()
+            .then(
+                data => {
+                    return data;
+                },
+                onRejected => {
+                    return onRejected;
+                },
+            );
 
     public getByResidentId = async (residentId: number) =>
         await getConnection()
