@@ -22,7 +22,7 @@ export default class InvoiceService {
 
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoiceId,
-        );              
+        );
 
         if (resInvoiceId instanceof Error) {
             return {
@@ -39,12 +39,11 @@ export default class InvoiceService {
         };
     };
 
-    public FindOneRemove = async (invoiceId: number) => {
-        this.logger(`Find One Remove`);
+    public FindOneDisabled = async (invoiceId: number) => {
+        this.logger(`Find One FindOneDisabled`);
 
-        const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
-            invoiceId,
-        );
+        const resInvoiceId: TInvoice =
+            await this.invoiceRepository.getByInvoiceId(invoiceId);
 
         if (resInvoiceId instanceof Error) {
             return {
@@ -55,8 +54,23 @@ export default class InvoiceService {
             };
         }
 
-        // TO-DO atualizar a flag active = false
-        // const resInvoiceId = await this.invoiceRepository.update();
+        const resInvoiceUpdate: TInvoice = await this.invoiceRepository.update({
+            ...resInvoiceId,
+            invoiceId: invoiceId,
+            active: false,
+        });
+
+        if (resInvoiceUpdate instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
+            };
+        }
+
+        // TO-DO-BETO
+        // desativar recorrencia na cielo apenas a desta fatura pela recurrenteDate
 
         return {
             err: false,

@@ -12,8 +12,7 @@ const invoicing = async (payload: TInvoice) => {
     );
     const paymentRecurrenceRepository = new PaymentRecurrenceRepository();
 
-    try {
-        console.log('invoicing', payload);
+    try {        
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOne(
             payload.invoiceId,
@@ -64,7 +63,6 @@ const invoicing = async (payload: TInvoice) => {
                 );
             }
 
-            linkInvoice;
             return returnTopic(
                 payload,
                 {

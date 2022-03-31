@@ -1,14 +1,14 @@
+import crypto from 'crypto';
+import moment from 'moment';
+
 import {
     reqCreateHash,
     resCreateHash,
 } from '../../../../../domain/Tegrus/TFirstPayment';
 
-import crypto from 'crypto';
-
 import { hashData } from './../../../../../domain/Tegrus/TFirstPayment';
 import { TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import { HashDataRepository } from './../../../../../dataProvider/repository/HashDataRepository';
-import moment from 'moment';
 
 const createHash = (data: reqCreateHash): resCreateHash => {
     try {

@@ -39,7 +39,7 @@ export class InvoiceRepository {
             .leftJoinAndSelect('invoice.residentIdenty', 'resident')
             .getOne()
             .then(
-                (data) => {
+                data => {
                     return data;
                 },
                 onRejected => {
