@@ -1,4 +1,4 @@
-import InvoiceService from "src/service/invoiceService";
+import InvoiceService from "../../../../service/invoiceService";
 
 const updateInvoice = async (toReceive: any) => {
     try {
