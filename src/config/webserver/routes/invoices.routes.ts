@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { InvoicesController } from 'src/controller/invoicesController';
+import { InvoicesController } from '../../../controller/invoicesController';
 
 
 const invoicesController = new InvoicesController()
