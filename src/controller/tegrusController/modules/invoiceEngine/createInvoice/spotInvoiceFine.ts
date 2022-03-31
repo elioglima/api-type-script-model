@@ -1,10 +1,11 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
 
-const spotInvoiceFine = async (
-    payload: TInvoice,
-    linkInvoice: TLinkInvoice,
-) => {
+const spotInvoiceFine = async (payload: TInvoice, createHash: Function) => {
+    const linkInvoice: TLinkInvoice = await createHash(
+        Number(payload.invoiceId),
+    );
+
     const returnTopic = (
         response: any,
         err: boolean = false,
@@ -34,8 +35,17 @@ const spotInvoiceFine = async (
         };
     };
 
+    if (linkInvoice.err)
+        return returnTopic(
+            {
+                message: 'error generating hash for link',
+            },
+            true,
+        );
+
     try {
         console.log('spotInvoiceFine', payload);
+
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOneInclude(payload);
         if (resFindOneInclude.err)

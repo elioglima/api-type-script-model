@@ -32,12 +32,9 @@ const invoicing = async (payload: TInvoice) => {
             payload.invoiceId,
         );
 
+        console.log(123, resFindOneInclude);
         if (resFindOneInclude.err)
             return returnTopic(resFindOneInclude.data, false);
-
-        // verificar recorrencia vigente
-        // retornar para tegrus
-        // pago ou nao pago
 
         return returnTopic({
             message: 'Invoice successfully added',

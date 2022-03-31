@@ -21,7 +21,7 @@ export class InvoiceEntity {
         type: 'timestamp',
         default: () => 'CURRENT_TIMESTAMP()',
     })
-    date: string | undefined;
+    date: Date | undefined;
 
     @Column({
         name: 'invoiceId',
@@ -35,10 +35,6 @@ export class InvoiceEntity {
         nullable: true,
     })
     userId: number | undefined;
-
-    @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
-    @JoinColumn({ name: 'resident' })
-    resident: number | undefined;
 
     @Column({
         name: 'apartmentId',
@@ -95,16 +91,10 @@ export class InvoiceEntity {
     fine: number | undefined;
 
     @Column({
-        name: 'referenceDate',
-        type: 'timestamp',
+        name: 'fineTicket',
+        type: 'decimal',
     })
-    referenceDate: Date | undefined;
-
-    @Column({
-        name: 'startDateRecurrence',
-        type: 'timestamp',
-    })
-    startDateRecurrence: Date | undefined;
+    fineTicket: number | undefined;
 
     @Column({
         name: 'dueDate',
@@ -125,10 +115,17 @@ export class InvoiceEntity {
     anticipation: Boolean | undefined;
 
     @Column({
-        name: 'firstPayment',
-        type: 'boolean',
+        name: 'referenceDate',
+        type: 'timestamp',
     })
-    firstPayment: Boolean | undefined;
+    referenceDate: Date | undefined;
+
+    @Column({
+        name: 'type',
+        type: 'enum',
+        enum: EnumInvoiceType,
+    })
+    type: EnumInvoiceType | undefined;
 
     @Column({
         name: 'paymentMethod',
@@ -145,36 +142,17 @@ export class InvoiceEntity {
     statusInvoice: EnumTopicStatusInvoice | undefined;
 
     @Column({
-        name: 'type',
-        type: 'enum',
-        enum: EnumInvoiceType,
-    })
-    type: EnumInvoiceType | undefined;
-
-    @Column({
-        name: 'startReferenceDate',
-        type: 'timestamp',
-    })
-    startReferenceDate: Date | undefined;
-
-    @Column({
-        name: 'endReferenceDate',
-        type: 'timestamp',
-    })
-    endReferenceDate: Date | undefined;
-
-    @Column({
         name: 'paymentDate',
         type: 'timestamp',
     })
     paymentDate: Date | undefined;
 
     @Column({
-        name: 'recurrenceId',
-        type: 'varchar',
-        nullable: true,
+        name: 'isRecurrence',
+        type: 'boolean',
+        default: false,
     })
-    recurrenceId: string | undefined;
+    isRecurrence: Boolean | undefined;
 
     @Column({
         name: 'active',
@@ -182,4 +160,8 @@ export class InvoiceEntity {
         default: true,
     })
     active: Boolean | undefined;
+
+    @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
+    @JoinColumn({ name: 'residentIdenty' })
+    residentIdenty: number | undefined;
 }
