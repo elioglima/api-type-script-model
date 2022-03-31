@@ -1,7 +1,7 @@
 import { TDOC } from './TDOC';
 
 export interface TResident {
-    id: Number;
+    id: number;
     name: string;
     nationality: string;
     nickname: string;
@@ -18,4 +18,7 @@ export interface TResident {
     startDateContract: string;
     endDateContract: string;
     startDateRecurrence: string;
+    recurrenceId?: string;
+    startReferenceDate: Date;
+    endReferenceDate: Date;
 }

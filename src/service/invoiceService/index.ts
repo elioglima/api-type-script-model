@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
-// import { EnumTopicStatusInvoice } from '../domain/Tegrus/TStatusInvoice';
+// import deactivateRecurrence from '../tegrus.services/deactivateRecurrence';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -20,20 +20,6 @@ export default class InvoiceService {
     public FindOne = async (invoiceId: number) => {
         this.logger(`Find One Include`);
 
-        // TO-DO
-
-        /* 
-            - verificar se existe o pre usuario
-            - verificar se existe a fatura 
-            - incluir caso nao exista
-        */
-
-        // TO-DO
-        /* 
-            para cpf ja cadastrados buscar o userId
-            pelo pre-resident
-        */
-
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoiceId,
         );
@@ -42,7 +28,7 @@ export default class InvoiceService {
             return {
                 err: true,
                 data: {
-                    message: 'Error writing invoice',
+                    message: 'no invoice found',
                 },
             };
         }
@@ -53,12 +39,11 @@ export default class InvoiceService {
         };
     };
 
-    public FindOneRemove = async (invoiceId: number) => {
-        this.logger(`Find One Remove`);
+    public FindOneDisabled = async (invoiceId: number) => {
+        this.logger(`Find One FindOneDisabled`);
 
-        const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
-            invoiceId,
-        );
+        const resInvoiceId: TInvoice =
+            await this.invoiceRepository.getByInvoiceId(invoiceId);
 
         if (resInvoiceId instanceof Error) {
             return {
@@ -69,8 +54,22 @@ export default class InvoiceService {
             };
         }
 
-        // TO-DO atualizar a flag active = false
-        // const resInvoiceId = await this.invoiceRepository.update();
+        const resInvoiceUpdate: TInvoice = await this.invoiceRepository.update({
+            ...resInvoiceId,
+            invoiceId: invoiceId,
+            active: false,
+        });
+
+        if (resInvoiceUpdate instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
+            };
+        }
+
+        // await deactivateRecurrence(Number(resInvoiceId?.recurrenceId));
 
         return {
             err: false,
@@ -89,8 +88,6 @@ export default class InvoiceService {
             - incluir caso nao exista
         */
 
-        try {
-        } catch (error) {}
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoice.invoiceId,
         );

@@ -28,7 +28,7 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .where('invoice.invoiceId = :id', { id })
-            .leftJoinAndSelect('invoice.resident', 'preresident')
+            .leftJoinAndSelect('invoice.residentIdenty', 'preresident')
             .getOne();
 
     public getByInvoiceId = async (id: number) =>
@@ -36,8 +36,16 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .where('invoice.invoiceId = :id', { id })
-            .leftJoinAndSelect('invoice.resident', 'resident')
-            .getOne();
+            .leftJoinAndSelect('invoice.residentIdenty', 'resident')
+            .getOne()
+            .then(
+                data => {
+                    return data;
+                },
+                onRejected => {
+                    return onRejected;
+                },
+            );
 
     public getAll = async () =>
         await getConnection()

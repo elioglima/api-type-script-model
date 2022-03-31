@@ -24,4 +24,21 @@ export default class PreRegisterService {
             return error
         }
     }
+
+    public async getById(id: number) {
+        try {
+            this.logger('Starting method to create Payment');
+            const resp: any = await this.preRegister.getById(id)
+            if (resp?.error == true) {
+                return {
+                    err: true,
+                    data: resp.data
+                }
+            }
+            return resp
+        } catch (error) {
+            console.log(error)
+            return error
+        }
+    }
 }
