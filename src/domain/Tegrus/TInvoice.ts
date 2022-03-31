@@ -8,8 +8,7 @@ export type TInvoice = {
     date?: Date;
     invoiceId: number;
     userId?: number;
-    apartmentId: number;
-    residentId: number;
+    apartmentId: number;    
     enterpriseId: number;
     value: number; // double,
     condominium: number; // double,

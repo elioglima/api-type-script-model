@@ -1,16 +1,16 @@
 import {
     Column,
     Entity,
-    OneToMany,
-    PrimaryGeneratedColumn,
+    OneToMany,    
     JoinColumn,
+    PrimaryColumn,
 } from 'typeorm';
 import { TDOC } from '../../domain/Tegrus';
 import { InvoiceEntity } from './InvoiceEntity';
 
 @Entity('preRegisterResident')
 export class PreRegisterResidentEntity {
-    @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
+    @PrimaryColumn({ name: 'id', type: 'int' })
     id: Number | undefined;
 
     @Column({
