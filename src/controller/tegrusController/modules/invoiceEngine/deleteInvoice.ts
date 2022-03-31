@@ -1,4 +1,5 @@
-// import InvoiceService from '../../../../../service/InvoiceService';
+import deactivateRecurrence from '../../../../service/tegrus.services/deactivateRecurrence';
+
 type TDeleteInvoiceData = {
     invoiceId: string;
     description: string;
@@ -36,6 +37,9 @@ const deleteInvoice = async (req: any) => {
         const resFindOneInclude = await invoiceService.FindOneDisabled(
             Number(payload.invoiceId),
         );
+
+        await deactivateRecurrence(Number(payload?.invoiceId));
+
         if (resFindOneInclude.err)
             return returnTopic(resFindOneInclude.data, true);
 

@@ -25,10 +25,6 @@ const antecipationInvoice = async (payload: TInvoice) => {
         if (resFindOneInclude.err)
             return returnTopic(resFindOneInclude.data, true);
 
-        // TO-DO-BETO
-        // pesquisar a recorrencia e paralizala ou remover a do mes vigente
-        // "referenceDate": "2022-03-12",
-
         return returnTopic(
             payload,
             {
