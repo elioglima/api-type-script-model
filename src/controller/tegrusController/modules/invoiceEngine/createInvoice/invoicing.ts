@@ -57,7 +57,6 @@ const invoicing = async (payload: TInvoice) => {
                 );
             }
 
-            linkInvoice;
             return returnTopic(
                 payload,
                 {

@@ -13,7 +13,6 @@ import { InvoiceRepository } from '../../dataProvider/repository/InvoiceReposito
 import createHash from './createHash';
 import moment from 'moment';
 
-
 export default async (
     payload: TFirstPaymentReq,
 ): Promise<TErrorGeneric | resFirstPaymentCreate> => {
@@ -45,7 +44,7 @@ export default async (
     };
 
     const resultIN: any = await InvRep.persist(invoicePersist);
-    
+
     if (resultIN instanceof Error)
         return { err: true, data: { message: 'Error to create invoice' } };
 
@@ -83,19 +82,6 @@ export default async (
     if (resHashRep?.err) {
         return resHashRep;
     }
-
-    // const dataSendLinkResident: dataSendLinkResident = {
-    //     invoiceId: Number(resultHash.invoiceId),
-    //     url: String(resultHash.link),
-    //     email: String(resident.email),
-    //     smartphone: resident.smartphone,
-    // };
-
-    // const resultSendLinkResident = await sendLinkResident(dataSendLinkResident);
-
-    // if (resultSendLinkResident instanceof Error) {
-    //     return resultSendLinkResident;
-    // }
 
     const link_invoice: resFirstPaymentCreate = {
         invoiceId: invoice.invoiceId,
