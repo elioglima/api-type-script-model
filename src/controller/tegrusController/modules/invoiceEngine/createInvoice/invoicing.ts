@@ -1,16 +1,19 @@
-import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
-import { EnumInvoicePaymentMethod } from '../../../../../domain/Tegrus/EnumInvoicePaymentMethod';
+import createHash from './createHash';
 
 const invoicing = async (payload: TInvoice) => {
+    const linkInvoice: TLinkInvoice = await createHash(
+        Number(payload.invoiceId),
+    );
+
     const returnTopic = (
         response: any,
         err: boolean = false,
         message: string = 'Success',
-        status = 200,
     ) => {
         return {
-            status: err ? 422 : status,
+            status: err ? 422 : 200,
             err,
             ...(message ? { message } : {}),
             data: {
@@ -18,8 +21,14 @@ const invoicing = async (payload: TInvoice) => {
                     ...(payload ? { ...payload } : {}),
                     returnOpah: {
                         err,
+                        spotInvoice: false,
+                        anticipation: false,
+                        type: payload.type,
+                        status: err ? 'failed' : 'success',
+                        messageError: message || undefined,
                         ...(message ? { message } : {}),
                         ...(response ? { ...response } : {}),
+                        linkInvoice,
                     },
                 },
             },
@@ -33,14 +42,11 @@ const invoicing = async (payload: TInvoice) => {
             payload.invoiceId,
         );
 
-        console.log(123, resFindOneInclude);
+        if (resFindOneInclude.err)
+            return returnTopic(resFindOneInclude.data, false);
 
-        if (
-            [EnumInvoicePaymentMethod.ticket].includes(payload.paymentMethod) &&
-            resFindOneInclude.err
-        ) {
+        if (payload.isRecurrence == true) {
             // neste caso devemos cadastrar o residente e a fatura
-
             return returnTopic(resFindOneInclude.data, false);
         }
 

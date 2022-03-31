@@ -29,10 +29,7 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             invoice?.anticipation == true
         ) {
             return await antecipationInvoice(invoice);
-        } else if (
-            invoice?.type == EnumInvoiceType.booking &&
-            invoice.isRecurrence
-        ) {
+        } else if (invoice?.type == EnumInvoiceType.booking) {
             return await schedulingRecurrence(invoice);
         } else if (
             [EnumInvoiceType.spot, EnumInvoiceType.fine].includes(invoice?.type)
