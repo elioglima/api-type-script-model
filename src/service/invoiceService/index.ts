@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
-// import { EnumTopicStatusInvoice } from '../domain/Tegrus/TStatusInvoice';
+import deactivateRecurrence from '../tegrus.services/deactivateRecurrence';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -69,8 +69,7 @@ export default class InvoiceService {
             };
         }
 
-        // TO-DO-BETO
-        // desativar recorrencia na cielo apenas a desta fatura pela recurrenteDate
+        await deactivateRecurrence(resInvoiceId?.recurrenceId);
 
         return {
             err: false,
@@ -89,8 +88,6 @@ export default class InvoiceService {
             - incluir caso nao exista
         */
 
-        try {
-        } catch (error) {}
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoice.invoiceId,
         );

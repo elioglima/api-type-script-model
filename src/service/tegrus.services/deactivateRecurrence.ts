@@ -4,13 +4,13 @@ import { PreRegistrationRepository } from '../../dataProvider/repository/PreRegi
 import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 
-export default async (recurrenceId: string) => {
+export default async (residentId: number) => {
     try {
         const paymentAdapter = new Adapter();
         const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
 
-        const resRecu: any = await paymentRecurrenceRepo.getByRecurrenceId(
-            recurrenceId,
+        const resRecu: any = await paymentRecurrenceRepo.getByResidentId(
+            residentId,
         );
 
         if (resRecu instanceof Error) return { err: true, data: resRecu };
@@ -24,14 +24,12 @@ export default async (recurrenceId: string) => {
         await paymentAdapter.init(Number(resPreReg?.enterpriseId));
 
         const deactivateRecu: reqRecurrentDeactivate = {
-            recurrenceId,
+            recurrenceId: resRecu.recurrenceId,
         };
 
         const resDeactivate: any = await paymentAdapter.recurrentDeactivate(
             deactivateRecu,
         );
-
-        console.log('resDeactivate', resDeactivate);
 
         if (resDeactivate?.err)
             return {

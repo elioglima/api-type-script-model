@@ -116,13 +116,6 @@ export class PreRegisterResidentEntity {
     })
     endReferenceDate: Date | undefined;
 
-    @Column({
-        name: 'recurrenceId',
-        type: 'varchar',
-        nullable: true,
-    })
-    recurrenceId: string | undefined;
-
     @OneToMany(() => InvoiceEntity, invoice => invoice.id)
     @JoinColumn({ name: 'invoice' })
     invoice: InvoiceEntity[] | undefined;

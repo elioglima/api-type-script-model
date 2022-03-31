@@ -29,6 +29,7 @@ export type TInvoice = {
     isRecurrence: boolean;
     resident?: TResident;
     residentIdenty?: number;
+    recurrenceId?: number;
 };
 
 export type TInvoiceFilter = {

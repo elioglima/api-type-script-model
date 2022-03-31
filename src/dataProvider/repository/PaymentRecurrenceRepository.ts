@@ -44,6 +44,15 @@ export class PaymentRecurrenceRepository {
             })
             .getOne();
 
+    public getByResidentId = async (id: number) =>
+        await getConnection()
+            .getRepository(PaymentRecurrenceEntity)
+            .createQueryBuilder('paymentRecurrence')
+            .where('paymentRecurrence.residentId = :residentId', {
+                id,
+            })
+            .getOne();
+
     public getUserRecurrence = async (userId: number) =>
         await getConnection()
             .getRepository(PaymentRecurrenceEntity)

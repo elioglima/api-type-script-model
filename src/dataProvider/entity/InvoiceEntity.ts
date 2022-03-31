@@ -95,7 +95,7 @@ export class InvoiceEntity {
     @Column({
         name: 'fineTicket',
         type: 'decimal',
-        nullable: true
+        nullable: true,
     })
     fineTicket: number | undefined;
 
@@ -169,8 +169,6 @@ export class InvoiceEntity {
     residentIdenty: number | undefined;
 
     @OneToOne(() => PaymentRecurrenceEntity, payRecurrence => payRecurrence.id)
-    @JoinColumn({name: 'recurrenceId'})
-    recurrenceId: number | undefined;
-
-
+    @JoinColumn({ name: 'recurrenceIdenty' })
+    recurrencedenty: number | undefined;
 }
