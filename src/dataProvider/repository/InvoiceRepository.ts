@@ -37,7 +37,15 @@ export class InvoiceRepository {
             .createQueryBuilder('invoice')
             .where('invoice.invoiceId = :id', { id })
             .leftJoinAndSelect('invoice.residentIdenty', 'resident')
-            .getOne();
+            .getOne()
+            .then(
+                (data) => {
+                    return data;
+                },
+                onRejected => {
+                    return onRejected;
+                },
+            );
 
     public getAll = async () =>
         await getConnection()

@@ -2,7 +2,7 @@ import { HashDataRepository } from './../../dataProvider/repository/HashDataRepo
 import { hashData } from './../../domain/Tegrus/TFirstPayment';
 import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
-import { TFirstPayment } from '../../domain/Tegrus';
+import { TFirstPaymentReq } from '../../domain/Tegrus';
 import { TInvoice } from '../../domain/Tegrus';
 import {
     reqCreateHash,
@@ -13,9 +13,7 @@ import { InvoiceRepository } from '../../dataProvider/repository/InvoiceReposito
 import createHash from './createHash';
 import moment from 'moment';
 
-type TFirstPaymentReq = {
-    createResident: TFirstPayment;
-};
+
 export default async (
     payload: TFirstPaymentReq,
 ): Promise<TErrorGeneric | resFirstPaymentCreate> => {
@@ -47,9 +45,7 @@ export default async (
     };
 
     const resultIN: any = await InvRep.persist(invoicePersist);
-
-    console.log('ASDAD', resultIN);
-
+    
     if (resultIN instanceof Error)
         return { err: true, data: { message: 'Error to create invoice' } };
 

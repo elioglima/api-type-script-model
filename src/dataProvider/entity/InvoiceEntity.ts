@@ -1,9 +1,11 @@
+import { PaymentRecurrenceEntity } from './PaymentRecurrenceEntity';
 import {
     Column,
     Entity,
     PrimaryGeneratedColumn,
     ManyToOne,
     JoinColumn,
+    OneToOne,
 } from 'typeorm';
 import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
 
@@ -93,6 +95,7 @@ export class InvoiceEntity {
     @Column({
         name: 'fineTicket',
         type: 'decimal',
+        nullable: true
     })
     fineTicket: number | undefined;
 
@@ -164,4 +167,10 @@ export class InvoiceEntity {
     @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'residentIdenty' })
     residentIdenty: number | undefined;
+
+    @OneToOne(() => PaymentRecurrenceEntity, payRecurrence => payRecurrence.id)
+    @JoinColumn({name: 'recurrenceId'})
+    recurrenceId: number | undefined;
+
+
 }

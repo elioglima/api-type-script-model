@@ -17,7 +17,7 @@ export type TInvoice = {
     tax: number; // double,
     refund: number; // double,
     fine: number; // double,
-    fineTicket: number;
+    fineTicket?: number;
     dueDate: Date; //timestamp,
     description: string;
     anticipation: boolean;
@@ -27,8 +27,8 @@ export type TInvoice = {
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumTopicStatusInvoice;
     isRecurrence: boolean;
-    resident: TResident;
-    residentIdenty: number;
+    resident?: TResident;
+    residentIdenty?: number;
 };
 
 export type TInvoiceFilter = {

@@ -1,15 +1,12 @@
-import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import { EnumInvoicePaymentMethod } from '../../../../../domain/Tegrus/EnumInvoicePaymentMethod';
-import createHash from './createHash';
+
 import InvoiceService from '../../../../../service/invoiceService';
+import firstPaymentCreateService from '../../../../../service/tegrus.services/firstPaymentCreateService';
 
 const booking = async (payload: TInvoice) => {
-    console.log('schedulingRecurrence', payload);
-
-    const linkInvoice: TLinkInvoice = await createHash(
-        Number(payload.invoiceId),
-    );
-
+    console.log('schedulingRecurrence', payload);  
+    let linkInvoice: any = null
     const returnTopic = (
         response: any,
         err: boolean = false,
@@ -38,33 +35,32 @@ const booking = async (payload: TInvoice) => {
             },
         };
     };
-
-    try {
-        if (linkInvoice.err)
-            return returnTopic(
-                {
-                    message: 'error generating hash for link',
-                },
-                true,
-            );
-
+    try {      
         const invoiceService = new InvoiceService();
         const resFindOne = await invoiceService.FindOne(payload.invoiceId);
-
-        if (!resFindOne.err)
+        
+        if (resFindOne.data)
             return returnTopic({
                 message: 'invoice already exists in the database',
             });
 
-        // cadastrar fatura
-        // cadastrar residente
+        const reqCreate:any = {
+            createResident:{
+                resident: payload.resident,
+                invoice: delete payload.resident && payload,
+            }
+        }
+
+        linkInvoice = await firstPaymentCreateService(reqCreate);     
+
+        if(linkInvoice.err) return returnTopic({}, true, 'Unexpect Error');
 
         return returnTopic({
             message: 'Invoice successfully added',
         });
     } catch (error: any) {
         console.log(error);
-        return returnTopic({}, true, error?.message || 'Erro inesperado');
+        return returnTopic({}, true, error?.message || 'Unexpect Error');
     }
 };
 
