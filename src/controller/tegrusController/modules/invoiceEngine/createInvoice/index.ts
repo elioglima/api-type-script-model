@@ -5,6 +5,7 @@ import { spotInvoiceFine } from './spotInvoiceFine';
 
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import { EnumInvoiceType } from '../../../../../domain/Tegrus/EnumInvoiceType';
+import { returnTopic } from './returnTopic';
 
 type CreateInvoiceReq = {
     createInvoice?: TInvoice;
@@ -23,6 +24,14 @@ const createInvoice = async (req: CreateInvoiceReq) => {
         }
 
         const invoice: TInvoice = req.createInvoice;
+
+        // validates
+        if (!invoice?.resident)
+            returnTopic(
+                invoice,
+                { message: 'Resident was not informed' },
+                true,
+            );
 
         if (
             [EnumInvoiceType.spot].includes(invoice?.type) &&
@@ -45,16 +54,6 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             // return response;
         }
 
-        /* 
-
-            return {
-            err: true,
-            data: {
-                // resposta de erro
-            }
-            }
-
-        */
         return {
             err: false,
             data: {

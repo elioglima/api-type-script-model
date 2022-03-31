@@ -20,7 +20,9 @@ const invoicing = async (payload: TInvoice) => {
             // consultar residente
             const preRegisterResidentService = new PreRegisterResidentService();
             const resPreRegisterResidentServiceFindOne =
-                await preRegisterResidentService.FindOne(payload.resident.id);
+                await preRegisterResidentService.FindOne(
+                    Number(payload?.resident?.id),
+                );
 
             const isResidentExist = !!resPreRegisterResidentServiceFindOne.err;
             let isRecurrenceCreated = false;
