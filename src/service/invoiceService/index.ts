@@ -90,10 +90,7 @@ export default class InvoiceService {
         */
 
         try {
-            
-        } catch (error) {
-            
-        }
+        } catch (error) {}
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoice.invoiceId,
         );
@@ -126,49 +123,22 @@ export default class InvoiceService {
 
     public Find = async (payload: TInvoiceFilter) => {
         this.logger(`Find`);
-       
 
-        try {
-            const resInvoiceFind = await this.invoiceRepository.Find(payload);
+        const resInvoiceFind: any = await this.invoiceRepository.Find(payload);
 
-            console.log("resInvoiceFind", resInvoiceFind)
-            
-            
-            if (resInvoiceFind instanceof Error) {
-                return {
-                    err: true,
-                    data: {
-                        message: "Invoice doesnt found.",
-                    },
-                };
-            }
-    
-            if(!resInvoiceFind) return {err: true, data: {message: "Invoice doesnt found."}}
-    
+        if (resInvoiceFind instanceof Error) {
             return {
-                err: false,
-                data: resInvoiceFind,
+                err: true,
+                data: {
+                    message: 'Error writing invoice',
+                },
             };
-        } catch (error) {
-            console.log("ERROR", error)
         }
-        // necessario este residentId ou idUser,
 
-        /* 
-                dateStart: string; // 01/02/2022 00:00
-                dateEnd: string; // 01/02/2022 23:59
-                residentId?: number;
-                idUser?: number;
-            
-            invoiceId?: number;
-            paymentMethod?: EnumInvoicePaymentMethod;
-            statusInvoice?: EnumTopicStatusInvoice;
-            
-        */
-        // const where: string = 'invoice.id = :id';
-        // const data: Object = {
-        //     // id: invoiceId,
-        // };
-
+        if (resInvoiceFind.err) return resInvoiceFind;
+        return {
+            err: false,
+            data: resInvoiceFind,
+        };
     };
 }

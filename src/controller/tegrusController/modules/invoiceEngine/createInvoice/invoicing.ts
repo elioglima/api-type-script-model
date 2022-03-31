@@ -1,5 +1,5 @@
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
-import InvoiceService from '../../../../../service/InvoiceService';
+import InvoiceService from '../../../../../service/invoiceService';
 
 const invoicing = async (payload: TInvoice) => {
     const returnTopic = (
@@ -32,12 +32,9 @@ const invoicing = async (payload: TInvoice) => {
             payload.invoiceId,
         );
 
+        console.log(123, resFindOneInclude);
         if (resFindOneInclude.err)
             return returnTopic(resFindOneInclude.data, false);
-
-        // verificar recorrencia vigente
-        // retornar para tegrus
-        // pago ou nao pago
 
         return returnTopic({
             message: 'Invoice successfully added',

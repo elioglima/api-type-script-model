@@ -1,8 +1,10 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
-import InvoiceService from '../../../../../service/invoiceService';
 
-const antecipationInvoice = async (payload: TInvoice, createHash: Function) => {
-    console.log('invoice.antecipation', payload);
+const schedulingRecurrence = async (
+    payload: TInvoice,
+    createHash: Function,
+) => {
+    console.log('schedulingRecurrence', payload);
 
     const linkInvoice: TLinkInvoice = await createHash(
         Number(payload.invoiceId),
@@ -21,11 +23,13 @@ const antecipationInvoice = async (payload: TInvoice, createHash: Function) => {
                 createInvoice: {
                     ...(payload ? { ...payload } : {}),
                     returnOpah: {
+                        err,
+                        spotInvoice: true,
+                        anticipation: false,
+                        firstPayment: false,
+                        type: payload.type,
                         status: err ? 'failed' : 'success',
                         messageError: message || undefined,
-                        anticipation: true,
-                        spotInvoice: false,
-                        firstPayment: false,
                         ...(message ? { message } : {}),
                         ...(response ? { ...response } : {}),
                         linkInvoice,
@@ -43,16 +47,25 @@ const antecipationInvoice = async (payload: TInvoice, createHash: Function) => {
                 },
                 true,
             );
+        /*
+            obs: if (req.createInvoice?.type == EnumInvoiceType.booking) {
 
-        const invoiceService = new InvoiceService();
-        const resFindOneInclude = await invoiceService.FindOneInclude(payload);
-        if (resFindOneInclude.err)
-            return returnTopic(resFindOneInclude.data, true);
+            .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
+                firstPayment = true = primeiro pagamento
+                firstPayment = false = uma fatura spot
+            .antecipation - determina caso seja uma antecipacao
+        */
 
-        // TO-DO
-        // pesquisar a recorrencia e paralizala ou remover a do mes vigente
-        // "referenceDate": "2022-03-12",
+        /* 
 
+            return {
+            err: true,
+            data: {
+                // resposta de erro
+            }
+            }
+
+        */
         return returnTopic({
             message: 'Invoice successfully added',
         });
@@ -62,4 +75,4 @@ const antecipationInvoice = async (payload: TInvoice, createHash: Function) => {
     }
 };
 
-export { antecipationInvoice };
+export { schedulingRecurrence };

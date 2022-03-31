@@ -1,34 +1,15 @@
 import { EnumTopicStatusInvoice } from './TStatusInvoice';
-
-export enum EnumInvoiceType {
-    booking = 'booking', // primeiro aluguel
-    fine = 'fine', // multa
-    rent = 'rent', // aluguel
-    spot = 'spot', // pagamento fora do app
-}
-
-/*
-
-    O tipo booking é a fatura de reserva (primeiro pagamento)
-    O tipo rent são as faturas mensais de aluguel
-
-*/
-
-export enum EnumInvoicePaymentMethod {
-    ticket = 'ticket',
-    transfer = 'transfer',
-    credit = 'credit',
-    internationalTransfer = 'international_transfer',
-    courtesy = 'courtesy',
-}
+import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
+import { EnumInvoiceType } from './EnumInvoiceType';
+import { TResident } from './TResident';
 
 export type TInvoice = {
     id?: number;
-    resident: number;
+    date?: Date;
     invoiceId: number;
+    userId?: number;
     apartmentId: number;
     residentId: number;
-    recurrenceId?: string;
     enterpriseId: number;
     value: number; // double,
     condominium: number; // double,
@@ -37,27 +18,32 @@ export type TInvoice = {
     refund: number; // double,
     fine: number; // double,
     fineTicket: number;
-    startReferenceDate: Date;
-    endReferenceDate: Date;
     dueDate: Date; //timestamp,
     description: string;
     anticipation: boolean;
-    firstPayment: boolean; // –caso seja a primeira fatura, deve vir preenchido true.
     referenceDate: Date; //timestamp,
-    startDateRecurrence: Date; //timestamp,
-    isSpot?: boolean;
     active?: boolean;
     type: EnumInvoiceType;
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumTopicStatusInvoice;
+    isRecurrence: boolean;
+    resident: TResident;
+    residentIdenty: number;
 };
 
 export type TInvoiceFilter = {
-    dateStart?: string; // 01/02/2022 00:00
-    dateEnd?: string; // 01/02/2022 23:59
+    startDate: string; // 01/02/2022 00:00
+    endDate: string; // 01/02/2022 23:59
     invoiceId?: number;
     residentId?: number;
-    idUser?: number;
+    userId?: number;
     paymentMethod?: EnumInvoicePaymentMethod;
     statusInvoice?: EnumTopicStatusInvoice;
+};
+
+export type TLinkInvoice = {
+    invoiceId: number;
+    hashCredit: string;
+    err?: boolean;
+    message?: string;
 };

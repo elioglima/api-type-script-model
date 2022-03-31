@@ -4,7 +4,7 @@ type TDeleteInvoiceData = {
     description: string;
 };
 
-import InvoiceService from '../../../../service/InvoiceService';
+import InvoiceService from '../../../../service/invoiceService';
 
 const deleteInvoice = async (req: any) => {
     const payload: TDeleteInvoiceData = req?.deleteInvoice;
@@ -31,7 +31,7 @@ const deleteInvoice = async (req: any) => {
         };
     };
 
-    try {        
+    try {
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOneRemove(
             Number(payload.invoiceId),

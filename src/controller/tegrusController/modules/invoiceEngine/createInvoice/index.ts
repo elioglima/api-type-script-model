@@ -1,11 +1,11 @@
-import { firstPayment } from './firstPayment';
+import { schedulingRecurrence } from './schedulingRecurrence';
 import { invoicing } from './invoicing';
 import { antecipationInvoice } from './antecipationInvoice';
-import { spotInvoice } from './spotInvoice';
-import {
-    TInvoice,
-    EnumInvoiceType,
-} from '../../../../../domain/Tegrus/TInvoice';
+import { spotInvoiceFine } from './spotInvoiceFine';
+import createHash from './createHash';
+
+import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import { EnumInvoiceType } from '../../../../../domain/Tegrus/EnumInvoiceType';
 
 type CreateInvoiceReq = {
     createInvoice?: TInvoice;
@@ -23,36 +23,24 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             };
         }
 
-        if (req.createInvoice?.anticipation == true) {
-            /*
-                .antecipation - determina caso seja uma antecipacao
-            */
-            const response = await antecipationInvoice(req.createInvoice);
-            return response;
-        } else if (req.createInvoice?.type == EnumInvoiceType.booking) {
-            /*
-                - area logada
-                .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
-                    firstPayment = true = primeiro pagamento
-                    firstPayment = false = uma fatura spot
-            */
-            const response = await firstPayment(req.createInvoice);
-            return response;
-        } else if (req.createInvoice?.type == EnumInvoiceType.spot) {
-            /*
-                .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
-                firstPayment = true = primeiro pagamento
-                firstPayment = false = uma fatura spot
-            */
+        const invoice: TInvoice = req.createInvoice;
 
-            const response = await spotInvoice(req.createInvoice);
-            return response;
-        } else if (req.createInvoice?.type == EnumInvoiceType.rent) {
-            /*
-                apenas uma emissao de faturas
-            */
-            const response = await invoicing(req.createInvoice);
-            return response;
+        if (
+            [EnumInvoiceType.spot].includes(invoice?.type) &&
+            invoice?.anticipation == true
+        ) {
+            return await antecipationInvoice(invoice, createHash);
+        } else if (
+            invoice?.type == EnumInvoiceType.booking &&
+            invoice.isRecurrence
+        ) {
+            return await schedulingRecurrence(invoice, createHash);
+        } else if (
+            [EnumInvoiceType.spot, EnumInvoiceType.fine].includes(invoice?.type)
+        ) {
+            return await spotInvoiceFine(invoice, createHash);
+        } else if (invoice?.type == EnumInvoiceType.rent) {
+            return await invoicing(invoice);
         } else {
             /*
                 apenas uma emissao de faturas
