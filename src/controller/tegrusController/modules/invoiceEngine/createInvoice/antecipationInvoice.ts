@@ -1,7 +1,8 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
+import createHash from './createHash';
 
-const antecipationInvoice = async (payload: TInvoice, createHash: Function) => {
+const antecipationInvoice = async (payload: TInvoice) => {
     console.log('invoice.antecipation', payload);
 
     const linkInvoice: TLinkInvoice = await createHash(

@@ -1,5 +1,6 @@
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
+import { EnumInvoicePaymentMethod } from '../../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 
 const invoicing = async (payload: TInvoice) => {
     const returnTopic = (
@@ -33,11 +34,18 @@ const invoicing = async (payload: TInvoice) => {
         );
 
         console.log(123, resFindOneInclude);
-        if (resFindOneInclude.err)
+
+        if (
+            [EnumInvoicePaymentMethod.ticket].includes(payload.paymentMethod) &&
+            resFindOneInclude.err
+        ) {
+            // neste caso devemos cadastrar o residente e a fatura
+
             return returnTopic(resFindOneInclude.data, false);
+        }
 
         return returnTopic({
-            message: 'Invoice successfully added',
+            message: 'Invoice successfully added ',
             paidAt: 'timestamp',
             amountOfFailure: 'number',
             statusInvoice: "'paid' | 'payment_problem'",

@@ -42,8 +42,8 @@ export type TInvoiceFilter = {
 };
 
 export type TLinkInvoice = {
-    invoiceId: number;
-    hashCredit: string;
+    invoiceId?: number;
+    hashCredit?: string;
     err?: boolean;
     message?: string;
 };

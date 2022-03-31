@@ -1,9 +1,7 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import createHash from './createHash';
 
-const schedulingRecurrence = async (
-    payload: TInvoice,
-    createHash: Function,
-) => {
+const schedulingRecurrence = async (payload: TInvoice) => {
     console.log('schedulingRecurrence', payload);
 
     const linkInvoice: TLinkInvoice = await createHash(
