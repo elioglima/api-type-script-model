@@ -8,7 +8,7 @@ export type TInvoice = {
     date?: Date;
     invoiceId: number;
     userId?: number;
-    apartmentId: number;    
+    apartmentId: number;
     enterpriseId: number;
     value: number; // double,
     condominium: number; // double,
@@ -46,4 +46,5 @@ export type TLinkInvoice = {
     hashCredit?: string;
     err?: boolean;
     message?: string;
+    data?: any;
 };

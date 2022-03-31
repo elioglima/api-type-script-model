@@ -10,16 +10,15 @@ const antecipationInvoice = async (payload: TInvoice) => {
         Number(payload.invoiceId),
     );
 
+    if (linkInvoice?.err)
+        return returnTopic(
+            payload,
+            {
+                message: 'error generating hash for link',
+            },
+            true,
+        );
     try {
-        if (linkInvoice.err)
-            return returnTopic(
-                payload,
-                {
-                    message: 'error generating hash for link',
-                },
-                true,
-            );
-
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOneInclude(payload);
         if (resFindOneInclude.err)

@@ -1,10 +1,4 @@
-import {
-    Column,
-    Entity,
-    OneToMany,    
-    JoinColumn,
-    PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, JoinColumn, PrimaryColumn } from 'typeorm';
 import { TDOC } from '../../domain/Tegrus';
 import { InvoiceEntity } from './InvoiceEntity';
 
