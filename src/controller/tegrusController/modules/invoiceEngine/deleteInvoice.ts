@@ -33,7 +33,7 @@ const deleteInvoice = async (req: any) => {
 
     try {
         const invoiceService = new InvoiceService();
-        const resFindOneInclude = await invoiceService.FindOneRemove(
+        const resFindOneInclude = await invoiceService.FindOneDisabled(
             Number(payload.invoiceId),
         );
         if (resFindOneInclude.err)

@@ -1,14 +1,15 @@
 import { EnumTopicStatusInvoice } from './TStatusInvoice';
 import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from './EnumInvoiceType';
+import { TResident } from './TResident';
 
 export type TInvoice = {
     id?: number;
-    resident: number;
+    date?: Date;
     invoiceId: number;
+    userId?: number;
     apartmentId: number;
     residentId: number;
-    recurrenceId?: string;
     enterpriseId: number;
     value: number; // double,
     condominium: number; // double,
@@ -16,20 +17,19 @@ export type TInvoice = {
     tax: number; // double,
     refund: number; // double,
     fine: number; // double,
-    fineTicket: number;
-    startReferenceDate: Date;
-    endReferenceDate: Date;
+    fineTicket?: number;
     dueDate: Date; //timestamp,
     description: string;
     anticipation: boolean;
-    firstPayment: boolean; // –caso seja a primeira fatura, deve vir preenchido true.
     referenceDate: Date; //timestamp,
-    startDateRecurrence: Date; //timestamp,
-    isSpot?: boolean;
     active?: boolean;
     type: EnumInvoiceType;
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumTopicStatusInvoice;
+    isRecurrence: boolean;
+    resident?: TResident;
+    residentIdenty?: number;
+    recurrenceId?: number;
 };
 
 export type TInvoiceFilter = {
@@ -43,6 +43,8 @@ export type TInvoiceFilter = {
 };
 
 export type TLinkInvoice = {
-    invoiceId: number;
-    hashCredit: string;
+    invoiceId?: number;
+    hashCredit?: string;
+    err?: boolean;
+    message?: string;
 };

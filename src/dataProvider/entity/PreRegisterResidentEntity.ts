@@ -3,7 +3,7 @@ import {
     Entity,
     OneToMany,
     PrimaryGeneratedColumn,
-    JoinColumn,    
+    JoinColumn,
 } from 'typeorm';
 import { TDOC } from '../../domain/Tegrus';
 import { InvoiceEntity } from './InvoiceEntity';
@@ -104,8 +104,19 @@ export class PreRegisterResidentEntity {
     })
     endDateContract: Date | undefined;
 
+    @Column({
+        name: 'startReferenceDate',
+        type: 'timestamp',
+    })
+    startReferenceDate: Date | undefined;
+
+    @Column({
+        name: 'endReferenceDate',
+        type: 'timestamp',
+    })
+    endReferenceDate: Date | undefined;
+
     @OneToMany(() => InvoiceEntity, invoice => invoice.id)
     @JoinColumn({ name: 'invoice' })
     invoice: InvoiceEntity[] | undefined;
-
 }

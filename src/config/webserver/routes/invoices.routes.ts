@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { invoicesFilter } from '../../../controller/invoicesController';
+import { InvoicesController } from 'src/controller/invoicesController';
+
+
+const invoicesController = new InvoicesController()
 
 export const invoices: Router = Router();
-invoices.post('/', invoicesFilter);
+invoices.post('/', invoicesController.invoicesFilter);
