@@ -27,7 +27,7 @@ export type TInvoice = {
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumTopicStatusInvoice;
     isRecurrence: boolean;
-    resident?: TResident;
+    resident: TResident;
     residentIdenty?: number;
     recurrenceId?: number;
 };

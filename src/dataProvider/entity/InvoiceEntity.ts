@@ -168,7 +168,7 @@ export class InvoiceEntity {
     @JoinColumn({ name: 'residentIdenty' })
     residentIdenty: number | undefined;
 
-    @OneToOne(() => PaymentRecurrenceEntity, payRecurrence => payRecurrence.id)
-    @JoinColumn({ name: 'recurrenceIdenty' })
-    recurrencedenty: number | undefined;
+    // @OneToOne(() => PaymentRecurrenceEntity, payRecurrence => payRecurrence.id)
+    // @JoinColumn({ name: 'recurrenceIdenty' })
+    // recurrencedenty: number | undefined;
 }

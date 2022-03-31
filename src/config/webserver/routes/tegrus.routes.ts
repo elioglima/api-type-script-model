@@ -13,6 +13,7 @@ tegrus
         '/paymentRecurrent/execute',
         PaymentTegrusController.paymentRecurrentExecute,
     )
+    .post('/gateway/paynow', PaymentTegrusController.gatewayPaynow)
     .post('/cancelContract', PaymentTegrusController.cancelContract)
     .put(
         '/deactivateRecurrence/:recurrenceId',

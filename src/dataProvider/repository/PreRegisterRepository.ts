@@ -13,7 +13,7 @@ export class PreRegistrationRepository {
             .insert()
             .values([
                 {
-                    ...preReg
+                    ...preReg,
                 },
             ])
             .execute()
@@ -39,6 +39,15 @@ export class PreRegistrationRepository {
             .getRepository(PreRegisterResidentEntity)
             .createQueryBuilder('preRegisterResident')
             .where('preRegisterResident.id = :id', { id })
+            .getOne();
+
+    public getByResidentId = async (residentId: number) =>
+        await getConnection()
+            .getRepository(PreRegisterResidentEntity)
+            .createQueryBuilder('preRegisterResident')
+            .where('preRegisterResident.residentId = :residentId', {
+                residentId,
+            })
             .getOne();
 
     public update = async (preReg: TResident) => {

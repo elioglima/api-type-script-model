@@ -6,3 +6,4 @@ export * from './cancelContract';
 export * from './deactivateRecurrence';
 export * from '../../../service/tegrus.services/createHash';
 export * from './hashSearch';
+export * from './gatewayPaynow';

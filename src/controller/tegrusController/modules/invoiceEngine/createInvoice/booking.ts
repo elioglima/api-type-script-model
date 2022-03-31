@@ -4,7 +4,7 @@ import firstPaymentCreateService from '../../../../../service/tegrus.services/fi
 import { returnTopic } from './returnTopic';
 
 const booking = async (payload: TInvoice) => {
-    console.log('schedulingRecurrence', payload);
+    console.log('booking', payload);
 
     try {
         const invoiceService = new InvoiceService();
@@ -19,14 +19,7 @@ const booking = async (payload: TInvoice) => {
                 true,
             );
 
-        const reqCreate: any = {
-            createResident: {
-                resident: payload.resident,
-                invoice: delete payload.resident && payload,
-            },
-        };
-
-        const linkInvoice: any = await firstPaymentCreateService(reqCreate);
+        const linkInvoice: any = await firstPaymentCreateService(payload);
         if (linkInvoice.err)
             return returnTopic(payload, { message: 'Unexpect Error' }, true);
 
@@ -39,7 +32,7 @@ const booking = async (payload: TInvoice) => {
             linkInvoice,
         );
     } catch (error: any) {
-        console.log(error);
+        console.log(999, error);
         return returnTopic(
             payload,
             { message: error?.message || 'Unexpect Error' },

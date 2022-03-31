@@ -12,49 +12,34 @@ import PreRegisterService from './PreRegisterService';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import createHash from './createHash';
 import moment from 'moment';
+import ResidentService from '../../service/residentService';
+import InvoiceService from '../../service/invoiceService';
 
 export default async (
-    payload: TFirstPaymentReq,
+    payload: TInvoice,
 ): Promise<TErrorGeneric | resFirstPaymentCreate> => {
-    const PreReg = new PreRegisterService();
-    const InvRep = new InvoiceRepository();
+    const residentService = new ResidentService();
+    const invoiceService = new InvoiceService();
     const HashRep = new HashDataRepository();
 
-    if (!payload?.createResident) {
-        return {
-            err: true,
-            data: {
-                message: 'Error createResident not informed',
-            },
-        };
-    }
+    const { resident, ...invoice } = payload;
 
-    const { createResident } = payload;
-    const { resident, invoice } = createResident;
-
-    const resultPR: any = await PreReg.execute(resident);
+    const resultPR: any = await residentService.add(resident);
 
     if (resultPR?.err) {
         return resultPR;
     }
 
-    const invoicePersist: TInvoice = {
-        ...invoice,
-        resident: resultPR.id,
-    };
-
-    const resultIN: any = await InvRep.persist(invoicePersist);
-
-    if (resultIN instanceof Error)
-        return { err: true, data: { message: 'Error to create invoice' } };
+    const resultIN: any = await invoiceService.FindOneInclude(payload);
+    if (resultIN?.err) {
+        return resultPR;
+    }
 
     const dataHash: reqCreateHash = {
         invoiceId: invoice.invoiceId,
-        // url?: any
     };
 
     const resultHash: resCreateHash = await createHash(dataHash);
-
     if (resultHash?.err) {
         return {
             err: true,
@@ -78,7 +63,6 @@ export default async (
     };
 
     const resHashRep = await HashRep.persist(hashD);
-
     if (resHashRep?.err) {
         return resHashRep;
     }

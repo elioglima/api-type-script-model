@@ -122,7 +122,6 @@ export default class InvoiceService {
         this.logger(`Find`);
 
         const resInvoiceFind: any = await this.invoiceRepository.Find(payload);
-
         if (resInvoiceFind instanceof Error) {
             return {
                 err: true,
