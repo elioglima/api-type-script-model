@@ -17,8 +17,7 @@ const spotInvoiceFine = async (payload: TInvoice) => {
             true,
         );
 
-    try {
-        console.log('spotInvoiceFine', payload);
+    try {        
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOneInclude(payload);
         if (resFindOneInclude.err)
