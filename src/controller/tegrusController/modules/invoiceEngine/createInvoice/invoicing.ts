@@ -47,6 +47,7 @@ const invoicing = async (payload: TInvoice) => {
 
         if (payload.isRecurrence == true) {
             // neste caso devemos cadastrar o residente e a fatura
+            // regra do roberto
             return returnTopic(resFindOneInclude.data, false);
         }
 

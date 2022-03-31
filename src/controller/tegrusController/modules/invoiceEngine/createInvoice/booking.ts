@@ -1,7 +1,9 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
+import { EnumInvoicePaymentMethod } from '../../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import createHash from './createHash';
+import InvoiceService from '../../../../../service/invoiceService';
 
-const schedulingRecurrence = async (payload: TInvoice) => {
+const booking = async (payload: TInvoice) => {
     console.log('schedulingRecurrence', payload);
 
     const linkInvoice: TLinkInvoice = await createHash(
@@ -45,25 +47,26 @@ const schedulingRecurrence = async (payload: TInvoice) => {
                 },
                 true,
             );
-        /*
-            obs: if (req.createInvoice?.type == EnumInvoiceType.booking) {
 
-            .firstPayment - determina quando a fatura sera uma spot ou primeiro pagamento
-                firstPayment = true = primeiro pagamento
-                firstPayment = false = uma fatura spot
-            .antecipation - determina caso seja uma antecipacao
-        */
+        const invoiceService = new InvoiceService();
+        const resFindOne = await invoiceService.FindOne(payload.invoiceId);
 
-        /* 
+        if (resFindOne.err)
+            return returnTopic({
+                message: 'invoice already exists in the database',
+            });
 
-            return {
-            err: true,
-            data: {
-                // resposta de erro
-            }
-            }
+        // cadastrar fatura
+        // cadastrar residente
 
-        */
+        if (EnumInvoicePaymentMethod.credit == payload.paymentMethod) {
+            // registra regra de
+
+            return returnTopic({
+                message: 'Invoice successfully added',
+            });
+        }
+
         return returnTopic({
             message: 'Invoice successfully added',
         });
@@ -73,4 +76,4 @@ const schedulingRecurrence = async (payload: TInvoice) => {
     }
 };
 
-export { schedulingRecurrence };
+export { booking };
