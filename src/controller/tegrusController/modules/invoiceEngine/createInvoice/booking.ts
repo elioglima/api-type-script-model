@@ -32,7 +32,10 @@ const booking = async (payload: TInvoice) => {
                         messageError: message || undefined,
                         ...(message ? { message } : {}),
                         ...(response ? { ...response } : {}),
-                        linkInvoice,
+                        ...(EnumInvoicePaymentMethod.credit ==
+                        payload.paymentMethod
+                            ? { linkInvoice }
+                            : {}),
                     },
                 },
             },
@@ -51,21 +54,13 @@ const booking = async (payload: TInvoice) => {
         const invoiceService = new InvoiceService();
         const resFindOne = await invoiceService.FindOne(payload.invoiceId);
 
-        if (resFindOne.err)
+        if (!resFindOne.err)
             return returnTopic({
                 message: 'invoice already exists in the database',
             });
 
         // cadastrar fatura
         // cadastrar residente
-
-        if (EnumInvoicePaymentMethod.credit == payload.paymentMethod) {
-            // registra regra de
-
-            return returnTopic({
-                message: 'Invoice successfully added',
-            });
-        }
 
         return returnTopic({
             message: 'Invoice successfully added',
