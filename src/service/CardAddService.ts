@@ -44,7 +44,7 @@ export default class CardAddService {
 
             if (response?.err == true) return response;
 
-            if (!response?.cardToken) return new Error('Cannot instance Card');
+            if (!response?.cardToken) return new Error('Cannot instance Card');            
 
             paymentCard.hash = await this.cryptIntegrationGateway.encryptData(
                 paymentCard.hash,
@@ -56,7 +56,7 @@ export default class CardAddService {
             });
         } catch (error) {
             console.log(77, error);
-            return error;
+            return {err: true, data: error};
         }
     };
 }

@@ -60,6 +60,14 @@ export class PaymentCardsEntity {
     hash: string | undefined;
 
     @Column({
+        name: 'hash',
+        type: 'varchar',
+        length: 200,
+        nullable: true
+    })
+    hashC: string | undefined;
+
+    @Column({
         name: 'cardToken',
         type: 'varchar',
         length: 200,

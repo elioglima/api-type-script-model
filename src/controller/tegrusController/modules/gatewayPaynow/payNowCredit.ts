@@ -1,3 +1,4 @@
+import { PaymentRecurrenceRepository } from './../../../../dataProvider/repository/PaymentRecurrenceRepository';
 import { PaymentCards } from './../../../../domain/Payment/PaymentCards';
 import { EnumBrands } from '../../../../enum/BrandsEnum';
 import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice';
@@ -5,7 +6,7 @@ import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import CardAddService from '../../../../service/CardAddService';
-
+import CryptIntegrationGateway from '../../../../dataProvider/gateway/CryptIntegrationGateway';
 
 export type TReq = {
     hash: string;
@@ -15,6 +16,7 @@ export type TReq = {
         customerName: string;
         expirationDate: string;
         holder: string;
+        securityCode: number;
     };
 };
 
@@ -50,20 +52,46 @@ export const payNowCredit = async (
 ) => {
     try {
         const cardAddService = new CardAddService();
+        const cryptIntegrationGateway = new CryptIntegrationGateway();
+        const paymentRecurrenceRepository = new PaymentRecurrenceRepository();
 
+        const hashC = await cryptIntegrationGateway.encryptData(
+            payload.card.cardNumber,
+        );
         const resPaymentCard: PaymentCards = {
             cardNumber: payload.card.cardNumber,
             brand: EnumBrands[payload.card.brand],
             customerName: payload.card.customerName,
             expirationDate: payload.card.expirationDate,
-            holder: payload.card.holder
-        } 
+            holder: payload.card.holder,
+            hash: String(payload.card.securityCode),
+            hashC,
+        };
 
         const resCardAdd = await cardAddService.execute(resPaymentCard);
-        // salvar dados do cartao de credito na base de dados
-        // o codigo de seguranca e numero cartao criptogracado na funcao existente
 
-        
+        if (resCardAdd.err) return resCardAdd;
+
+        const resRecurrence: any = paymentRecurrenceRepository.getByPreUserId(
+            resident.id,
+        );
+
+        if (resRecurrence instanceof Error)
+            return { err: true, data: { message: 'Error to find recurrence' } };
+
+        if (resRecurrence) {
+            const resRecuUpdate = paymentRecurrenceRepository.update({
+                ...resRecurrence,
+                updatedAt: new Date(),
+                active: false,
+            });
+            if (resRecuUpdate instanceof Error)
+                return {
+                    err: true,
+                    data: { message: 'Error to find recurrence' },
+                };
+        }
+
         /* 
             - verificar se ha recorrencia vigente
                 - caso tenha cancelar a recorrencia e efetuar o pagamento
