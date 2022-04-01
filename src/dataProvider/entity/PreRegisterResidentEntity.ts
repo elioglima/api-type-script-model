@@ -15,6 +15,13 @@ export class PreRegisterResidentEntity {
     active: Boolean | undefined;
 
     @Column({
+        name: 'userId',
+        type: 'int',
+        nullable: true,
+    })
+    userId: number | undefined;
+
+    @Column({
         name: 'name',
         type: 'varchar',
     })

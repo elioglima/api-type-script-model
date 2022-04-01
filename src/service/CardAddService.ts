@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { PaymentCards } from '../domain/Payment';
+import { PaymentCards, TFindExistsFilter } from '../domain/Payment';
 import { PaymentCardsRepository } from '../dataProvider/repository/PaymentCardsRepository';
 import { reqCardAdd } from '../domain/IAdapter';
 import Adapter from '../domain/Adapter';
@@ -19,10 +19,18 @@ export default class CardAddService {
             paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0, 4);
             paymentCard.lastFourNumbers = paymentCard.cardNumber.slice(-4);
 
-            const cardExists =
-                await this.paymentCardRepository.getCardAlreadyExists(
-                    paymentCard,
-                );
+            const filter: TFindExistsFilter = {
+                userId: paymentCard.userId,
+                residentId: paymentCard.residentId,
+                enterpriseId: paymentCard.enterpriseId,
+                firstFourNumbers: paymentCard.firstFourNumbers,
+                lastFourNumbers: paymentCard.lastFourNumbers,
+                brand: paymentCard.brand,
+            };
+
+            const cardExists = await this.paymentCardRepository.findExists(
+                filter,
+            );
 
             if (cardExists instanceof PaymentCardsEntity) {
                 return new Error('Card already registered');
@@ -44,19 +52,25 @@ export default class CardAddService {
 
             if (response?.err == true) return response;
 
-            if (!response?.cardToken) return new Error('Cannot instance Card');            
+            if (!response?.cardToken) return new Error('Cannot instance Card');
 
             paymentCard.hash = await this.cryptIntegrationGateway.encryptData(
                 paymentCard.hash,
             );
 
-            return await this.paymentCardRepository.persist({
+            paymentCard.hashC = await this.cryptIntegrationGateway.encryptData(
+                paymentCard.cardNumber,
+            );
+
+            const cardInclude = {
                 ...paymentCard,
                 token: response.cardToken,
-            });
+            };
+
+            return await this.paymentCardRepository.FindOneInclude(cardInclude);
         } catch (error) {
             console.log(77, error);
-            return {err: true, data: error};
+            return { err: true, data: error };
         }
     };
 }

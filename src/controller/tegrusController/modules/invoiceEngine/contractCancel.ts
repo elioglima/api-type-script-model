@@ -69,7 +69,6 @@ const contractCancel = async (req: any) => {
                         };
 
                     /* 
-
                         TO-DO
                         desativar usuario do app e backoffice
                     
@@ -84,6 +83,7 @@ const contractCancel = async (req: any) => {
                     return {
                         err: true,
                         data: {
+                            resident: resResident.data,
                             message: error.message || 'unexpected error',
                         },
                     };
