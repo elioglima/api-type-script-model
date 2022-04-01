@@ -6,23 +6,31 @@ export class PaymentCardsEntity {
     id: number | undefined;
 
     @Column({
+        name: 'active',
+        type: 'boolean',
+        default: true,
+    })
+    active: Boolean | undefined;
+
+    @Column({
         name: 'userId',
         type: 'int',
+        nullable: true,
     })
     userId: number | undefined;
+
+    @Column({
+        name: 'residentId',
+        type: 'int',
+        nullable: true,
+    })
+    residentId: number | undefined;
 
     @Column({
         name: 'enterpriseId',
         type: 'int',
     })
     enterpriseId: number | undefined;
-
-    @Column({
-        name: 'token',
-        type: 'varchar',
-        length: 200,
-    })
-    token: string | undefined;
 
     @Column({
         name: 'holder',
@@ -60,22 +68,19 @@ export class PaymentCardsEntity {
     hash: string | undefined;
 
     @Column({
-        name: 'hash',
+        name: 'hashC',
         type: 'varchar',
         length: 200,
-        nullable: true
+        nullable: true,
     })
-    hashC: string | undefined;
+    hashC: string | undefined; // numcard crip
 
     @Column({
-        name: 'cardToken',
+        name: 'token',
         type: 'varchar',
         length: 200,
     })
-    code: string | undefined;
-
-    @Column({ name: 'active', type: 'boolean' })
-    active: boolean | undefined;
+    token: string | undefined;
 
     @Column({
         name: 'createdAt',

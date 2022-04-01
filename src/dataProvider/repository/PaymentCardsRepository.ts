@@ -1,5 +1,8 @@
 import debug from 'debug';
-import { PaymentCards } from '../../domain/Payment/PaymentCards';
+import {
+    PaymentCards,
+    TFindExistsFilter,
+} from '../../domain/Payment/PaymentCards';
 import { getConnection } from 'typeorm';
 import { PaymentCardsEntity } from '../entity/PaymentCardsEntity';
 
@@ -35,6 +38,86 @@ export class PaymentCardsRepository {
                     return onRejected;
                 },
             );
+
+    public FindOneInclude = async (paymentCard: PaymentCards) => {
+        if (!paymentCard.userId && !paymentCard.residentId) {
+            return {
+                err: true,
+                data: {
+                    message: 'incomplete parameters',
+                },
+            };
+        }
+
+        // prevencao de inclusao duplicada
+        const filter: TFindExistsFilter = {
+            userId: paymentCard.userId,
+            residentId: paymentCard.residentId,
+            enterpriseId: paymentCard.enterpriseId,
+            firstFourNumbers: paymentCard.firstFourNumbers,
+            lastFourNumbers: paymentCard.lastFourNumbers,
+            brand: paymentCard.brand,
+        };
+
+        const cardExists = await this.findExists(filter);
+
+        if (cardExists instanceof PaymentCardsEntity) {
+            return new Error('Card already registered');
+        }
+
+        return this.persist(paymentCard);
+    };
+
+    public findExists = (filter: TFindExistsFilter) => {
+        const db = getConnection()
+            .getRepository(PaymentCardsEntity)
+            .createQueryBuilder('paymentCards');
+
+        // db.andWhere('active = :active', {
+        //     active: true,
+        // });
+
+        if (filter.userId) {
+            db.andWhere('paymentCards.userId = :userId', {
+                userId: filter.userId,
+            });
+        } else if (filter.residentId) {
+            db.andWhere('paymentCards.residentIdenty = :residentId', {
+                residentId: filter.residentId,
+            });
+        } else {
+            return {
+                err: true,
+                data: {
+                    message: 'invalid parameters',
+                },
+            };
+        }
+
+        db.andWhere('paymentCards.enterpriseId = :enterpriseId', {
+            enterpriseId: filter.enterpriseId,
+        });
+
+        if (filter.firstFourNumbers) {
+            db.andWhere('paymentCards.firstFourNumbers = :firstFourNumbers', {
+                firstFourNumbers: filter.firstFourNumbers,
+            });
+        }
+
+        if (filter.lastFourNumbers) {
+            db.andWhere('paymentCards.lastFourNumbers = :lastFourNumbers', {
+                lastFourNumbers: filter.lastFourNumbers,
+            });
+        }
+
+        if (filter.brand) {
+            db.andWhere('paymentCards.brand = :brand', {
+                brand: filter.brand,
+            });
+        }
+
+        return db.getOne();
+    };
 
     public getById = async (id: number) =>
         await getConnection()

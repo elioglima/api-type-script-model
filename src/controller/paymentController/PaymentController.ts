@@ -10,6 +10,7 @@ import camelcaseKeys from 'camelcase-keys';
 import { UpdatePaymentCardService } from '../../service/UpdatePaymentCardService';
 import { InactivatePaymentCardService } from '../../service/InactivatePaymentCardService';
 import { FindCardByIdService } from '../../service/FindCardByIdService';
+import { PaymentCards } from '../../domain/Payment';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -79,7 +80,14 @@ export class PaymentController {
 
     public CardAdd = async (req: Request, res: Response) => {
         this.logger(`CardAdd`);
-        const dataRequest = camelcaseKeys(req.body);
+        const dataRequest: PaymentCards = camelcaseKeys(req.body);
+
+        if (!dataRequest.userId) {
+            const message = 'incomplete parameters';
+            this.logger('Error', message);
+            return res.status(422).json({ ['err']: message });
+        }
+
         const data = await this.CardAddService.execute(dataRequest);
 
         if (data?.err == true) {
