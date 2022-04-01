@@ -28,7 +28,7 @@ export default class CardAddService {
                 return new Error('Card already registered');
             }
 
-            await this.paymentOperator.init(paymentCard.enterpriseId);
+            await this.paymentOperator.init(Number(paymentCard?.enterpriseId));
 
             const requestCardAdd: reqCardAdd = {
                 brand: paymentCard.brand,

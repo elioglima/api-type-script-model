@@ -1,9 +1,11 @@
+import { PaymentCards } from './../../../../domain/Payment/PaymentCards';
 import { EnumBrands } from '../../../../enum/BrandsEnum';
 import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice';
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import CardAddService from '../../../../service/CardAddService';
+
 
 export type TReq = {
     hash: string;
@@ -41,12 +43,23 @@ const returnTopic = (
     };
 };
 
-export const payNowCredit = (
+export const payNowCredit = async (
     payload: TReq,
     invoice: TInvoice,
     resident: TResident,
 ) => {
     try {
+        const cardAddService = new CardAddService();
+
+        const resPaymentCard: PaymentCards = {
+            cardNumber: payload.card.cardNumber,
+            brand: EnumBrands[payload.card.brand],
+            customerName: payload.card.customerName,
+            expirationDate: payload.card.expirationDate,
+            holder: payload.card.holder
+        } 
+
+        const resCardAdd = await cardAddService.execute(resPaymentCard);
         // salvar dados do cartao de credito na base de dados
         // o codigo de seguranca e numero cartao criptogracado na funcao existente
 
