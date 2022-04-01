@@ -123,7 +123,7 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .leftJoinAndSelect('invoice.residentIdenty', 'resident')
-            .where('invoice.residentIdenty = :id', { residentId })
+            .where('invoice.residentIdenty = :residentId', { residentId: residentId })
             .getMany()
             .then(
                 data => {

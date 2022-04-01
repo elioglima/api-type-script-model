@@ -18,7 +18,7 @@ export default class InvoiceService {
 
     public FindOneResidentId = async (residentId: number) => {
         this.logger(`Find One ResidentID`);
-        console.log({ residentId });
+        
         const resInvoiceId = await this.invoiceRepository.getByResidentId(
             residentId,
         );
