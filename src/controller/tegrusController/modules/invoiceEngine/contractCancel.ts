@@ -70,6 +70,12 @@ const contractCancel = async (req: any) => {
                             },
                         };
 
+                    /* 
+
+                        TO-DO
+                        desativar usuario do app e backoffice
+                    
+                    */
                     return {
                         err: false,
                         data: {
