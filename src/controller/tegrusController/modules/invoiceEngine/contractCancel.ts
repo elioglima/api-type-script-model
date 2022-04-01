@@ -1,8 +1,6 @@
 import deactivateRecurrence from '../../../../service/tegrus.services/disableRecurrence';
 import ResidentService from '../../../../service/residentService';
 import InvoiceService from '../../../../service/invoiceService';
-import { TInvoice } from '../../../../domain/Tegrus';
-// import InvoiceService from '../../../../service/invoiceService'
 
 type TContractCancel = {
     contractCancel: {

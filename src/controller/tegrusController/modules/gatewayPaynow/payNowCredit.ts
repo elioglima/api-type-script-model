@@ -8,17 +8,7 @@ import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import CardAddService from '../../../../service/CardAddService';
 import CryptIntegrationGateway from '../../../../dataProvider/gateway/CryptIntegrationGateway';
 
-export type TReq = {
-    hash: string;
-    card: {
-        cardNumber: string;
-        brand: EnumBrands;
-        customerName: string;
-        expirationDate: string;
-        holder: string;
-        securityCode: number;
-    };
-};
+import { TPayNowReq } from './TPayNow';
 
 const returnTopic = (
     response: {
@@ -46,7 +36,7 @@ const returnTopic = (
 };
 
 export const payNowCredit = async (
-    payload: TReq,
+    payload: TPayNowReq,
     invoice: TInvoice,
     resident: TResident,
 ) => {

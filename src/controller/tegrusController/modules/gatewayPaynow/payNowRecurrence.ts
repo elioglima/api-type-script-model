@@ -1,19 +1,9 @@
-import { EnumBrands } from '../../../../enum/BrandsEnum';
 import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice';
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 
-export type TReq = {
-    hash: string;
-    card: {
-        cardNumber: string;
-        brand: EnumBrands;
-        customerName: string;
-        expirationDate: string;
-        holder: string;
-    };
-};
+import { TPayNowReq } from './TPayNow';
 
 const returnTopic = (
     response: {
@@ -41,7 +31,7 @@ const returnTopic = (
 };
 
 export const payNowRecurrence = (
-    payload: TReq,
+    payload: TPayNowReq,
     invoice: TInvoice,
     resident: TResident,
 ) => {

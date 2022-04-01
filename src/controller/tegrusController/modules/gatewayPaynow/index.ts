@@ -1,19 +1,15 @@
 import { Request, Response } from 'express';
-import HashSearchService from './hashSearchService';
+
 import InvoiceService from '../../../../service/invoiceService';
-
-import {
-    TFirstPaymentExecReq,
-    TInvoice,
-    TResident,
-} from '../../../../domain/Tegrus';
-
+import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 
+import HashSearchService from './hashSearchService';
 import { payNowCredit } from './payNowCredit';
 import { payNowRecurrence } from './payNowRecurrence';
+import { TPayNowReq } from './TPayNow';
 
 const returnTopic = (
     response: {
@@ -42,7 +38,7 @@ const returnTopic = (
     };
 };
 
-const servicePrivate = async (payload: TFirstPaymentExecReq) => {
+const servicePrivate = async (payload: TPayNowReq) => {
     try {
         const hashServices = new HashSearchService();
         const { hash } = payload;
@@ -99,7 +95,7 @@ const servicePrivate = async (payload: TFirstPaymentExecReq) => {
 
 const gatewayPaynow = async (req: Request, res: Response) => {
     try {
-        const body: TFirstPaymentExecReq = req?.body;
+        const body: TPayNowReq = req?.body;
         const response = await servicePrivate(body);
         return res.status(response.status).json(response);
     } catch (error: any) {
