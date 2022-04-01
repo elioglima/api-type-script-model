@@ -71,7 +71,8 @@ export class PaymentCardsRepository {
     public findExists = (filter: TFindExistsFilter) => {
         const db = getConnection()
             .getRepository(PaymentCardsEntity)
-            .createQueryBuilder('paymentCards');
+            .createQueryBuilder('paymentCards')
+            .where('paymentCards.deletedAt IS NULL');
 
         // db.andWhere('active = :active', {
         //     active: true,
@@ -138,6 +139,7 @@ export class PaymentCardsRepository {
         await getConnection()
             .getRepository(PaymentCardsEntity)
             .createQueryBuilder('paymentCards')
+
             .where('paymentCards.firstFourNumbers = :firstFourNumbers', {
                 firstFourNumbers: paymentCards.firstFourNumbers,
             })
