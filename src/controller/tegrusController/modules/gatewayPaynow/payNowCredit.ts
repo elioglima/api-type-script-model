@@ -3,6 +3,7 @@ import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
+import CardAddService from '../../../../service/CardAddService';
 
 export type TReq = {
     hash: string;
@@ -49,6 +50,7 @@ export const payNowCredit = (
         // salvar dados do cartao de credito na base de dados
         // o codigo de seguranca e numero cartao criptogracado na funcao existente
 
+        
         /* 
             - verificar se ha recorrencia vigente
                 - caso tenha cancelar a recorrencia e efetuar o pagamento
