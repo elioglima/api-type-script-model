@@ -20,4 +20,6 @@ export interface TResident {
     recurrenceId?: string;
     startReferenceDate: Date;
     endReferenceDate: Date;
+    err?: boolean;
+    data?: any;
 }

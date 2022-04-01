@@ -16,7 +16,7 @@ export default class CardAddService {
         try {
             this.logger(`Find Card Add`);
 
-            paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0,4);
+            paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0, 4);
             paymentCard.lastFourNumbers = paymentCard.cardNumber.slice(-4);
 
             const cardExists =
@@ -55,6 +55,7 @@ export default class CardAddService {
                 token: response.cardToken,
             });
         } catch (error) {
+            console.log(77, error);
             return error;
         }
     };

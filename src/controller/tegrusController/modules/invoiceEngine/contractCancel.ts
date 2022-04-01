@@ -1,5 +1,9 @@
-type TCancelContract = {
-    cancelContract: {
+import ResidentService from '../../../../service/residentService';
+import InvoiceService from 'src/service/invoiceService';
+// import InvoiceService from '../../../../service/invoiceService'
+
+type TContractCancel = {
+    contractCancel: {
         residentId: number;
         description: string;
         unitId: number;
@@ -8,34 +12,47 @@ type TCancelContract = {
     };
 };
 
-const cancelContract = async (req: any) => {
-    const payload: TCancelContract = req;
+const contractCancel = async (req: any) => {
+    const payload: TContractCancel = req;
 
-    const returnTopic = (
-        response: any,
-        err: boolean = false,
-        message: string = 'Success',
-    ) => {
+    const returnTopic = (response: any, err: boolean = false) => {
         return {
             status: err ? 422 : 200,
             err,
-            ...(message ? { message } : {}),
-            cancelContract: {
+            contractCancel: {
                 ...(payload ? { ...payload } : {}),
                 returnOpah: {
                     ...(response ? { response } : {}),
-                    ...(message ? { message } : {}),
+                    ...(err ? { messageError: response.message } : {}),
                 },
             },
         };
     };
 
     try {
-        console.log('cancelContract ::', payload);
+        console.log('contractCancel ::', payload);
+        const residentService = new ResidentService();
+        const resResident = await residentService.FindOne(
+            payload.contractCancel.residentId,
+        );
+
+        if (resResident?.err)
+            return returnTopic({ message: 'resident not located' }, true);
+
+        const invoiceService = new InvoiceService();
+        const resInvoice = await invoiceService.FindOneResidentId(
+            payload.contractCancel.residentId,
+        );
+
+        console.log(resInvoice);
+
+        if (resInvoice?.err)
+            return returnTopic({ message: 'resident not located' }, true);
+
         /* 
 
             response 
-                cancelContract: {
+                contractCancel: {
                     residentId: number
                     description: string
                     unitId: number
@@ -58,8 +75,11 @@ const cancelContract = async (req: any) => {
         */
         return returnTopic(payload);
     } catch (error: any) {
-        return returnTopic({}, true, error?.message || 'Erro inesperado');
+        return returnTopic(
+            { message: error?.message || 'Erro inesperado' },
+            true,
+        );
     }
 };
 
-export { cancelContract };
+export { contractCancel };

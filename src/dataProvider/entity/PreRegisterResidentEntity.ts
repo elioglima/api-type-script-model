@@ -8,6 +8,13 @@ export class PreRegisterResidentEntity {
     id: Number | undefined;
 
     @Column({
+        name: 'active',
+        type: 'boolean',
+        default: true,
+    })
+    active: Boolean | undefined;
+
+    @Column({
         name: 'name',
         type: 'varchar',
     })

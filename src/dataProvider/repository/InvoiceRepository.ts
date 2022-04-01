@@ -117,4 +117,20 @@ export class InvoiceRepository {
                 },
             );
     };
+
+    public getByResidentId = async (residentId: number) =>
+        await getConnection()
+            .getRepository(InvoiceEntity)
+            .createQueryBuilder('invoice')
+            .leftJoinAndSelect('invoice.residentIdenty', 'resident')
+            .where('invoice.residentIdenty = :id', { residentId })
+            .getMany()
+            .then(
+                data => {
+                    return data;
+                },
+                onRejected => {
+                    return onRejected;
+                },
+            );
 }

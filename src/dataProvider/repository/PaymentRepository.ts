@@ -18,7 +18,8 @@ export class PaymentRepository {
                     transactionId: payment.paymentId,
                     transactionMessage: payment.returnMessage,
                     transactionCode: payment.returnCode,
-                    descriptionMessage: payment.product,
+                    descriptionMessage:
+                        payment.product || payment.returnMessage,
                     status: payment.status,
                     value: Number(payment?.amount) > 0 ? payment.amount : 0,
                 },
@@ -73,7 +74,7 @@ export class PaymentRepository {
             );
         }
 
-        return query.orderBy('payment.id','DESC').getRawMany();
+        return query.orderBy('payment.id', 'DESC').getRawMany();
     };
 
     public update = async (payment: Payment) => {
