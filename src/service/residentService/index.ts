@@ -29,7 +29,7 @@ export default class ResidentService {
     public FindOne = async (id: number) => {
         this.logger(`Find One Include`);
 
-        const resResident = await this.repository.getById(id);
+        const resResident: TResident = await this.repository.getById(id);
 
         if (resResident instanceof Error) {
             return {

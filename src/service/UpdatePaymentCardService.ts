@@ -8,6 +8,14 @@ export class UpdatePaymentCardService {
     private paymentCardsRepository = new PaymentCardsRepository();
 
     public async execute(paymentCards: PaymentCards) {
+        if (!paymentCards?.id)
+            return {
+                err: true,
+                data: {
+                    message: 'unexpected error',
+                },
+            };
+
         const hasPaymentCard = await this.paymentCardsRepository.getById(
             paymentCards.id,
         );

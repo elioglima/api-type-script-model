@@ -20,6 +20,13 @@ export class InvoiceEntity {
     id: number | undefined;
 
     @Column({
+        name: 'active',
+        type: 'boolean',
+        default: true,
+    })
+    active: Boolean | undefined;
+
+    @Column({
         name: 'date',
         type: 'timestamp',
         default: () => 'CURRENT_TIMESTAMP()',
@@ -151,13 +158,6 @@ export class InvoiceEntity {
         default: false,
     })
     isRecurrence: Boolean | undefined;
-
-    @Column({
-        name: 'active',
-        type: 'boolean',
-        default: true,
-    })
-    active: Boolean | undefined;
 
     @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'residentIdenty' })

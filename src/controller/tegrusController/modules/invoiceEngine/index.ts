@@ -5,7 +5,7 @@ import { createInvoice } from './createInvoice';
 import { deleteInvoice } from './deleteInvoice';
 import { statusInvoice } from './statusInvoice';
 import { updateInvoice } from './updateInvoice';
-import { cancelContract } from './cancelContract';
+import { contractCancel } from './contractCancel';
 import { externalPayment } from './externalPayment';
 
 const invoiceEngine = async (req: Request, res: Response) => {
@@ -34,10 +34,10 @@ const invoiceEngine = async (req: Request, res: Response) => {
             // Vide documentacao
             const response: any = await updateInvoice(toReceive);
             return res.status(response?.status || 422).json(response?.data);
-        } else if (toReceive?.cancelContract) {
+        } else if (toReceive?.contractCancel) {
             // Cancelar Contrato
-            const response: any = await cancelContract(toReceive);
-            return res.status(response?.status || 422).json(response?.data);
+            const response: any = await contractCancel(toReceive);
+            return res.status(response?.status || 422).json(response);
         }
 
         return res.status(200).json({

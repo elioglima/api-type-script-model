@@ -2,16 +2,13 @@ import Adapter from '../../domain/Adapter';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
 import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
-import { TInvoice } from '../../domain/Tegrus';
 
-export default async (invoice: TInvoice) => {
+export default async (residentId: number) => {
     try {
         const paymentAdapter = new Adapter();
         const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
 
-        const resRecu: any = await paymentRecurrenceRepo.getById(
-            invoice.resident.id,
-        );
+        const resRecu: any = await paymentRecurrenceRepo.getById(residentId);
         if (resRecu instanceof Error) return { err: true, data: resRecu };
         if (!resRecu)
             return {
@@ -21,7 +18,7 @@ export default async (invoice: TInvoice) => {
                 },
             };
 
-        await paymentAdapter.init(Number(invoice.resident.enterpriseId));
+        await paymentAdapter.init(Number(residentId));
         const deactivateRecu: reqRecurrentDeactivate = {
             recurrenceId: resRecu.recurrenceId,
         };

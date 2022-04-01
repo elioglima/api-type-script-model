@@ -1,19 +1,20 @@
 import { EnumBrands } from '../../enum/';
 export interface PaymentCards {
-    id: number;
-    userId: number;
-    token: string;
+    id?: number;
+    userId?: number;
+    token?: string;
     cardNumber: string;
-    lastFourNumbers: string;
-    firstFourNumbers: string;
+    lastFourNumbers?: string;
+    firstFourNumbers?: string;
     brand: EnumBrands;
     customerName: string;
     expirationDate: string;
-    enterpriseId: number;
+    enterpriseId?: number;
     holder: string;
     hash: string;
-    active: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date;
+    hashC?: string;
+    active?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+    deletedAt?: Date;
 }

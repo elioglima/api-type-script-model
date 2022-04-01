@@ -16,7 +16,7 @@ export default class CardAddService {
         try {
             this.logger(`Find Card Add`);
 
-            paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0,4);
+            paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0, 4);
             paymentCard.lastFourNumbers = paymentCard.cardNumber.slice(-4);
 
             const cardExists =
@@ -28,7 +28,7 @@ export default class CardAddService {
                 return new Error('Card already registered');
             }
 
-            await this.paymentOperator.init(paymentCard.enterpriseId);
+            await this.paymentOperator.init(Number(paymentCard?.enterpriseId));
 
             const requestCardAdd: reqCardAdd = {
                 brand: paymentCard.brand,
@@ -44,7 +44,7 @@ export default class CardAddService {
 
             if (response?.err == true) return response;
 
-            if (!response?.cardToken) return new Error('Cannot instance Card');
+            if (!response?.cardToken) return new Error('Cannot instance Card');            
 
             paymentCard.hash = await this.cryptIntegrationGateway.encryptData(
                 paymentCard.hash,
@@ -55,7 +55,8 @@ export default class CardAddService {
                 token: response.cardToken,
             });
         } catch (error) {
-            return error;
+            console.log(77, error);
+            return {err: true, data: error};
         }
     };
 }
