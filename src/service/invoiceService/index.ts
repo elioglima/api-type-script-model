@@ -16,6 +16,28 @@ export default class InvoiceService {
         return data;
     };
 
+    public FindOneResidentId = async (residentId: number) => {
+        this.logger(`Find One ResidentID`);
+        console.log({ residentId });
+        const resInvoiceId = await this.invoiceRepository.getByResidentId(
+            residentId,
+        );
+
+        if (resInvoiceId instanceof Error) {
+            return {
+                err: true,
+                data: {
+                    message: 'no invoice found',
+                },
+            };
+        }
+
+        return {
+            err: false,
+            data: resInvoiceId,
+        };
+    };
+
     public FindOne = async (invoiceId: number) => {
         this.logger(`Find One Include`);
 

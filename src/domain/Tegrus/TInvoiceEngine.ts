@@ -27,7 +27,7 @@ export type TInvoiceEngineReq = {
     };
     statusInvoice?: TStatusInvoiceData;
     updateInvoice?: TInvoice;
-    cancelContract?: {
+    contractCancel?: {
         residentId: number;
         description: string;
         unitId: number;
