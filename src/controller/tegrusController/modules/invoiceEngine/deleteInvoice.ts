@@ -1,4 +1,4 @@
-import deactivateRecurrence from '../../../../service/tegrus.services/deactivateRecurrence';
+import disableRecurrence from '../../../../service/tegrus.services/disableRecurrence';
 
 type TDeleteInvoiceData = {
     invoiceId: string;
@@ -6,7 +6,6 @@ type TDeleteInvoiceData = {
 };
 
 import InvoiceService from '../../../../service/invoiceService';
-import { TInvoice } from '../../../../domain/Tegrus';
 
 const deleteInvoice = async (req: any) => {
     const payload: TDeleteInvoiceData = req?.deleteInvoice;
@@ -45,8 +44,9 @@ const deleteInvoice = async (req: any) => {
                 true,
             );
 
-        const invoice: TInvoice = resInvoice.data;
-        const resDeactivateRecurrence = await deactivateRecurrence(invoice);
+        const invoice: any = resInvoice.data;
+        const residentId: number = invoice.residentIdenty.id;
+        const resDeactivateRecurrence = await disableRecurrence(residentId);
 
         if (resDeactivateRecurrence?.err)
             return returnTopic(

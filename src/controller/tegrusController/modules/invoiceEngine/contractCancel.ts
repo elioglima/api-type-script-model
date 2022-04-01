@@ -1,5 +1,7 @@
+import deactivateRecurrence from '../../../../service/tegrus.services/disableRecurrence';
 import ResidentService from '../../../../service/residentService';
-import InvoiceService from 'src/service/invoiceService';
+import InvoiceService from '../../../../service/invoiceService';
+import { TInvoice } from '../../../../domain/Tegrus';
 // import InvoiceService from '../../../../service/invoiceService'
 
 type TContractCancel = {
@@ -22,7 +24,7 @@ const contractCancel = async (req: any) => {
             contractCancel: {
                 ...(payload ? { ...payload } : {}),
                 returnOpah: {
-                    ...(response ? { response } : {}),
+                    ...(response ? response : {}),
                     ...(err ? { messageError: response.message } : {}),
                 },
             },
@@ -31,49 +33,72 @@ const contractCancel = async (req: any) => {
 
     try {
         console.log('contractCancel ::', payload);
+        const residentId = payload.contractCancel.residentId;
         const residentService = new ResidentService();
-        const resResident = await residentService.FindOne(
-            payload.contractCancel.residentId,
-        );
+        const resResident = await residentService.FindOne(residentId);
 
         if (resResident?.err)
             return returnTopic({ message: 'resident not located' }, true);
 
         const invoiceService = new InvoiceService();
-        const resInvoice = await invoiceService.FindOneResidentId(
-            payload.contractCancel.residentId,
-        );
-
-        console.log(resInvoice);
+        const resInvoice = await invoiceService.FindOneResidentId(residentId);
 
         if (resInvoice?.err)
             return returnTopic({ message: 'resident not located' }, true);
 
-        /* 
+        const invoices: any[] = resInvoice.data;
+        const ResultDisableRecurrence: any[] = await Promise.all(
+            invoices.map(async invoice => {
+                try {
+                    const resDisableRecurrence = await deactivateRecurrence(
+                        residentId,
+                    );
 
-            response 
-                contractCancel: {
-                    residentId: number
-                    description: string
-                    unitId: number
-                    entrepriseId: number
-                    finishDate: timestamp
+                    if (resDisableRecurrence?.err) return resDisableRecurrence;
+
+                    const resUpdate = await invoiceService.Update({
+                        ...invoice,
+                        statusInvoice: 'canceled',
+                        active: false,
+                    });
+
+                    if (resUpdate?.err)
+                        return {
+                            err: true,
+                            data: {
+                                message: `failed to update billing : invoiceId=${invoice.invoiceId}`,
+                            },
+                        };
+
+                    return {
+                        err: false,
+                        data: {
+                            message: `successful cancellation`,
+                        },
+                    };
+                } catch (error: any) {
+                    return {
+                        err: true,
+                        data: {
+                            message: error.message || 'unexpected error',
+                        },
+                    };
                 }
+            }),
+        );
 
-            obs: criar type enum no statusInvoice: 'canceled' | 'issued' | 'paid' da tabela invoice
-            
-            1 - verificar se o invoiceId existe na base caso nao retornar erro
-            2 - acessar servico de cancelamento do periodo da recorrencia
-                caso erro retornar erro
-            3 - modificar o status da invoice
-                statusInvoice: 'canceled' | 'issued' | 'paid'
+        const isError: boolean =
+            ResultDisableRecurrence.filter((f: any) => f?.err).length > 0;
 
-            - responta de erro 
-                return returnTopic({
-                    ... payload do erro aqui
-                }, true, 'mensagem do erro');
-        */
-        return returnTopic(payload);
+        return returnTopic(
+            {
+                process: ResultDisableRecurrence,
+                message: isError
+                    ? 'failed cancellation'
+                    : 'successful cancellation',
+            },
+            isError,
+        );
     } catch (error: any) {
         return returnTopic(
             { message: error?.message || 'Erro inesperado' },
