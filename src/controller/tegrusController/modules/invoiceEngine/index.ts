@@ -37,7 +37,7 @@ const invoiceEngine = async (req: Request, res: Response) => {
         } else if (toReceive?.contractCancel) {
             // Cancelar Contrato
             const response: any = await contractCancel(toReceive);
-            return res.status(response?.status || 422).json(response?.data);
+            return res.status(response?.status || 422).json(response);
         }
 
         return res.status(200).json({

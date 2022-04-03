@@ -45,7 +45,7 @@ export default class MakePaymentService {
                     enterpriseId: req.enterpriseId,
                     ...response?.payment,
                     amount: saveAmount,
-                    product: req.payment.product,
+                    product: req.payment.softDescriptor ?? '',
                 })
                 .then(hasPersist => hasPersist);
         } catch (error) {

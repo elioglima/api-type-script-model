@@ -66,14 +66,16 @@ export class InvoiceRepository {
             endDate: filter.endDate,
         });
 
-        console.log({ filter });
+        db.andWhere('invoice.active = :active', {
+            active: true,
+        });
 
         if (filter.userId) {
             db.andWhere('invoice.userId = :userId', {
                 userId: filter.userId,
             });
         } else if (filter.residentId) {
-            db.andWhere('invoice.residentId = :residentId', {
+            db.andWhere('invoice.residentIdenty = :residentId', {
                 residentId: filter.residentId,
             });
         } else {
@@ -123,7 +125,9 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .leftJoinAndSelect('invoice.residentIdenty', 'resident')
-            .where('invoice.residentIdenty = :residentId', { residentId: residentId })
+            .where('invoice.residentIdenty = :residentId', {
+                residentId: residentId,
+            })
             .getMany()
             .then(
                 data => {

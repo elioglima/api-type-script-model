@@ -11,17 +11,7 @@ import CryptIntegrationGateway from '../../../../dataProvider/gateway/CryptInteg
 import Adapter from '../../../../domain/Adapter'
 
 
-export type TReq = {
-    hash: string;
-    card: {
-        cardNumber: string;
-        brand: EnumBrands;
-        customerName: string;
-        expirationDate: string;
-        holder: string;
-        securityCode: number;
-    };
-};
+import { TPayNowReq } from './TPayNow';
 
 const returnTopic = (
     response: {
@@ -49,7 +39,7 @@ const returnTopic = (
 };
 
 export const payNowCredit = async (
-    payload: TReq,
+    payload: TPayNowReq,
     invoice: TInvoice,
     resident: TResident,
 ) => {
