@@ -18,7 +18,7 @@ export default class InvoiceService {
 
     public FindOneResidentId = async (residentId: number) => {
         this.logger(`Find One ResidentID`);
-        
+
         const resInvoiceId = await this.invoiceRepository.getByResidentId(
             residentId,
         );
@@ -156,6 +156,7 @@ export default class InvoiceService {
             payload,
         );
 
+        console.log({ resInvoiceUpdate });
         if (resInvoiceUpdate instanceof Error) {
             return {
                 err: true,
@@ -165,7 +166,15 @@ export default class InvoiceService {
             };
         }
 
-        if (resInvoiceUpdate.err) return resInvoiceUpdate;
+        const invoice: TInvoice = resInvoiceUpdate;
+        if (resInvoiceUpdate.err)
+            return {
+                err: false,
+                data: {
+                    message: 'data updated successfully',
+                    row: invoice,
+                },
+            };
         return {
             err: false,
             data: resInvoiceUpdate,

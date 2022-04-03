@@ -1,20 +1,20 @@
 import { PaymentRecurrenceRepository } from './../../../../dataProvider/repository/PaymentRecurrenceRepository';
 import { PaymentCards } from './../../../../domain/Payment/PaymentCards';
 import { EnumBrands } from '../../../../enum/BrandsEnum';
-import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice';
+import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import CardAddService from '../../../../service/CardAddService';
 import CryptIntegrationGateway from '../../../../dataProvider/gateway/CryptIntegrationGateway';
 
-import { TPayNowReq } from './TPayNow';
+import { TPayNowReq } from '../../../../domain/Tegrus';
 
 const returnTopic = (
     response: {
         invoiceId: number;
         paymentDate: Date | any;
-        statusInvoice: EnumTopicStatusInvoice;
+        statusInvoice: EnumInvoiceStatus;
         paymentMethod: EnumInvoicePaymentMethod;
         type: EnumInvoiceType;
         message: string;
@@ -94,7 +94,7 @@ export const payNowCredit = async (
         console.log({ payload, invoice, resident });
 
         const paymentDate: Date = new Date(); // so de exemplo
-        const newStatusInvoice = EnumTopicStatusInvoice.paid; // so de exemplo
+        const newStatusInvoice = EnumInvoiceStatus.paid; // so de exemplo
 
         return returnTopic({
             invoiceId: invoice.invoiceId,

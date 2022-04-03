@@ -1,6 +1,7 @@
 import { EnumBrands } from '../../enum/';
 export interface PaymentCards {
     id?: number;
+    enterpriseId?: number;
     userId?: number;
     residentId?: number;
     token?: string;
@@ -10,14 +11,14 @@ export interface PaymentCards {
     brand: EnumBrands;
     customerName: string;
     expirationDate: string;
-    enterpriseId?: number;
     holder: string;
-    hash: string;
-    hashC?: string;
     active?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
     deletedAt?: Date;
+    hash?: string; // codigo de seguranca
+    securityCode?: number; // codigo de seguranca
+    hashC?: string;
 }
 
 export type TFindExistsFilter = {

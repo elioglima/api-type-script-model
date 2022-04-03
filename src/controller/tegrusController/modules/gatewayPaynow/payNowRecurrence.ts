@@ -1,15 +1,21 @@
-import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice';
-import { TInvoice, TResident } from '../../../../domain/Tegrus';
+import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
+import {
+    TInvoice,
+    TResident,
+    TRecurrenceSchedule,
+} from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 
-import { TPayNowReq } from './TPayNow';
+import RecurrenceService from '../../../../service/recurrenceService';
+import { TPayNowReq } from '../../../../domain/Tegrus';
+import { payAdatpter } from './payAdatpter';
 
 const returnTopic = (
     response: {
         invoiceId: number;
         paymentDate: Date | any;
-        statusInvoice: EnumTopicStatusInvoice;
+        statusInvoice: EnumInvoiceStatus;
         paymentMethod: EnumInvoicePaymentMethod;
         type: EnumInvoiceType;
         message: string;
@@ -17,31 +23,102 @@ const returnTopic = (
     err: boolean = false,
 ) => {
     return {
+        err,
+        status: err ? 422 : 200,
         statusInvoice: {
             invoices: [
                 {
-                    invoiceId: 125,
-                    messageError: err
-                        ? response?.message || 'unexpected error'
-                        : undefined,
+                    ...response,
+                    ...(err
+                        ? {
+                              messageError: err
+                                  ? response?.message || 'unexpected error'
+                                  : undefined,
+                          }
+                        : { message: response.message }),
                 },
             ],
         },
     };
 };
 
-export const payNowRecurrence = (
+export const payNowRecurrence = async (
     payload: TPayNowReq,
     invoice: TInvoice,
     resident: TResident,
 ) => {
     try {
-        // salvar dados do cartao de credito na base de dados
-        // o codigo de seguranca e numero cartao criptogracado na funcao existente
+        // efetuar o pagamento
+        console.log('payNowRecurrence', payload);
+        const resPayAdapter: any = await payAdatpter(resident, {
+            ...payload.card,
+            hash: payload.card?.securityCode,
+        });
+
+        if (resPayAdapter?.err)
+            return returnTopic(
+                {
+                    invoiceId: invoice.invoiceId,
+                    paymentDate: null,
+                    statusInvoice: invoice.statusInvoice,
+                    paymentMethod: invoice.paymentMethod,
+                    type: invoice.type,
+                    message:
+                        resPayAdapter?.data?.message ||
+                        resPayAdapter?.data?.messageError,
+                },
+                true,
+            );
 
         if (invoice.isRecurrence == true) {
-            // iniciar recorrencia e procedimentos normais
-            console.log({ payload, invoice, resident });
+            const recurrenceService = new RecurrenceService();
+            const resRecurrenceService =
+                await recurrenceService.FindOneResidentId(resident.id);
+
+            if (resRecurrenceService?.err)
+                return await returnTopic(
+                    {
+                        invoiceId: invoice.invoiceId,
+                        paymentDate: null,
+                        statusInvoice: invoice.statusInvoice,
+                        paymentMethod: invoice.paymentMethod,
+                        type: invoice.type,
+                        message: 'error finding recurrence in database',
+                    },
+                    true,
+                );
+
+            if (resRecurrenceService?.data?.row)
+                return await returnTopic(
+                    {
+                        invoiceId: invoice.invoiceId,
+                        paymentDate: null,
+                        statusInvoice: invoice.statusInvoice,
+                        paymentMethod: invoice.paymentMethod,
+                        type: invoice.type,
+                        message: 'recurrence is already scheduled',
+                    },
+                    false,
+                );
+
+            const startDateContract = invoice.referenceDate;
+            const endDateContract = new Date(resident.endDateContract);
+
+            const payloadRecurrence: TRecurrenceSchedule = {
+                startDateContract,
+                endDateContract,
+            };
+
+            const resRecurrence = await recurrenceService.ScheduleRecurrence(
+                resident,
+                invoice,
+                payloadRecurrence,
+                payload.card,
+            );
+
+            if (resRecurrence?.err) {
+                return await returnTopic(resRecurrence?.data, true);
+            }
 
             /*
             para agendamento da recorrencia
@@ -68,10 +145,10 @@ export const payNowRecurrence = (
             }, true);
         */
 
-            const paymentDate: Date = new Date(); // so de exemplo
-            const newStatusInvoice = EnumTopicStatusInvoice.paid; // so de exemplo
+            const paymentDate: Date = new Date(resRecurrence?.data?.paidAt);
+            const newStatusInvoice = EnumInvoiceStatus.issued;
 
-            return returnTopic({
+            return await returnTopic({
                 invoiceId: invoice.invoiceId,
                 paymentDate,
                 statusInvoice: newStatusInvoice,

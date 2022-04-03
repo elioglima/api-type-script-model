@@ -75,12 +75,12 @@ export class PaymentCardsEntity {
     })
     hashC: string | undefined; // numcard crip
 
-    @Column({
-        name: 'token',
-        type: 'varchar',
-        length: 200,
-    })
-    token: string | undefined;
+    // @Column({
+    //     name: 'token',
+    //     type: 'varchar',
+    //     length: 200,
+    // })
+    // token: string | undefined;
 
     @Column({
         name: 'createdAt',

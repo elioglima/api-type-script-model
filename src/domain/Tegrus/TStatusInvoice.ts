@@ -1,16 +1,5 @@
 import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
-export enum TStatusInvoice {
-    CANCELADO = 'CANCELED',
-    PUBLICADO = 'ISSUED',
-    PAGO = 'PAID',
-}
-
-export enum EnumTopicStatusInvoice {
-    canceled = 'canceled',
-    issued = 'issued',
-    paid = 'paid',
-    paymentError = 'paymentError'    
-}
+import { EnumInvoiceStatus } from './EnumInvoiceStatus';
 
 export type TStatusInvoiceData = {
     invoiceId: number;
@@ -18,5 +7,5 @@ export type TStatusInvoiceData = {
     paidAt: Date; // timestamp
     paymentMethod: EnumInvoicePaymentMethod;
     amountOfDailure: number;
-    statusInvoice: TStatusInvoice;
+    statusInvoice: EnumInvoiceStatus;
 };

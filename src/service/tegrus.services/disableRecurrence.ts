@@ -1,11 +1,11 @@
-import Adapter from '../../domain/Adapter';
+import AdapterPayment from '../../domain/AdapterPayment';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
 import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 
 export default async (residentId: number) => {
     try {
-        const paymentAdapter = new Adapter();
+        const paymentAdapter = new AdapterPayment();
         const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
 
         const resRecu: any = await paymentRecurrenceRepo.getById(residentId);

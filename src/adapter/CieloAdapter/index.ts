@@ -53,7 +53,7 @@ export class CieloAdapter implements ICardAdapter {
     private error(message: string): Promise<TErrorGeneric> {
         return new Promise<TErrorGeneric>(resolve =>
             resolve({
-                error: true,
+                err: true,
                 message: message || 'this.util not started',
             }),
         );

@@ -66,6 +66,8 @@ export type reqRecurrentCreate = {
 };
 
 export type resRecurrentCreate = {
+    err?: boolean;
+    message?: string;
     merchantOrderId: string;
     customer: customer;
     payment: recurrentePayment;

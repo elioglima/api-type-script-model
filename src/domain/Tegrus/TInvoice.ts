@@ -1,4 +1,4 @@
-import { EnumTopicStatusInvoice } from './TStatusInvoice';
+import { EnumInvoiceStatus } from './EnumInvoiceStatus';
 import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from './EnumInvoiceType';
 import { TResident } from './TResident';
@@ -24,7 +24,7 @@ export type TInvoice = {
     active?: boolean;
     type: EnumInvoiceType;
     paymentMethod: EnumInvoicePaymentMethod;
-    statusInvoice: EnumTopicStatusInvoice;
+    statusInvoice: EnumInvoiceStatus;
     isRecurrence: boolean;
     resident: TResident;
     residentIdenty?: number;
@@ -38,7 +38,7 @@ export type TInvoiceFilter = {
     residentId?: number;
     userId?: number;
     paymentMethod?: EnumInvoicePaymentMethod;
-    statusInvoice?: EnumTopicStatusInvoice;
+    statusInvoice?: EnumInvoiceStatus;
 };
 
 export type TLinkInvoice = {

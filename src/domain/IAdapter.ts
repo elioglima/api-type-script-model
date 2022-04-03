@@ -20,7 +20,7 @@ export type TEnterprise = {
 
 export type TErrorGeneric = {
     message: string;
-    error?: boolean;
+    err?: boolean;
     name?: string;
     stack?: string;
     data?: any;
@@ -44,6 +44,10 @@ export type TCieloTransactionInterface = {
 
 // Add new Card Req and Response
 export type reqCardAdd = {
+    enterpriseId?: number;
+    userId?: number;
+    residentId?: number;
+    securityCode?: number;
     customerName: string;
     cardNumber: string;
     holder: string;
