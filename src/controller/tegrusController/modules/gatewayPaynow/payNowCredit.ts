@@ -1,3 +1,4 @@
+import { reqMakePayment } from './../../../../domain/IAdapter';
 import { PaymentRecurrenceRepository } from './../../../../dataProvider/repository/PaymentRecurrenceRepository';
 import { PaymentCards } from './../../../../domain/Payment/PaymentCards';
 import { EnumBrands } from '../../../../enum/BrandsEnum';
@@ -7,6 +8,8 @@ import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoiceP
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import CardAddService from '../../../../service/CardAddService';
 import CryptIntegrationGateway from '../../../../dataProvider/gateway/CryptIntegrationGateway';
+import Adapter from '../../../../domain/Adapter'
+
 
 export type TReq = {
     hash: string;
@@ -54,6 +57,7 @@ export const payNowCredit = async (
         const cardAddService = new CardAddService();
         const cryptIntegrationGateway = new CryptIntegrationGateway();
         const paymentRecurrenceRepository = new PaymentRecurrenceRepository();
+        const adapter = new Adapter();
 
         const hashC = await cryptIntegrationGateway.encryptData(
             payload.card.cardNumber,
@@ -91,7 +95,36 @@ export const payNowCredit = async (
                     data: { message: 'Error to find recurrence' },
                 };
         }
+        
+        const reqPayment: reqMakePayment = {
+            customer:{
+                name: resident?.name,    
+                email: resident.email,
+                birthdate: resident.birthDate,                             
+                identity: resident.document,
+                identityType: resident.documentType
+            },
+            payment: {
+                type: 'CreditCard',
+                amount: invoice?.value,
+                installments: 1,
+                softDescriptor: 'Recorrencia JFL',
+                recurrentPayment: {
+                    authorizeNow: false,
+                    endDate: invoice?.endReferenceDate,
+                    interval: 'Monthly',
+                },
+                creditCard: {
+                    cardNumber: payload?.card?.cardNumber,
+                    holder: payload?.card?.holder,
+                    expirationDate: payload?.card?.expirationDate,
+                    customerName: payload?.card?.customerName,
+                    brand: payload?.card?.brand,
+                },
+            },
+        }
 
+        const resPayment = await adapter.makePayment()
         /* 
             - verificar se ha recorrencia vigente
                 - caso tenha cancelar a recorrencia e efetuar o pagamento
