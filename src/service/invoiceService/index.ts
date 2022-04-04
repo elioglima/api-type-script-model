@@ -151,12 +151,10 @@ export default class InvoiceService {
 
     public Update = async (payload: TInvoice) => {
         this.logger(`Update`);
-
         const resInvoiceUpdate: any = await this.invoiceRepository.update(
             payload,
         );
 
-        console.log({ resInvoiceUpdate });
         if (resInvoiceUpdate instanceof Error) {
             return {
                 err: true,
@@ -169,12 +167,13 @@ export default class InvoiceService {
         const invoice: TInvoice = resInvoiceUpdate;
         if (resInvoiceUpdate.err)
             return {
-                err: false,
+                err: true,
                 data: {
                     message: 'data updated successfully',
                     row: invoice,
                 },
             };
+
         return {
             err: false,
             data: resInvoiceUpdate,

@@ -90,7 +90,7 @@ export default class RecurrenceService {
                     installments: 1,
                     softDescriptor: 'Recorrencia JFL',
                     recurrentPayment: {
-                        authorizeNow: false,
+                        authorizeNow: true,
                         endDate: recurrence.endDateContract,
                         interval: 'Monthly',
                     },

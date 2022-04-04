@@ -31,7 +31,7 @@ export type TInvoice = {
     recurrenceId?: number;
     paymentDate?: Date;
     returnMessage?: string;
-    paymentId?:string;
+    paymentId?: string;
     tid?: string;
     returnCode?: string;
 };
