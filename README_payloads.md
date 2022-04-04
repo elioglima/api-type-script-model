@@ -12,7 +12,7 @@ obs:
 
 {
 "createResident": {
-"externalId": "123123",
+"id": "123123",
 "apartmentId": 1,
 "enterpriseId": 1,
 "contractCode": "XABLAU",

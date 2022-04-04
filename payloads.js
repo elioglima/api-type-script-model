@@ -40,7 +40,7 @@ const issuedInvoice = {
 
 const createResident = {
     createResident: {
-        externalId: 143,
+        id: 143,
         apartmentId: 341,
         enterpriseId: 2,
         contractCode: '56234112',

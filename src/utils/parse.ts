@@ -15,7 +15,6 @@ export const invoiceToTResident = (residentIdenty: TResident) => {
         documentType: resident?.documentType,
         document: resident?.document,
         description: resident?.description,
-        externalId: resident?.externalId,
         apartmentId: resident?.description,
         enterpriseId: resident?.enterpriseId,
         contractCode: resident?.contractCode,
