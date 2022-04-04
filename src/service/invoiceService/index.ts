@@ -18,7 +18,7 @@ export default class InvoiceService {
 
     public FindOneResidentId = async (residentId: number) => {
         this.logger(`Find One ResidentID`);
-        
+
         const resInvoiceId = await this.invoiceRepository.getByResidentId(
             residentId,
         );
@@ -39,7 +39,7 @@ export default class InvoiceService {
     };
 
     public FindOne = async (invoiceId: number) => {
-        this.logger(`Find One Include`);
+        this.logger(`Find One`);
 
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoiceId,
@@ -151,7 +151,6 @@ export default class InvoiceService {
 
     public Update = async (payload: TInvoice) => {
         this.logger(`Update`);
-
         const resInvoiceUpdate: any = await this.invoiceRepository.update(
             payload,
         );
@@ -165,7 +164,16 @@ export default class InvoiceService {
             };
         }
 
-        if (resInvoiceUpdate.err) return resInvoiceUpdate;
+        const invoice: TInvoice = resInvoiceUpdate;
+        if (resInvoiceUpdate.err)
+            return {
+                err: true,
+                data: {
+                    message: 'data updated successfully',
+                    row: invoice,
+                },
+            };
+
         return {
             err: false,
             data: resInvoiceUpdate,

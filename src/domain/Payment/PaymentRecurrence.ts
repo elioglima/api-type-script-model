@@ -1,14 +1,22 @@
-import { PaymentCardsEntity } from '../../dataProvider/entity/PaymentCardsEntity';
-
 export interface PaymentRecurrence {
     id?: number;
-    userId?: number;
-    preUserId: number;
+    active?: boolean;
     residentId: number;
-    recurrenceId: string;
-    paymentCard?: PaymentCardsEntity;
     value: number;
     createdAt: Date;
     updatedAt?: Date;
     deletedAt?: Date;
+    payCardNumber?: string;
+    payCardHolder?: string;
+    payCardExpirationDate?: string;
+    payCardSaveCard?: boolean;
+    payCardBrand?: string;
+
+    recurrentPaymentId?: string;
+    reasonCode?: number;
+    reasonMessage?: string;
+    nextRecurrency?: Date;
+    interval?: number;
+    linkRecurrentPayment?: string;
+    authorizeNow?: boolean;
 }

@@ -1,13 +1,13 @@
 import debug from 'debug';
 import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 import { TransactionPaymentService } from '../domain/Payment/Payment';
-import Adapter from '../domain/Adapter';
+import AdapterPayment from '../domain/AdapterPayment';
 import { cieloStatusConverter } from '../utils/cieloStatus';
 
 export default class MakePaymentService {
     private logger = debug('payment-api:MakePaymentService');
     private paymentRepository = new PaymentRepository();
-    private paymentOperator = new Adapter();
+    private paymentOperator = new AdapterPayment();
 
     public async execute(req: TransactionPaymentService) {
         try {

@@ -53,7 +53,7 @@ export class CieloAdapter implements ICardAdapter {
     private error(message: string): Promise<TErrorGeneric> {
         return new Promise<TErrorGeneric>(resolve =>
             resolve({
-                error: true,
+                err: true,
                 message: message || 'this.util not started',
             }),
         );
@@ -87,9 +87,12 @@ export class CieloAdapter implements ICardAdapter {
         if (!transaction?.payment?.creditCard?.cardToken)
             return this.error('card identifier not found : (cardToken)');
 
-        return this.util.postToSales<resMakePayment, reqMakePayment>(
-            transaction,
-        );
+        const resPostToSales: any = this.util.postToSales<
+            resMakePayment,
+            reqMakePayment
+        >(transaction);
+
+        return resPostToSales;
     }
 
     public refoundPayment(

@@ -1,23 +1,24 @@
 import { EnumBrands } from '../../enum/';
 export interface PaymentCards {
     id?: number;
+    enterpriseId?: number;
     userId?: number;
     residentId?: number;
     token?: string;
-    cardNumber: string;
     lastFourNumbers?: string;
     firstFourNumbers?: string;
     brand: EnumBrands;
-    customerName: string;
-    expirationDate: string;
-    enterpriseId?: number;
+    customerName?: string;
+    expirationDate?: string;
+    cardNumber?: string;
     holder: string;
-    hash: string;
-    hashC?: string;
     active?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
     deletedAt?: Date;
+    hash?: string; // codigo de seguranca
+    securityCode?: number; // codigo de seguranca
+    hashC?: string;
 }
 
 export type TFindExistsFilter = {
@@ -27,4 +28,5 @@ export type TFindExistsFilter = {
     firstFourNumbers?: string;
     lastFourNumbers?: string;
     brand?: string;
+    token?: string;
 };

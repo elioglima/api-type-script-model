@@ -1,34 +1,37 @@
-import { PaymentRecurrenceRepository } from './../../../../dataProvider/repository/PaymentRecurrenceRepository';
-import { PaymentCards } from './../../../../domain/Payment/PaymentCards';
-import { EnumBrands } from '../../../../enum/BrandsEnum';
-import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice';
+import InvoiceService from '../../../../service/invoiceService';
+import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
-import CardAddService from '../../../../service/CardAddService';
-import CryptIntegrationGateway from '../../../../dataProvider/gateway/CryptIntegrationGateway';
-
-import { TPayNowReq } from './TPayNow';
+import { TPayNowReq } from '../../../../domain/Tegrus';
+import { payAdatpter } from './payAdatpter';
 
 const returnTopic = (
     response: {
         invoiceId: number;
         paymentDate: Date | any;
-        statusInvoice: EnumTopicStatusInvoice;
+        statusInvoice: EnumInvoiceStatus;
         paymentMethod: EnumInvoicePaymentMethod;
         type: EnumInvoiceType;
         message: string;
+        [x: string]: any;
     },
     err: boolean = false,
 ) => {
+    const { message, ...respData } = response;
     return {
+        err,
+        message,
         statusInvoice: {
             invoices: [
                 {
-                    invoiceId: 125,
-                    messageError: err
-                        ? response?.message || 'unexpected error'
-                        : undefined,
+                    ...respData,
+                    ...(err
+                        ? {
+                              messageError:
+                                  response?.message || 'unexpected error',
+                          }
+                        : { message }),
                 },
             ],
         },
@@ -41,60 +44,77 @@ export const payNowCredit = async (
     resident: TResident,
 ) => {
     try {
-        const cardAddService = new CardAddService();
-        const cryptIntegrationGateway = new CryptIntegrationGateway();
-        const paymentRecurrenceRepository = new PaymentRecurrenceRepository();
-
-        const hashC = await cryptIntegrationGateway.encryptData(
-            payload.card.cardNumber,
-        );
-        const resPaymentCard: PaymentCards = {
-            cardNumber: payload.card.cardNumber,
-            brand: EnumBrands[payload.card.brand],
-            customerName: payload.card.customerName,
-            expirationDate: payload.card.expirationDate,
-            holder: payload.card.holder,
-            hash: String(payload.card.securityCode),
-            hashC,
-        };
-
-        const resCardAdd = await cardAddService.execute(resPaymentCard);
-
-        if (resCardAdd.err) return resCardAdd;
-
-        const resRecurrence: any = paymentRecurrenceRepository.getByPreUserId(
-            resident.id,
-        );
-
-        if (resRecurrence instanceof Error)
-            return { err: true, data: { message: 'Error to find recurrence' } };
-
-        if (resRecurrence) {
-            const resRecuUpdate = paymentRecurrenceRepository.update({
-                ...resRecurrence,
-                updatedAt: new Date(),
-                active: false,
+        if (['00', '4'].includes(String(invoice?.returnCode))) {
+            // verificando se esta paga a fatura
+            return returnTopic({
+                message: 'invoice payment has already been changed',
+                invoiceId: invoice.invoiceId,
+                paymentDate: invoice.paymentDate,
+                statusInvoice: invoice.statusInvoice,
+                paymentMethod: invoice.paymentMethod,
+                type: invoice.type,
+                returnMessage: invoice.returnMessage,
+                paymentId: invoice.paymentId,
+                tid: invoice.tid,
+                returnCode: invoice.returnCode,
             });
-            if (resRecuUpdate instanceof Error)
-                return {
-                    err: true,
-                    data: { message: 'Error to find recurrence' },
-                };
         }
 
-        /* 
-            - verificar se ha recorrencia vigente
-                - caso tenha cancelar a recorrencia e efetuar o pagamento
+        const invoiceService = new InvoiceService();
 
-            - efetuar pagamento pelo adapter
-            - atualizar a fatura
-                - status
-                - dados de cartao
-        */
-        console.log({ payload, invoice, resident });
+        const resPayAdapter: any = await payAdatpter(
+            resident,
+            {
+                ...payload.card,
+                hash: payload.card?.securityCode,
+            },
+            invoice,
+            true,
+        );
 
-        const paymentDate: Date = new Date(); // so de exemplo
-        const newStatusInvoice = EnumTopicStatusInvoice.paid; // so de exemplo
+        if (resPayAdapter?.err)
+            return returnTopic(
+                {
+                    invoiceId: invoice.invoiceId,
+                    paymentDate: null,
+                    statusInvoice: invoice.statusInvoice,
+                    paymentMethod: invoice.paymentMethod,
+                    type: invoice.type,
+                    message:
+                        resPayAdapter?.data?.message ||
+                        resPayAdapter?.data?.messageError,
+                },
+                true,
+            );
+
+        const paymentDate: Date =
+            resPayAdapter?.payment?.receivedDate || new Date(); // so de exemplo
+        const newStatusInvoice = EnumInvoiceStatus.paid; // so de exemplo
+
+        const updateInvoice: TInvoice = {
+            ...invoice,
+            paymentDate,
+            statusInvoice: newStatusInvoice,
+            returnMessage: resPayAdapter.data.payment.returnMessage,
+            paymentId: resPayAdapter.data.payment.paymentId,
+            tid: resPayAdapter.data.payment.tid,
+            returnCode: resPayAdapter.data.payment.returnCode,
+        };
+
+        const resUpdate: any = await invoiceService.Update(updateInvoice);
+
+        if (resUpdate.err)
+            return returnTopic(
+                {
+                    invoiceId: invoice.invoiceId,
+                    paymentDate: null,
+                    statusInvoice: invoice.statusInvoice,
+                    paymentMethod: invoice.paymentMethod,
+                    type: invoice.type,
+                    message: 'internal error updating invoice',
+                },
+                true,
+            );
 
         return returnTopic({
             invoiceId: invoice.invoiceId,
@@ -103,6 +123,10 @@ export const payNowCredit = async (
             paymentMethod: invoice.paymentMethod,
             type: invoice.type,
             message: 'recurrence started successfully',
+            returnMessage: resPayAdapter?.data?.payment?.returnMessage,
+            paymentId: resPayAdapter.data.payment.paymentId,
+            tid: resPayAdapter.data.payment.tid,
+            returnCode: resPayAdapter.data.payment.returnCode,
         });
     } catch (error: any) {
         return returnTopic(

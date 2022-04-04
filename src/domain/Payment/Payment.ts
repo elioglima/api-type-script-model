@@ -2,7 +2,8 @@ import { PaymentStatus } from '../../enum/PaymentStatusEnum';
 import { CustomerModel } from '../Customer/customer.model';
 import { PaymentRequestModel } from './paymentRequest.model';
 
-export interface Payment { // payment
+export interface Payment {
+    // payment
     enterpriseId: number;
     id: number;
     userId: number;
@@ -12,7 +13,7 @@ export interface Payment { // payment
     amount: number;
     status: PaymentStatus;
     descriptionMessage: string;
-    product:string;
+    product: string;
     descriptionIdReference: string;
     createdAt: Date;
     updatedAt: Date;

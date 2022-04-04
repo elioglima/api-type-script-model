@@ -1,31 +1,23 @@
 import { EnumBrands } from '../../enum/BrandsEnum';
-import { TStatusInvoice } from './TStatusInvoice';
-
+import { EnumInvoiceStatus } from './EnumInvoiceStatus';
+import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
 
 export type TFirstPaymentExecReq = {
-    hash: string,
+    hash: string;
     card: {
-        cardNumber: string,
-        brand: EnumBrands,
-        customerName: string,
-        expirationDate: string,
-        holder: string,
-    }
-}
+        cardNumber: string;
+        brand: EnumBrands;
+        customerName: string;
+        expirationDate: string;
+        holder: string;
+    };
+};
 
 export type TStatusRecurrency = {
     invoiceId: number;
     description?: string;
     paidAt: Date;
-    paymentMethod: EnumPayMethod;
+    paymentMethod: EnumInvoicePaymentMethod;
     amountOfFailure?: number;
-    statusInvoice: TStatusInvoice;
-}
-
-export enum EnumPayMethod {
-    TICKET = 'ticket',
-    TRANSFER = 'transfer',
-    CREDIT = 'credit',
-    INTER_TRANS = 'international_transfer',
-    COURTESY = 'courtesy'
-}
+    statusInvoice: EnumInvoiceStatus;
+};

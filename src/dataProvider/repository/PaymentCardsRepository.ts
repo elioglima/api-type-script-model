@@ -5,119 +5,142 @@ import {
 } from '../../domain/Payment/PaymentCards';
 import { getConnection } from 'typeorm';
 import { PaymentCardsEntity } from '../entity/PaymentCardsEntity';
+import { rError, rSuccess } from '../../utils';
 
 export class PaymentCardsRepository {
     private logger = debug('payment-api:PaymentCardsRepository');
 
-    public persist = async (paymentCards: PaymentCards) =>
-        await getConnection()
-            .getRepository(PaymentCardsEntity)
-            .createQueryBuilder('paymentCards')
-            .insert()
-            .values([
-                {
-                    lastFourNumbers: paymentCards.lastFourNumbers,
-                    token: paymentCards.token,
-                    brand: paymentCards.brand,
-                    userId: paymentCards.userId,
-                    enterpriseId: paymentCards.enterpriseId,
-                    active: paymentCards.active,
-                    hash: paymentCards.hash,
-                    holder: paymentCards.holder,
-                    firstFourNumbers: paymentCards.firstFourNumbers,
-                },
-            ])
-            .execute()
-            .then(
-                response => {
-                    paymentCards.id = Number(response.identifiers[0].id);
-                    return paymentCards;
-                },
-                onRejected => {
-                    this.logger('Error ', onRejected);
-                    return onRejected;
-                },
-            );
+    public persist = async (paymentCard: PaymentCards) => {
+        try {
+            if (!paymentCard?.userId && !paymentCard?.residentId)
+                return rError({ message: 'invalid parameters' });
 
-    public FindOneInclude = async (paymentCard: PaymentCards) => {
-        if (!paymentCard.userId && !paymentCard.residentId) {
-            return {
-                err: true,
-                data: {
-                    message: 'incomplete parameters',
-                },
+            if (!paymentCard?.token)
+                return rError({ message: 'failed to harvest cardtoken' });
+
+            const newCard: PaymentCards = {
+                lastFourNumbers: paymentCard.lastFourNumbers,
+                brand: paymentCard.brand,
+                ...(paymentCard.userId ? { userId: paymentCard.userId } : {}),
+                ...(paymentCard.residentId
+                    ? { residentId: paymentCard.residentId }
+                    : {}),
+                enterpriseId: paymentCard.enterpriseId,
+                active: paymentCard.active,
+                hash: paymentCard.hash,
+                hashC: paymentCard.hashC,
+                holder: paymentCard.holder,
+                firstFourNumbers: paymentCard.firstFourNumbers,
+                token: paymentCard.token,
             };
+
+            const data = await getConnection()
+                .getRepository(PaymentCardsEntity)
+                .createQueryBuilder('paymentCards')
+                .insert()
+                .values(newCard)
+                .execute()
+                .then(
+                    response => {
+                        paymentCard.id = Number(response.identifiers[0].id);
+                        return paymentCard;
+                    },
+                    onRejected => {
+                        this.logger('Error ', onRejected);
+                        return onRejected;
+                    },
+                );
+
+            return rSuccess({ message: 'processed data', ...data });
+        } catch (error: any) {
+            return rError({ message: error?.message });
         }
-
-        // prevencao de inclusao duplicada
-        const filter: TFindExistsFilter = {
-            userId: paymentCard.userId,
-            residentId: paymentCard.residentId,
-            enterpriseId: paymentCard.enterpriseId,
-            firstFourNumbers: paymentCard.firstFourNumbers,
-            lastFourNumbers: paymentCard.lastFourNumbers,
-            brand: paymentCard.brand,
-        };
-
-        const cardExists = await this.findExists(filter);
-
-        if (cardExists instanceof PaymentCardsEntity) {
-            return new Error('Card already registered');
-        }
-
-        return this.persist(paymentCard);
     };
 
-    public findExists = (filter: TFindExistsFilter) => {
-        const db = getConnection()
-            .getRepository(PaymentCardsEntity)
-            .createQueryBuilder('paymentCards')
-            .where('paymentCards.deletedAt IS NULL');
+    public FindOneInclude = async (paymentCard: PaymentCards) => {
+        try {
+            if (!paymentCard.userId && !paymentCard.residentId)
+                return rError({ message: 'incomplete parameters' });
 
-        // db.andWhere('active = :active', {
-        //     active: true,
-        // });
-
-        if (filter.userId) {
-            db.andWhere('paymentCards.userId = :userId', {
-                userId: filter.userId,
-            });
-        } else if (filter.residentId) {
-            db.andWhere('paymentCards.residentIdenty = :residentId', {
-                residentId: filter.residentId,
-            });
-        } else {
-            return {
-                err: true,
-                data: {
-                    message: 'invalid parameters',
-                },
+            // prevencao de inclusao duplicada
+            const filter: TFindExistsFilter = {
+                enterpriseId: paymentCard.enterpriseId,
+                ...(paymentCard.userId ? { userId: paymentCard.userId } : {}),
+                ...(paymentCard.residentId
+                    ? { residentId: paymentCard.residentId }
+                    : {}),
+                firstFourNumbers: paymentCard.firstFourNumbers,
+                lastFourNumbers: paymentCard.lastFourNumbers,
+                brand: paymentCard.brand,
+                token: paymentCard.token,
             };
+
+            const cardExists = await this.findExists(filter);
+
+            if (cardExists?.err)
+                return rError({
+                    message: 'Card already registered',
+                    ...cardExists,
+                });
+
+            return await this.persist(paymentCard);
+        } catch (error: any) {
+            return rError({ message: error?.message });
         }
+    };
 
-        db.andWhere('paymentCards.enterpriseId = :enterpriseId', {
-            enterpriseId: filter.enterpriseId,
-        });
+    public findExists = async (filter: TFindExistsFilter) => {
+        try {
+            console.log('findExists.filter', filter);
+            const db = getConnection()
+                .getRepository(PaymentCardsEntity)
+                .createQueryBuilder('paymentCards')
+                .where('paymentCards.deletedAt IS NULL');
 
-        if (filter.firstFourNumbers) {
-            db.andWhere('paymentCards.firstFourNumbers = :firstFourNumbers', {
-                firstFourNumbers: filter.firstFourNumbers,
+            if (filter.userId) {
+                db.andWhere('paymentCards.userId = :userId', {
+                    userId: filter.userId,
+                });
+            } else if (filter.residentId) {
+                db.andWhere('paymentCards.residentId = :residentId', {
+                    residentId: filter.residentId,
+                });
+            } else return rError({ message: 'invalid parameters' });
+
+            db.andWhere('paymentCards.enterpriseId = :enterpriseId', {
+                enterpriseId: filter.enterpriseId,
             });
-        }
 
-        if (filter.lastFourNumbers) {
-            db.andWhere('paymentCards.lastFourNumbers = :lastFourNumbers', {
-                lastFourNumbers: filter.lastFourNumbers,
-            });
-        }
+            if (filter.firstFourNumbers) {
+                db.andWhere(
+                    'paymentCards.firstFourNumbers = :firstFourNumbers',
+                    {
+                        firstFourNumbers: filter.firstFourNumbers,
+                    },
+                );
+            }
 
-        if (filter.brand) {
-            db.andWhere('paymentCards.brand = :brand', {
-                brand: filter.brand,
-            });
-        }
+            if (filter.lastFourNumbers) {
+                db.andWhere('paymentCards.lastFourNumbers = :lastFourNumbers', {
+                    lastFourNumbers: filter.lastFourNumbers,
+                });
+            }
 
-        return db.getOne();
+            if (filter.brand) {
+                db.andWhere('paymentCards.brand = :brand', {
+                    brand: filter.brand,
+                });
+            }
+
+            const data = await db.getOne();
+            if (!data)
+                return rSuccess({ message: 'processed data', row: undefined });
+
+            return rSuccess({ message: 'processed data', row: data });
+        } catch (error: any) {
+            console.log('findExists', error);
+            return rError({ message: error?.message });
+        }
     };
 
     public getById = async (id: number) =>
