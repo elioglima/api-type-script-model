@@ -11,7 +11,6 @@ export interface TResident {
     documentType: TDOC;
     document: string;
     description: string;
-    externalId: number;
     apartmentId: number;
     enterpriseId: number;
     contractCode: string;
