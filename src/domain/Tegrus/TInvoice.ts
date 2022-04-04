@@ -29,6 +29,11 @@ export type TInvoice = {
     resident: TResident;
     residentIdenty?: number;
     recurrenceId?: number;
+    paymentDate?: Date;
+    returnMessage?: string;
+    paymentId?:string;
+    tid?: string;
+    returnCode?: string;
 };
 
 export type TInvoiceFilter = {

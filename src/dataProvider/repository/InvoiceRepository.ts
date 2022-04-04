@@ -111,8 +111,8 @@ export class InvoiceRepository {
             .where('invoiceId = :invoiceId', { invoiceId: invoice.invoiceId })
             .execute()
             .then(
-                () => {
-                    return invoice;
+                (data) => {
+                    return data;
                 },
                 onRejected => {
                     return onRejected;

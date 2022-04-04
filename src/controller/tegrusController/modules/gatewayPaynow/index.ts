@@ -33,6 +33,7 @@ const returnTopic = (
                     messageError: err
                         ? response?.message || 'unexpected error'
                         : undefined,
+                    ...response
                 },
             ],
         },
@@ -84,7 +85,12 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 if (invoice.isRecurrence)
                     return await payNowRecurrence(payload, invoice, resident);
 
-                return await payNowCredit(payload, invoice, resident);
+                const resPayNowCredit:any = await payNowCredit(payload, invoice, resident);
+                console.log("resPayNowCredit", resPayNowCredit)
+                return  returnTopic(
+                    resPayNowCredit.data,
+                    resPayNowCredit.err,
+                );
             } else {
                 return returnTopic(
                     { message: 'type not implemented for payment' },
