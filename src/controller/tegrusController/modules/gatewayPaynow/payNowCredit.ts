@@ -44,6 +44,22 @@ export const payNowCredit = async (
     resident: TResident,
 ) => {
     try {
+        if (['00', '4'].includes(String(invoice?.returnCode))) {
+            // verificando se esta paga a fatura
+            return returnTopic({
+                message: 'invoice payment has already been changed',
+                invoiceId: invoice.invoiceId,
+                paymentDate: invoice.paymentDate,
+                statusInvoice: invoice.statusInvoice,
+                paymentMethod: invoice.paymentMethod,
+                type: invoice.type,
+                returnMessage: invoice.returnMessage,
+                paymentId: invoice.paymentId,
+                tid: invoice.tid,
+                returnCode: invoice.returnCode,
+            });
+        }
+
         const invoiceService = new InvoiceService();
 
         const resPayAdapter: any = await payAdatpter(
