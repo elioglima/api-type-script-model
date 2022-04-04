@@ -109,9 +109,8 @@ const gatewayPaynow = async (req: Request, res: Response) => {
     try {
         const body: TPayNowReq = req?.body;
         const response = await servicePrivate(body);
-        return res.status(response.status).json(response);
+        return res.status(200).json(response);
     } catch (error: any) {
-        console.log('ERROR', error);
         return res.status(422).json(error);
     }
 };

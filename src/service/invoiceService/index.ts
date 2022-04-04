@@ -39,7 +39,7 @@ export default class InvoiceService {
     };
 
     public FindOne = async (invoiceId: number) => {
-        this.logger(`Find One Include`);
+        this.logger(`Find One`);
 
         const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
             invoiceId,
