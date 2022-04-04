@@ -21,7 +21,7 @@ import {
     resRecurrentCreate,
     resRecurrentDeactivate,
 } from './RecurrentPayment';
-import { rError, rSuccess } from 'src/utils';
+import { rError, rSuccess } from '../utils';
 
 export class AdapterPayment implements IAdapter {
     API_URL: string | undefined;
