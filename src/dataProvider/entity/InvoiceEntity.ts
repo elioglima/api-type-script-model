@@ -120,7 +120,7 @@ export class InvoiceEntity {
     @Column({
         name: 'anticipation',
         type: 'boolean',
-        default: () => false,
+        default: false,
     })
     anticipation: Boolean | undefined;
 
@@ -161,7 +161,7 @@ export class InvoiceEntity {
     @Column({
         name: 'isRecurrence',
         type: 'boolean',
-        default: () => false,
+        default: false,
     })
     isRecurrence: Boolean | undefined;
 
