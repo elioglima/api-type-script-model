@@ -8,7 +8,7 @@ export const invoiceToTResident = (residentIdenty: TResident) => {
         id: resident?.id,
         name: resident?.name,
         nationality: resident?.nationality,
-        nickname: resident?.nickname,
+        nickname: resident?.nickname || '',
         email: resident?.email,
         birthDate: resident?.birthDate,
         smartphone: resident?.smartphone,

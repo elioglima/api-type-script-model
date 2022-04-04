@@ -5,7 +5,7 @@ import AdapterPayment from '../../../../domain/AdapterPayment';
 import service from '../../../../service/index';
 import { PaymentCards } from '../../../../domain/Payment';
 import { rError, rSuccess } from '../../../../utils';
-import { EnumCardType } from 'src/enum';
+import { EnumCardType } from '../../../../enum';
 import moment from 'moment';
 
 export const payAdatpter = async (

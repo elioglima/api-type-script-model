@@ -65,30 +65,35 @@ export class InvoiceEntity {
     @Column({
         name: 'condominium',
         type: 'decimal',
+        nullable: true,
     })
     condominium: number | undefined;
 
     @Column({
         name: 'discount',
         type: 'decimal',
+        nullable: true,
     })
     discount: number | undefined;
 
     @Column({
         name: 'tax',
         type: 'decimal',
+        nullable: true,
     })
     tax: number | undefined;
 
     @Column({
         name: 'refund',
         type: 'decimal',
+        nullable: true,
     })
     refund: number | undefined;
 
     @Column({
         name: 'fine',
         type: 'decimal',
+        nullable: true,
     })
     fine: number | undefined;
 
@@ -108,12 +113,14 @@ export class InvoiceEntity {
     @Column({
         name: 'description',
         type: 'varchar',
+        nullable: true,
     })
     description: string | undefined;
 
     @Column({
         name: 'anticipation',
         type: 'boolean',
+        default: () => false,
     })
     anticipation: Boolean | undefined;
 
@@ -147,46 +154,46 @@ export class InvoiceEntity {
     @Column({
         name: 'paymentDate',
         type: 'timestamp',
+        nullable: true,
     })
     paymentDate: Date | undefined;
 
     @Column({
         name: 'isRecurrence',
         type: 'boolean',
-        default: false,
+        default: () => false,
     })
     isRecurrence: Boolean | undefined;
 
     @Column({
         name: 'returnMessage',
-        type: 'varchar',        
-        nullable: true
+        type: 'varchar',
+        nullable: true,
     })
     returnMessage: string | undefined;
 
     @Column({
         name: 'paymentId',
         type: 'varchar',
-        nullable: true
+        nullable: true,
     })
     paymentId: string | undefined;
 
     @Column({
         name: 'tid',
         type: 'varchar',
-        nullable: true
+        nullable: true,
     })
     tid: string | undefined;
 
     @Column({
         name: 'returnCode',
         type: 'varchar',
-        nullable: true
+        nullable: true,
     })
     returnCode: string | undefined;
 
     @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'residentIdenty' })
     residentIdenty: number | undefined;
-
 }

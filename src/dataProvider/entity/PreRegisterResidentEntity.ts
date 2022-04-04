@@ -36,6 +36,7 @@ export class PreRegisterResidentEntity {
     @Column({
         name: 'nickname',
         type: 'varchar',
+        nullable: true,
     })
     nickname: string | undefined;
 
@@ -73,6 +74,7 @@ export class PreRegisterResidentEntity {
     @Column({
         name: 'description',
         type: 'varchar',
+        nullable: true,
     })
     description: string | undefined;
 
@@ -112,17 +114,18 @@ export class PreRegisterResidentEntity {
     })
     endDateContract: Date | undefined;
 
-    @Column({
-        name: 'startReferenceDate',
-        type: 'timestamp',
-    })
-    startReferenceDate: Date | undefined;
+    // @Column({
+    //     name: 'startReferenceDate',
+    //     type: 'timestamp',
+    //     nullable: true,
+    // })
+    // startReferenceDate: Date | undefined;
 
-    @Column({
-        name: 'endReferenceDate',
-        type: 'timestamp',
-    })
-    endReferenceDate: Date | undefined;
+    // @Column({
+    //     name: 'endReferenceDate',
+    //     type: 'timestamp',
+    // })
+    // endReferenceDate: Date | undefined;
 
     @OneToMany(() => InvoiceEntity, invoice => invoice.id)
     @JoinColumn({ name: 'invoice' })
