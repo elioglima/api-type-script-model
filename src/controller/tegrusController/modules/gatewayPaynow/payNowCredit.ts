@@ -6,10 +6,11 @@ import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
+import { EnumCardType } from '../../../../enum';
 import CardAddService from '../../../../service/CardAddService';
 import CryptIntegrationGateway from '../../../../dataProvider/gateway/CryptIntegrationGateway';
-import Adapter from '../../../../domain/Adapter'
-
+import Adapter from '../../../../domain/Adapter';
+import debug from 'debug';
 
 import { TPayNowReq } from './TPayNow';
 
@@ -44,6 +45,8 @@ export const payNowCredit = async (
     resident: TResident,
 ) => {
     try {
+        //console.log("ASdfuyasgsgfioas", {payload,invoice,resident })
+        const logger = debug('payment-api:PayNowCredit');
         const cardAddService = new CardAddService();
         const cryptIntegrationGateway = new CryptIntegrationGateway();
         const paymentRecurrenceRepository = new PaymentRecurrenceRepository();
@@ -51,7 +54,8 @@ export const payNowCredit = async (
 
         const hashC = await cryptIntegrationGateway.encryptData(
             payload.card.cardNumber,
-        );
+        );        
+
         const resPaymentCard: PaymentCards = {
             cardNumber: payload.card.cardNumber,
             brand: EnumBrands[payload.card.brand],
@@ -61,8 +65,8 @@ export const payNowCredit = async (
             hash: String(payload.card.securityCode),
             hashC,
         };
-
-        const resCardAdd = await cardAddService.execute(resPaymentCard);
+        
+        const resCardAdd = await cardAddService.execute({...resPaymentCard, enterpriseId: resident.enterpriseId});              
 
         if (resCardAdd.err) return resCardAdd;
 
@@ -85,25 +89,20 @@ export const payNowCredit = async (
                     data: { message: 'Error to find recurrence' },
                 };
         }
-        
+
         const reqPayment: reqMakePayment = {
-            customer:{
-                name: resident?.name,    
+            customer: {
+                name: resident?.name,
                 email: resident.email,
-                birthdate: resident.birthDate,                             
+                birthdate: resident.birthDate,
                 identity: resident.document,
-                identityType: resident.documentType
+                identityType: resident.documentType,
             },
             payment: {
-                type: 'CreditCard',
+                type: EnumCardType.CREDIT,
                 amount: invoice?.value,
                 installments: 1,
                 softDescriptor: 'Recorrencia JFL',
-                recurrentPayment: {
-                    authorizeNow: false,
-                    endDate: invoice?.endReferenceDate,
-                    interval: 'Monthly',
-                },
                 creditCard: {
                     cardNumber: payload?.card?.cardNumber,
                     holder: payload?.card?.holder,
@@ -112,9 +111,16 @@ export const payNowCredit = async (
                     brand: payload?.card?.brand,
                 },
             },
-        }
+        };
 
-        const resPayment = await adapter.makePayment()
+        console.log('resident', resident);
+
+        await adapter.init(resident.enterpriseId);
+        const resPayment = await adapter.makePayment(reqPayment);
+
+        console.log("resp", resPayment)
+        //if (resPayment instanceof Error) return;
+
         /* 
             - verificar se ha recorrencia vigente
                 - caso tenha cancelar a recorrencia e efetuar o pagamento
@@ -124,7 +130,6 @@ export const payNowCredit = async (
                 - status
                 - dados de cartao
         */
-        console.log({ payload, invoice, resident });
 
         const paymentDate: Date = new Date(); // so de exemplo
         const newStatusInvoice = EnumTopicStatusInvoice.paid; // so de exemplo

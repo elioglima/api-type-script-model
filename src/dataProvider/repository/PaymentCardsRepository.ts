@@ -13,15 +13,7 @@ export class PaymentCardsRepository {
             .insert()
             .values([
                 {
-                    lastFourNumbers: paymentCards.lastFourNumbers,
-                    token: paymentCards.token,
-                    brand: paymentCards.brand,
-                    userId: paymentCards.userId,
-                    enterpriseId: paymentCards.enterpriseId,
-                    active: paymentCards.active,
-                    hash: paymentCards.hash,
-                    holder: paymentCards.holder,
-                    firstFourNumbers: paymentCards.firstFourNumbers,
+                    ...paymentCards
                 },
             ])
             .execute()

@@ -8,6 +8,7 @@ export class PaymentCardsEntity {
     @Column({
         name: 'userId',
         type: 'int',
+        nullable: true
     })
     userId: number | undefined;
 
@@ -60,7 +61,7 @@ export class PaymentCardsEntity {
     hash: string | undefined;
 
     @Column({
-        name: 'hash',
+        name: 'hashC',
         type: 'varchar',
         length: 200,
         nullable: true

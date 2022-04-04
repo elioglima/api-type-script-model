@@ -27,7 +27,7 @@ export default class ResidentService {
     }
 
     public FindOne = async (id: number) => {
-        this.logger(`Find One Include`);
+        this.logger(`Find One`);
 
         const resResident: TResident = await this.repository.getById(id);
 

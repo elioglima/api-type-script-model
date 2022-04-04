@@ -15,7 +15,7 @@ export default class CardAddService {
     public execute = async (paymentCard: PaymentCards) => {
         try {
             this.logger(`Find Card Add`);
-
+      
             paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0, 4);
             paymentCard.lastFourNumbers = paymentCard.cardNumber.slice(-4);
 
@@ -55,7 +55,7 @@ export default class CardAddService {
                 token: response.cardToken,
             });
         } catch (error) {
-            console.log(77, error);
+            console.log("ERROR", error);
             return {err: true, data: error};
         }
     };

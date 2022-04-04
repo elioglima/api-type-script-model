@@ -65,7 +65,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
             );
 
         const invoice: TInvoice = resInvoice.data;
-        const resident: TResident = invoice.resident;
+        const resident: any = invoice.residentIdenty;        
 
         if (
             [
@@ -74,10 +74,10 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 EnumInvoiceType.spot,
             ].includes(invoice.type)
         ) {
-            if (invoice.paymentMethod == EnumInvoicePaymentMethod.credit) {
-                return await payNowRecurrence(payload, invoice, resident);
-            }
-
+            // if (invoice.paymentMethod == EnumInvoicePaymentMethod.credit) {
+            //     console.log(12312313123123123)
+            //     return await payNowRecurrence(payload, invoice, resident);
+            // }                      
             return await payNowCredit(payload, invoice, resident);
         } else {
             return returnTopic(
@@ -97,9 +97,8 @@ const gatewayPaynow = async (req: Request, res: Response) => {
     try {
         const body: TPayNowReq = req?.body;
         const response = await servicePrivate(body);
-        return res.status(response.status).json(response);
-    } catch (error: any) {
-        console.log('ERROR', error);
+        return res.status(200).json(response);
+    } catch (error: any) {        
         return res.status(422).json(error);
     }
 };

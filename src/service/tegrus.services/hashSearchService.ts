@@ -12,9 +12,7 @@ export default class HashSearchService {
     public async execute(hash: string) {
         try {
             this.logger('Starting method HashSearchService');
-            const resp: any = await this.HashRep.getByHash(hash);            
-            
-            console.log("RESP", resp)
+            const resp: any = await this.HashRep.getByHash(hash);                        
 
             if(!resp) {
                 return {
