@@ -9,7 +9,7 @@ const booking = async (payload: TInvoice) => {
         const invoiceService = new InvoiceService();
 
         const resFindOne = await invoiceService.FindOne(payload.invoiceId);
-
+        console.log({ resFindOne });
         if (resFindOne.data)
             return returnTopic(
                 payload,

@@ -2,31 +2,42 @@ import debug from 'debug';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 import { getConnection } from 'typeorm';
 import { PaymentRecurrenceEntity } from '../entity/PaymentRecurrenceEntity';
+import { rError, rSuccess } from '../../utils';
 
 export class PaymentRecurrenceRepository {
     private logger = debug('payment-api:PaymentRecurrenceRepository');
 
-    public persist = async (paymentRecurrence: PaymentRecurrence) =>
-        await getConnection()
-            .getRepository(PaymentRecurrenceEntity)
-            .createQueryBuilder('paymentRecurrence')
-            .insert()
-            .values([
-                {
-                    ...paymentRecurrence,
-                },
-            ])
-            .execute()
-            .then(
-                response => {
-                    paymentRecurrence.id = Number(response.identifiers[0].id);
-                    return paymentRecurrence;
-                },
-                onRejected => {
-                    this.logger('Error ', onRejected);
-                    return onRejected;
-                },
-            );
+    public persist = async (paymentRecurrence: PaymentRecurrence) => {
+        try {
+            const row = await getConnection()
+                .getRepository(PaymentRecurrenceEntity)
+                .createQueryBuilder('paymentRecurrence')
+                .insert()
+                .values([
+                    {
+                        ...paymentRecurrence,
+                        active: true,
+                    },
+                ])
+                .execute()
+                .then(
+                    response => {
+                        paymentRecurrence.id = Number(
+                            response.identifiers[0].id,
+                        );
+                        return paymentRecurrence;
+                    },
+                    onRejected => {
+                        this.logger('Error ', onRejected);
+                        return onRejected;
+                    },
+                );
+
+            return rSuccess({ message: 'processed data', row });
+        } catch (error: any) {
+            return rError({ message: error?.message, row: undefined });
+        }
+    };
 
     public getById = async (id: number) =>
         await getConnection()
@@ -34,6 +45,34 @@ export class PaymentRecurrenceRepository {
             .createQueryBuilder('paymentRecurrence')
             .where('paymentRecurrence.id = :id', { id })
             .getOne();
+
+    public getByResidentId = async (residentId: number) => {
+        try {
+            const row = await getConnection()
+                .getRepository(PaymentRecurrenceEntity)
+                .createQueryBuilder('paymentRecurrence')
+                .where('paymentRecurrence.residentId = :residentId', {
+                    residentId,
+                })
+                .getOne()
+                .then(
+                    onAccept => {
+                        return onAccept;
+                    },
+                    onRejected => {
+                        this.logger('Error ', onRejected);
+                        return onRejected;
+                    },
+                );
+
+            if (!row)
+                return rSuccess({ message: 'processed data', row: undefined });
+
+            return rSuccess({ message: 'processed data', row });
+        } catch (error: any) {
+            return rError({ message: error?.message, row: undefined });
+        }
+    };
 
     public getByRecurrenceId = async (recurrentPaymentId: string) =>
         await getConnection()

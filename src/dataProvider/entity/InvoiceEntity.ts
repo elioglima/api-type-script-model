@@ -1,17 +1,15 @@
-import { PaymentRecurrenceEntity } from './PaymentRecurrenceEntity';
 import {
     Column,
     Entity,
     PrimaryGeneratedColumn,
     ManyToOne,
     JoinColumn,
-    OneToOne,
 } from 'typeorm';
 
 import { PreRegisterResidentEntity } from './PreRegisterResidentEntity';
 
 import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
-import { EnumTopicStatusInvoice } from '../../domain/Tegrus/TStatusInvoice';
+import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
 import { EnumInvoiceType } from '../../domain/Tegrus/EnumInvoiceType';
 
 @Entity('invoice')
@@ -142,9 +140,9 @@ export class InvoiceEntity {
     @Column({
         name: 'statusInvoice',
         type: 'enum',
-        enum: EnumTopicStatusInvoice,
+        enum: EnumInvoiceStatus,
     })
-    statusInvoice: EnumTopicStatusInvoice | undefined;
+    statusInvoice: EnumInvoiceStatus | undefined;
 
     @Column({
         name: 'paymentDate',
@@ -159,11 +157,36 @@ export class InvoiceEntity {
     })
     isRecurrence: Boolean | undefined;
 
+    @Column({
+        name: 'returnMessage',
+        type: 'varchar',        
+        nullable: true
+    })
+    returnMessage: string | undefined;
+
+    @Column({
+        name: 'paymentId',
+        type: 'varchar',
+        nullable: true
+    })
+    paymentId: string | undefined;
+
+    @Column({
+        name: 'tid',
+        type: 'varchar',
+        nullable: true
+    })
+    tid: string | undefined;
+
+    @Column({
+        name: 'returnCode',
+        type: 'varchar',
+        nullable: true
+    })
+    returnCode: string | undefined;
+
     @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'residentIdenty' })
     residentIdenty: number | undefined;
 
-    @OneToOne(() => PaymentRecurrenceEntity, payRecurrence => payRecurrence.id)
-    @JoinColumn({ name: 'recurrenceIdenty' })
-    recurrencedenty: number | undefined;
 }

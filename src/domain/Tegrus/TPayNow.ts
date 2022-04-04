@@ -1,4 +1,4 @@
-import { EnumBrands } from '../../../../enum/BrandsEnum';
+import { EnumBrands } from '../../enum/BrandsEnum';
 
 export type TPayNowReq = {
     hash: string;

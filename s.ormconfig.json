@@ -5,7 +5,7 @@
     "username": "flgmanager",
     "password": "Eg7Epnyq0HnfqqoEzJI5",
     "database": "jfl_living",
-    "synchronize": true,
+    "synchronize": false,
     "logging": true,
     "entities": ["src/dataProvider/entity/*/.ts"],
     "migrations": ["src/dataProvider/migration/*/.ts"],

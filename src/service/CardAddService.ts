@@ -2,19 +2,44 @@ import debug from 'debug';
 import { PaymentCards, TFindExistsFilter } from '../domain/Payment';
 import { PaymentCardsRepository } from '../dataProvider/repository/PaymentCardsRepository';
 import { reqCardAdd } from '../domain/IAdapter';
-import Adapter from '../domain/Adapter';
+import AdapterPayment from '../domain/AdapterPayment';
 import CryptIntegrationGateway from '../dataProvider/gateway/CryptIntegrationGateway';
-import { PaymentCardsEntity } from '../dataProvider/entity/PaymentCardsEntity';
+import { rError, rSuccess } from '../utils';
 
 export default class CardAddService {
     private logger = debug('payment-api:CardAddService');
     private paymentCardRepository = new PaymentCardsRepository();
-    private paymentOperator = new Adapter();
+    private paymentOperator = new AdapterPayment();
     private cryptIntegrationGateway = new CryptIntegrationGateway();
 
     public execute = async (paymentCard: PaymentCards) => {
         try {
             this.logger(`Find Card Add`);
+
+            if (!paymentCard?.enterpriseId)
+                return rError({
+                    message: 'business code not informed',
+                });
+
+            if (!paymentCard?.userId && !paymentCard?.residentId)
+                return rError({
+                    message: 'userId or residentId was not informed',
+                });
+
+            if (!paymentCard?.cardNumber)
+                return rError({
+                    message: 'parameters not informed :: cardNumber',
+                });
+
+            if (!paymentCard?.customerName)
+                return rError({
+                    message: 'parameters not informed :: customerName',
+                });
+
+            if (!paymentCard?.expirationDate)
+                return rError({
+                    message: 'parameters not informed :: expirationDate',
+                });
 
             paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0, 4);
             paymentCard.lastFourNumbers = paymentCard.cardNumber.slice(-4);
@@ -32,17 +57,21 @@ export default class CardAddService {
                 filter,
             );
 
-            if (cardExists instanceof PaymentCardsEntity) {
-                return new Error('Card already registered');
-            }
+            if (cardExists?.err) return cardExists;
+
+            if (cardExists?.data?.row)
+                return rSuccess({
+                    message: 'card already registered in the database',
+                    card: cardExists?.data?.row,
+                });
 
             await this.paymentOperator.init(Number(paymentCard?.enterpriseId));
 
             const requestCardAdd: reqCardAdd = {
                 brand: paymentCard.brand,
-                cardNumber: paymentCard.cardNumber,
-                customerName: paymentCard.customerName,
-                expirationDate: paymentCard.expirationDate,
+                cardNumber: paymentCard?.cardNumber,
+                customerName: paymentCard?.customerName,
+                expirationDate: paymentCard?.expirationDate,
                 holder: paymentCard.holder,
             };
 
@@ -50,12 +79,20 @@ export default class CardAddService {
                 requestCardAdd,
             );
 
-            if (response?.err == true) return response;
+            if (response instanceof Error)
+                return rError({ message: 'Cannot instance Card' });
 
-            if (!response?.cardToken) return new Error('Cannot instance Card');
+            if (response?.err) return response;
+            if (!response?.cardToken)
+                return rError({ message: 'Cannot instance Card' });
+
+            const securityCode: number | string | undefined =
+                paymentCard.hash || paymentCard.securityCode;
+            if (!securityCode || Number(securityCode) <= 0)
+                return new Error('security code not informed');
 
             paymentCard.hash = await this.cryptIntegrationGateway.encryptData(
-                paymentCard.hash,
+                String(securityCode),
             );
 
             paymentCard.hashC = await this.cryptIntegrationGateway.encryptData(
@@ -67,7 +104,17 @@ export default class CardAddService {
                 token: response.cardToken,
             };
 
-            return await this.paymentCardRepository.FindOneInclude(cardInclude);
+            const cardDB = await this.paymentCardRepository.FindOneInclude(
+                cardInclude,
+            );
+
+            if (cardDB?.err)
+                return rError({ message: 'error writing card to database' });
+
+            return rSuccess({
+                message: 'data processed successfully',
+                card: cardDB?.data,
+            });
         } catch (error) {
             console.log(77, error);
             return { err: true, data: error };

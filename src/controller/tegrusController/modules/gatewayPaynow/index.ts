@@ -2,20 +2,21 @@ import { Request, Response } from 'express';
 
 import InvoiceService from '../../../../service/invoiceService';
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
-import { EnumTopicStatusInvoice } from '../../../../domain/Tegrus/TStatusInvoice';
+import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 
 import HashSearchService from './hashSearchService';
 import { payNowCredit } from './payNowCredit';
 import { payNowRecurrence } from './payNowRecurrence';
-import { TPayNowReq } from './TPayNow';
+import { TPayNowReq } from '../../../../domain/Tegrus/TPayNow';
+import { invoiceToTResident } from '../../../../utils';
 
 const returnTopic = (
     response: {
         invoiceId?: number;
         paymentDate?: Date | any;
-        statusInvoice?: EnumTopicStatusInvoice;
+        statusInvoice?: EnumInvoiceStatus;
         paymentMethod?: EnumInvoicePaymentMethod;
         type?: EnumInvoiceType;
         message: string;
@@ -28,10 +29,10 @@ const returnTopic = (
         statusInvoice: {
             invoices: [
                 {
-                    invoiceId: 125,
                     messageError: err
                         ? response?.message || 'unexpected error'
                         : undefined,
+                    ...response,
                 },
             ],
         },
@@ -43,7 +44,6 @@ const servicePrivate = async (payload: TPayNowReq) => {
         const hashServices = new HashSearchService();
         const { hash } = payload;
 
-        // conferir regra se o hash expirou se nao existe
         const resHash: any = await hashServices.execute(hash);
         if (resHash.err) return resHash;
 
@@ -64,8 +64,14 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 true,
             );
 
-        const invoice: TInvoice = resInvoice.data;
-        const resident: TResident = invoice.resident;
+        const { residentIdenty, ...invoice }: any = resInvoice.data;
+        const resident: TResident | any = invoiceToTResident(residentIdenty);
+
+        if (!resident)
+            return returnTopic(
+                { message: 'resdent not found in database' },
+                true,
+            );
 
         if (
             [
@@ -75,10 +81,21 @@ const servicePrivate = async (payload: TPayNowReq) => {
             ].includes(invoice.type)
         ) {
             if (invoice.paymentMethod == EnumInvoicePaymentMethod.credit) {
-                return await payNowRecurrence(payload, invoice, resident);
-            }
+                if (invoice.isRecurrence)
+                    return await payNowRecurrence(payload, invoice, resident);
 
-            return await payNowCredit(payload, invoice, resident);
+                const resPayNowCredit: any = await payNowCredit(
+                    payload,
+                    invoice,
+                    resident,
+                );
+                return resPayNowCredit;
+            } else {
+                return returnTopic(
+                    { message: 'type not implemented for payment' },
+                    true,
+                );
+            }
         } else {
             return returnTopic(
                 { message: 'method not implemented for payment' },
@@ -97,9 +114,8 @@ const gatewayPaynow = async (req: Request, res: Response) => {
     try {
         const body: TPayNowReq = req?.body;
         const response = await servicePrivate(body);
-        return res.status(response.status).json(response);
+        return res.status(200).json(response);
     } catch (error: any) {
-        console.log('ERROR', error);
         return res.status(422).json(error);
     }
 };
