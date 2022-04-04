@@ -26,6 +26,21 @@ export default class CardAddService {
                     message: 'userId or residentId was not informed',
                 });
 
+            if (!paymentCard?.cardNumber)
+                return rError({
+                    message: 'parameters not informed :: cardNumber',
+                });
+
+            if (!paymentCard?.customerName)
+                return rError({
+                    message: 'parameters not informed :: customerName',
+                });
+
+            if (!paymentCard?.expirationDate)
+                return rError({
+                    message: 'parameters not informed :: expirationDate',
+                });
+
             paymentCard.firstFourNumbers = paymentCard.cardNumber.slice(0, 4);
             paymentCard.lastFourNumbers = paymentCard.cardNumber.slice(-4);
 
@@ -54,9 +69,9 @@ export default class CardAddService {
 
             const requestCardAdd: reqCardAdd = {
                 brand: paymentCard.brand,
-                cardNumber: paymentCard.cardNumber,
-                customerName: paymentCard.customerName,
-                expirationDate: paymentCard.expirationDate,
+                cardNumber: paymentCard?.cardNumber,
+                customerName: paymentCard?.customerName,
+                expirationDate: paymentCard?.expirationDate,
                 holder: paymentCard.holder,
             };
 
@@ -64,9 +79,12 @@ export default class CardAddService {
                 requestCardAdd,
             );
 
-            if (response?.err == true) return response;
+            if (response instanceof Error)
+                return rError({ message: 'Cannot instance Card' });
 
-            if (!response?.cardToken) return new Error('Cannot instance Card');
+            if (response?.err) return response;
+            if (!response?.cardToken)
+                return rError({ message: 'Cannot instance Card' });
 
             const securityCode: number | string | undefined =
                 paymentCard.hash || paymentCard.securityCode;
@@ -91,10 +109,12 @@ export default class CardAddService {
             );
 
             if (cardDB?.err)
-                return rSuccess({
-                    message: 'card already registered in the database',
-                    card: cardDB,
-                });
+                return rError({ message: 'error writing card to database' });
+
+            return rSuccess({
+                message: 'data processed successfully',
+                card: cardDB?.data,
+            });
         } catch (error) {
             console.log(77, error);
             return { err: true, data: error };

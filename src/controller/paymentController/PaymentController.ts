@@ -88,18 +88,17 @@ export class PaymentController {
             return res.status(422).json({ ['err']: message });
         }
 
-        const data = await this.CardAddService.execute(dataRequest);
+        const response: any = await this.CardAddService.execute(dataRequest);
 
-        if (data?.err == true) {
-            return res.status(422).json(data);
+        if (response?.err == true) {
+            return res.status(422).json(response?.data);
         }
 
-        if (data instanceof Error) {
-            this.logger('Error', data.message);
-            return res.status(422).json({ ['err']: data.message });
+        if (response instanceof Error) {
+            return res.status(422).json(response);
         }
 
-        return res.status(200).json(data);
+        return res.status(200).json(response.data);
     };
 
     public getReceipt = async (req: Request, res: Response) => {

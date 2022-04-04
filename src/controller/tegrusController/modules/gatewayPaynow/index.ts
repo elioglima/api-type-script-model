@@ -81,10 +81,16 @@ const servicePrivate = async (payload: TPayNowReq) => {
             ].includes(invoice.type)
         ) {
             if (invoice.paymentMethod == EnumInvoicePaymentMethod.credit) {
-                return await payNowRecurrence(payload, invoice, resident);
-            }
+                if (invoice.isRecurrence)
+                    return await payNowRecurrence(payload, invoice, resident);
 
-            return await payNowCredit(payload, invoice, resident);
+                return await payNowCredit(payload, invoice, resident);
+            } else {
+                return returnTopic(
+                    { message: 'type not implemented for payment' },
+                    true,
+                );
+            }
         } else {
             return returnTopic(
                 { message: 'method not implemented for payment' },

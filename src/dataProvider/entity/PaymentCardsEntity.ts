@@ -13,6 +13,14 @@ export class PaymentCardsEntity {
     active: Boolean | undefined;
 
     @Column({
+        // cardtoken
+        name: 'token',
+        type: 'varchar',
+        length: 200,
+    })
+    token: string | undefined;
+
+    @Column({
         name: 'userId',
         type: 'int',
         nullable: true,
@@ -31,13 +39,6 @@ export class PaymentCardsEntity {
         type: 'int',
     })
     enterpriseId: number | undefined;
-
-    @Column({
-        name: 'holder',
-        type: 'varchar',
-        length: 70,
-    })
-    holder: string | undefined;
 
     @Column({
         name: 'firstFourNumbers',
@@ -75,12 +76,12 @@ export class PaymentCardsEntity {
     })
     hashC: string | undefined; // numcard crip
 
-    // @Column({
-    //     name: 'token',
-    //     type: 'varchar',
-    //     length: 200,
-    // })
-    // token: string | undefined;
+    @Column({
+        name: 'holder',
+        type: 'varchar',
+        length: 200,
+    })
+    holder: string | undefined;
 
     @Column({
         name: 'createdAt',

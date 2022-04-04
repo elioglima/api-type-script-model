@@ -5,12 +5,12 @@ export interface PaymentCards {
     userId?: number;
     residentId?: number;
     token?: string;
-    cardNumber: string;
     lastFourNumbers?: string;
     firstFourNumbers?: string;
     brand: EnumBrands;
-    customerName: string;
-    expirationDate: string;
+    customerName?: string;
+    expirationDate?: string;
+    cardNumber?: string;
     holder: string;
     active?: boolean;
     createdAt?: Date;
@@ -28,4 +28,5 @@ export type TFindExistsFilter = {
     firstFourNumbers?: string;
     lastFourNumbers?: string;
     brand?: string;
+    token?: string;
 };

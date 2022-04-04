@@ -12,32 +12,33 @@ export class PaymentCardsRepository {
 
     public persist = async (paymentCard: PaymentCards) => {
         try {
-            if (!paymentCard.userId && !paymentCard.residentId)
+            if (!paymentCard?.userId && !paymentCard?.residentId)
                 return rError({ message: 'invalid parameters' });
+
+            if (!paymentCard?.token)
+                return rError({ message: 'failed to harvest cardtoken' });
+
+            const newCard: PaymentCards = {
+                lastFourNumbers: paymentCard.lastFourNumbers,
+                brand: paymentCard.brand,
+                ...(paymentCard.userId ? { userId: paymentCard.userId } : {}),
+                ...(paymentCard.residentId
+                    ? { residentId: paymentCard.residentId }
+                    : {}),
+                enterpriseId: paymentCard.enterpriseId,
+                active: paymentCard.active,
+                hash: paymentCard.hash,
+                hashC: paymentCard.hashC,
+                holder: paymentCard.holder,
+                firstFourNumbers: paymentCard.firstFourNumbers,
+                token: paymentCard.token,
+            };
 
             const data = await getConnection()
                 .getRepository(PaymentCardsEntity)
                 .createQueryBuilder('paymentCards')
                 .insert()
-                .values([
-                    {
-                        lastFourNumbers: paymentCard.lastFourNumbers,
-                        brand: paymentCard.brand,
-                        ...(paymentCard.userId
-                            ? { userId: paymentCard.userId }
-                            : {}),
-                        ...(paymentCard.residentId
-                            ? { residentId: paymentCard.residentId }
-                            : {}),
-                        enterpriseId: paymentCard.enterpriseId,
-                        active: paymentCard.active,
-                        hash: paymentCard.hash,
-                        hashC: paymentCard.hashC,
-                        // token: paymentCard.token,
-                        holder: paymentCard.holder,
-                        firstFourNumbers: paymentCard.firstFourNumbers,
-                    },
-                ])
+                .values(newCard)
                 .execute()
                 .then(
                     response => {
@@ -63,24 +64,26 @@ export class PaymentCardsRepository {
 
             // prevencao de inclusao duplicada
             const filter: TFindExistsFilter = {
-                userId: paymentCard.userId,
-                residentId: paymentCard.residentId,
                 enterpriseId: paymentCard.enterpriseId,
+                ...(paymentCard.userId ? { userId: paymentCard.userId } : {}),
+                ...(paymentCard.residentId
+                    ? { residentId: paymentCard.residentId }
+                    : {}),
                 firstFourNumbers: paymentCard.firstFourNumbers,
                 lastFourNumbers: paymentCard.lastFourNumbers,
                 brand: paymentCard.brand,
+                token: paymentCard.token,
             };
 
             const cardExists = await this.findExists(filter);
 
-            if (cardExists instanceof PaymentCardsEntity)
+            if (cardExists?.err)
                 return rError({
                     message: 'Card already registered',
                     ...cardExists,
                 });
 
-            const data = await this.persist(paymentCard);
-            return rSuccess({ message: 'processed data', ...data });
+            return await this.persist(paymentCard);
         } catch (error: any) {
             return rError({ message: error?.message });
         }

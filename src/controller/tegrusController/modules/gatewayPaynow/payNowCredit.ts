@@ -9,6 +9,7 @@ import CardAddService from '../../../../service/CardAddService';
 import CryptIntegrationGateway from '../../../../dataProvider/gateway/CryptIntegrationGateway';
 
 import { TPayNowReq } from '../../../../domain/Tegrus';
+import { payAdatpter } from './payAdatpter';
 
 const returnTopic = (
     response: {
@@ -44,6 +45,27 @@ export const payNowCredit = async (
         const cardAddService = new CardAddService();
         const cryptIntegrationGateway = new CryptIntegrationGateway();
         const paymentRecurrenceRepository = new PaymentRecurrenceRepository();
+
+        console.log('payNowRecurrence', payload);
+        const resPayAdapter: any = await payAdatpter(resident, {
+            ...payload.card,
+            hash: payload.card?.securityCode,
+        });
+
+        if (resPayAdapter?.err)
+            return returnTopic(
+                {
+                    invoiceId: invoice.invoiceId,
+                    paymentDate: null,
+                    statusInvoice: invoice.statusInvoice,
+                    paymentMethod: invoice.paymentMethod,
+                    type: invoice.type,
+                    message:
+                        resPayAdapter?.data?.message ||
+                        resPayAdapter?.data?.messageError,
+                },
+                true,
+            );
 
         const hashC = await cryptIntegrationGateway.encryptData(
             payload.card.cardNumber,
