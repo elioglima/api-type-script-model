@@ -89,7 +89,7 @@ cielo.creditCard
 
 ### <a name="creditCancelSale"></a> Cancelando uma venda
 
-```js
+```js sss
 const cancelamentoVendaParams: CancelTransactionRequestModel = {
     paymentId: '24bc8366-fc31-4d6c-8555-17049a836a07',
     amount: 100, // Caso o valor não seja definido, cancela a venda no valor total
