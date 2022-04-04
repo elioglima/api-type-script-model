@@ -38,7 +38,6 @@ import { Utils } from '../../utils/utils';
 import { ICardAdapter } from './ICardAdapter';
 import { RecurentMethods } from './recurrent/index';
 import { PaymentsMethods } from './payment/index';
-import { PromiseExec } from '../../domain/Generics';
 
 export class CieloAdapter implements ICardAdapter {
     private util: Utils | undefined;
