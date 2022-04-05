@@ -113,7 +113,11 @@ export default class InvoiceService {
             };
         }
 
-        const resPersist = await this.invoiceRepository.persist(invoice);
+        const { resident } = invoice;
+        const resPersist = await this.invoiceRepository.persist({
+            ...invoice,
+            residentIdenty: resident.id,
+        });
         if (resPersist instanceof Error) {
             return {
                 err: true,
