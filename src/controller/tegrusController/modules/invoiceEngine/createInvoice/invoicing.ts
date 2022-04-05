@@ -4,7 +4,6 @@ import InvoiceService from '../../../../../service/invoiceService';
 import createHash from './createHash';
 import { returnTopic } from './returnTopic';
 import { PaymentRecurrenceRepository } from '../../../../../dataProvider/repository/PaymentRecurrenceRepository';
-import firstPaymentCreateService from '../../../../../service/tegrus.services/firstPaymentCreateService';
 
 const invoicing = async (payload: TInvoice) => {
     const linkInvoice: TLinkInvoice = await createHash(
