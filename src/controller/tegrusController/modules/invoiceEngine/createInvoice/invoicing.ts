@@ -21,8 +21,10 @@ const invoicing = async (payload: TInvoice) => {
             );
 
         if (resFindOne.err) {
+            // TO-DO-NOW
             // consultar residente
             // const preRegisterResidentService = new PreRegisterResidentService();
+
             const resPreRegisterResidentServiceFindOne: any = {};
             // await preRegisterResidentService.getById(
             //     Number(payload?.resident?.id),
@@ -52,6 +54,7 @@ const invoicing = async (payload: TInvoice) => {
             }
 
             if (isResidentExist && isRecurrenceCreated) {
+                // TO-DO-NOW
                 // verificar recorrencia na cielo se esta efetiva
 
                 // caso a fatura estiver paga atualizar o status da fatura
