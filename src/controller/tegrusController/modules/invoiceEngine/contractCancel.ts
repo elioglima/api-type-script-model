@@ -20,7 +20,7 @@ const contractCancel = async (req: any) => {
             status: err ? 422 : 200,
             err,
             contractCancel: {
-                ...(payload ? { ...payload } : {}),
+                ...(payload?.contractCancel ? payload?.contractCancel : {}),
                 returnOpah: {
                     ...(response ? response : {}),
                     ...(err ? { messageError: response.message } : {}),
