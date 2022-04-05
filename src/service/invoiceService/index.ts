@@ -118,6 +118,7 @@ export default class InvoiceService {
             ...invoice,
             residentIdenty: resident.id,
         });
+
         if (resPersist instanceof Error) {
             return {
                 err: true,

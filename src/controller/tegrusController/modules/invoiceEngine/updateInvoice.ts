@@ -27,8 +27,9 @@ const updateInvoice = async (toReceive: any) => {
 
         await invoiceService.Update(updataData);
         if (updataData.isExpired) {
+            // TO-DO
             // verificar a recorrencia
-            // pausar ou cancelar a recorrencia do mes atual da fatura alterada
+            // desativar a recorrencia do mes atual da fatura alterada
 
             const linkInvoice: any = await createHash(
                 toReceive?.updateInvoice?.invoiceId,
