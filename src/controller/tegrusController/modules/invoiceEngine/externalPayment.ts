@@ -50,7 +50,7 @@ const externalPayment = async (req: any) => {
         };
 
         if (invoice.isRecurrence) {
-            // TO-DO
+            // TO-DO-NOW
             // desabilitarr recorrencia
         }
 
