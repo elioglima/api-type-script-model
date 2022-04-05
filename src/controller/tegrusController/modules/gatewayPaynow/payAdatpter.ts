@@ -88,6 +88,6 @@ export const payAdatpter = async (
 
         return rSuccess(resCard);
     } catch (error) {
-        console.log(error);
+        console.log(999, error);
     }
 };

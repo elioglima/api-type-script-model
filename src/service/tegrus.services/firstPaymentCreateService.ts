@@ -67,6 +67,15 @@ export default async (
         return resHashRep;
     }
 
+    if (!resultHash?.hash || !resultHash?.hash.toString().length) {
+        return {
+            err: true,
+            data: {
+                message: 'Error hash not created',
+            },
+        };
+    }
+
     const link_invoice: resFirstPaymentCreate = {
         invoiceId: invoice.invoiceId,
         hashCredit: resultHash?.hash,
