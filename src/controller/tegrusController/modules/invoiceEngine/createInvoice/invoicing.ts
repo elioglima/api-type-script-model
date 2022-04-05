@@ -4,6 +4,7 @@ import InvoiceService from '../../../../../service/invoiceService';
 import createHash from './createHash';
 import { returnTopic } from './returnTopic';
 import { PaymentRecurrenceRepository } from '../../../../../dataProvider/repository/PaymentRecurrenceRepository';
+import firstPaymentCreateService from '../../../../../service/tegrus.services/firstPaymentCreateService';
 
 const invoicing = async (payload: TInvoice) => {
     const linkInvoice: TLinkInvoice = await createHash(
@@ -13,9 +14,7 @@ const invoicing = async (payload: TInvoice) => {
 
     try {
         const invoiceService = new InvoiceService();
-        const resFindOneInclude = await invoiceService.FindOne(
-            payload.invoiceId,
-        );
+        const resFindOne: any = await invoiceService.FindOne(payload.invoiceId);
         if (payload?.resident)
             returnTopic(
                 payload,
@@ -23,7 +22,7 @@ const invoicing = async (payload: TInvoice) => {
                 true,
             );
 
-        if (resFindOneInclude.err) {
+        if (resFindOne.err) {
             // consultar residente
             // const preRegisterResidentService = new PreRegisterResidentService();
             const resPreRegisterResidentServiceFindOne: any = {};
@@ -54,7 +53,30 @@ const invoicing = async (payload: TInvoice) => {
                 }
             }
 
-            // cadastrar fatura
+            const invoice: TInvoice = resFindOne?.data;
+
+            if (invoice.isRecurrence == true) {
+                // cadastrar fatura
+                const linkInvoice: any = await firstPaymentCreateService(
+                    invoice,
+                );
+
+                if (linkInvoice.err)
+                    return returnTopic(
+                        payload,
+                        { message: 'Unexpect Error' },
+                        true,
+                    );
+
+                return returnTopic(
+                    payload,
+                    {
+                        message: 'Invoice successfully added',
+                    },
+                    false,
+                    linkInvoice,
+                );
+            }
 
             if (isResidentExist && isRecurrenceCreated) {
                 // verificar recorrencia na cielo se esta efetiva

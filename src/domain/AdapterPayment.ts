@@ -35,8 +35,12 @@ export class AdapterPayment implements IAdapter {
             const paymentConfig: any =
                 await this.FindPaymentConfigService.execute(enterpriseId);
 
-            if (paymentConfig instanceof Error)
+            if (paymentConfig instanceof Error) {
+                console.log({ paymentConfig });
                 return rError({ message: paymentConfig.message });
+            }
+
+            console.log({ paymentConfig });
 
             switch (paymentConfig.provider) {
                 case 'CIELO':
@@ -49,6 +53,8 @@ export class AdapterPayment implements IAdapter {
 
             return rSuccess({ message: 'provider successfully located' });
         } catch (error: any) {
+            console.log(error);
+
             return rError({ message: error?.message });
         }
     }

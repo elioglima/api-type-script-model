@@ -7,15 +7,9 @@
     "database": "jflrealty",
     "synchronize": true,
     "logging": true,
-    "entities": [
-        "src/dataProvider/entity/*.ts"
-    ],
-    "migrations": [
-        "src/dataProvider/migration/*.ts"
-    ],
-    "subscribers": [
-        "src/dataProvider/subscriber/*.ts"
-    ],
+    "entities": ["src/dataProvider/entity/*.ts"],
+    "migrations": ["src/dataProvider/migration/*.ts"],
+    "subscribers": ["src/dataProvider/subscriber/*.ts"],
     "cli": {
         "entitiesDir": "src/dataProvider/entity",
         "migrationsDir": "src/dataProvider/migration",
