@@ -81,7 +81,6 @@ const contractCancel = async (req: any) => {
                     return {
                         err: true,
                         data: {
-                            resident: resResident.data,
                             message: error.message || 'unexpected error',
                         },
                     };
@@ -94,7 +93,7 @@ const contractCancel = async (req: any) => {
 
         return returnTopic(
             {
-                // process: ResultDisableRecurrence,
+                resident: resResident.data,
                 message: isError
                     ? 'failed cancellation'
                     : 'successful cancellation',
