@@ -125,6 +125,13 @@ export class InvoiceEntity {
     anticipation: Boolean | undefined;
 
     @Column({
+        name: 'isExpired',
+        type: 'boolean',
+        default: false,
+    })
+    isExpired: Boolean | undefined;
+
+    @Column({
         name: 'referenceDate',
         type: 'timestamp',
     })

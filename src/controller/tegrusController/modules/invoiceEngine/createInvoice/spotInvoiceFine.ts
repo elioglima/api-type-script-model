@@ -1,6 +1,6 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
-import createHash from './createHash';
+import createHash from '../createHash';
 import { returnTopic } from './returnTopic';
 
 const spotInvoiceFine = async (payload: TInvoice) => {
@@ -17,7 +17,7 @@ const spotInvoiceFine = async (payload: TInvoice) => {
             true,
         );
 
-    try {        
+    try {
         const invoiceService = new InvoiceService();
         const resFindOneInclude = await invoiceService.FindOneInclude(payload);
         if (resFindOneInclude.err)

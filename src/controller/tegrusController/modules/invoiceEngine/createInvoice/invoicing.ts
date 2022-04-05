@@ -1,7 +1,6 @@
 import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
-// import PreRegisterResidentService from '../../../../../service/tegrus.services/PreRegisterService';
-import createHash from './createHash';
+import createHash from '../createHash';
 import { returnTopic } from './returnTopic';
 import { PaymentRecurrenceRepository } from '../../../../../dataProvider/repository/PaymentRecurrenceRepository';
 
