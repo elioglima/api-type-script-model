@@ -64,6 +64,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 true,
             );
 
+        console.log({ resInvoice });
         const { residentIdenty, ...invoice }: any = resInvoice.data;
         const resident: TResident | any = invoiceToTResident(residentIdenty);
 
