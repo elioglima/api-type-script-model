@@ -41,6 +41,11 @@ const createInvoice = async (req: CreateInvoiceReq) => {
         } else if (invoice?.type == EnumInvoiceType.booking) {
             return await booking(invoice);
         } else if (
+            invoice?.type == EnumInvoiceType.rent &&
+            invoice.isRecurrence
+        ) {
+            return await booking(invoice);
+        } else if (
             [EnumInvoiceType.spot, EnumInvoiceType.fine].includes(invoice?.type)
         ) {
             return await spotInvoiceFine(invoice);

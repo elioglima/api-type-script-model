@@ -53,31 +53,6 @@ const invoicing = async (payload: TInvoice) => {
                 }
             }
 
-            const invoice: TInvoice = resFindOne?.data;
-
-            if (invoice.isRecurrence == true) {
-                // cadastrar fatura
-                const linkInvoice: any = await firstPaymentCreateService(
-                    invoice,
-                );
-
-                if (linkInvoice.err)
-                    return returnTopic(
-                        payload,
-                        { message: 'Unexpect Error' },
-                        true,
-                    );
-
-                return returnTopic(
-                    payload,
-                    {
-                        message: 'Invoice successfully added',
-                    },
-                    false,
-                    linkInvoice,
-                );
-            }
-
             if (isResidentExist && isRecurrenceCreated) {
                 // verificar recorrencia na cielo se esta efetiva
 
