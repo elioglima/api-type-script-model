@@ -29,7 +29,7 @@ const cielo = new Cielo(cieloParams);
 ### <a name="creditSimpleTransaction"></a> Criando uma transação
 
 .
-Usando Promise
+Usando Promise sss
 
 ```ts
 const vendaParams: TransactionCreditCardRequestModel = {
