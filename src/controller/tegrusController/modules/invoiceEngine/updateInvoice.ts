@@ -1,9 +1,10 @@
-import InvoiceService from "../../../../service/invoiceService";
+import InvoiceService from '../../../../service/invoiceService';
+import createHash from './createHash';
 
 const updateInvoice = async (toReceive: any) => {
     try {
         // retorno do app >> bff >> tegrus
-        const updataData :any = {
+        const updataData: any = {
             value: toReceive?.updateInvoice?.value,
             condominium: toReceive?.updateInvoice?.condominium,
             discount: toReceive?.updateInvoice?.discount,
@@ -19,11 +20,49 @@ const updateInvoice = async (toReceive: any) => {
             statusInvoice: toReceive?.updateInvoice?.statusInvoice,
             apartmentId: toReceive?.updateInvoice?.apartmentId,
             invoiceId: toReceive?.updateInvoice?.invoiceId,
+            isExpired: toReceive?.updateInvoice?.isExpired,
         };
 
         const invoiceService = new InvoiceService();
-        await invoiceService.Update(updataData);
 
+        await invoiceService.Update(updataData);
+        if (updataData.isExpired) {
+            // verificar a recorrencia
+            // pausar ou cancelar a recorrencia do mes atual da fatura alterada
+
+            const linkInvoice: any = await createHash(
+                toReceive?.updateInvoice?.invoiceId,
+            );
+
+            if (linkInvoice.err) {
+                return {
+                    err: true,
+                    data: {
+                        updateInvoice: {
+                            ...toReceive?.updateInvoice,
+                            returnOpah: {
+                                messageMessage: 'Error generating link',
+                            },
+                        },
+                    },
+                };
+            }
+
+            return {
+                err: false,
+                data: {
+                    updateInvoice: {
+                        ...toReceive?.updateInvoice,
+                        returnOpah: {
+                            message: 'success',
+                            linkInvoice,
+                        },
+                    },
+                },
+            };
+        }
+
+        // retorno apenas de um update
         return {
             err: false,
             data: {

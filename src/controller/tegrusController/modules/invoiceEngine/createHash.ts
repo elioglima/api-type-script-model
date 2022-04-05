@@ -4,11 +4,11 @@ import moment from 'moment';
 import {
     reqCreateHash,
     resCreateHash,
-} from '../../../../../domain/Tegrus/TFirstPayment';
+} from '../../../../domain/Tegrus/TFirstPayment';
 
-import { hashData } from './../../../../../domain/Tegrus/TFirstPayment';
-import { TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
-import { HashDataRepository } from './../../../../../dataProvider/repository/HashDataRepository';
+import { hashData } from '../../../../domain/Tegrus/TFirstPayment';
+import { TLinkInvoice } from '../../../../domain/Tegrus/TInvoice';
+import { HashDataRepository } from '../../../../dataProvider/repository/HashDataRepository';
 
 const createHash = (data: reqCreateHash): resCreateHash => {
     try {
