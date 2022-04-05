@@ -34,7 +34,9 @@ const createInvoice = async (req: CreateInvoiceReq) => {
             );
 
         if (
-            [EnumInvoiceType.spot].includes(invoice?.type) &&
+            [EnumInvoiceType.spot, EnumInvoiceType.rent].includes(
+                invoice?.type,
+            ) &&
             invoice?.anticipation == true
         ) {
             return await antecipationInvoice(invoice);
