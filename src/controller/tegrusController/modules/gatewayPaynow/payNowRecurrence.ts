@@ -88,7 +88,9 @@ export const payNowRecurrence = async (
                     true,
                 );
 
-            if (resRecurrenceService?.data?.row)
+            if (resRecurrenceService?.data?.row) {
+                // verificar a recorrencia na cielo
+
                 return await returnTopic(
                     {
                         invoiceId: invoice.invoiceId,
@@ -100,6 +102,7 @@ export const payNowRecurrence = async (
                     },
                     false,
                 );
+            }
 
             const startDateContract = invoice.referenceDate;
             const endDateContract = new Date(resident.endDateContract);
