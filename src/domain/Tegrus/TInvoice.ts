@@ -34,7 +34,8 @@ export type TInvoice = {
     paymentId?: string;
     tid?: string;
     returnCode?: string;
-    isExpired: boolean;
+    isExpired?: boolean;
+    atUpdate?: boolean;
 };
 
 export type TInvoiceFilter = {

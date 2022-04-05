@@ -107,11 +107,11 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .update()
-            .set(invoice)
+            .set({ ...invoice, atUpdate: true })
             .where('invoiceId = :invoiceId', { invoiceId: invoice.invoiceId })
             .execute()
             .then(
-                (data) => {
+                data => {
                     return data;
                 },
                 onRejected => {

@@ -132,6 +132,13 @@ export class InvoiceEntity {
     isExpired: Boolean | undefined;
 
     @Column({
+        name: 'atUpdate',
+        type: 'boolean',
+        default: false,
+    })
+    atUpdate: Boolean | undefined;
+
+    @Column({
         name: 'referenceDate',
         type: 'timestamp',
     })

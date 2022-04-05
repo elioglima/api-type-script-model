@@ -82,7 +82,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
             ].includes(invoice.type)
         ) {
             if (invoice.paymentMethod == EnumInvoicePaymentMethod.credit) {
-                if (invoice.isRecurrence)
+                if (invoice.isRecurrence && !invoice.atUpdate)
                     return await payNowRecurrence(payload, invoice, resident);
 
                 const resPayNowCredit: any = await payNowCredit(
