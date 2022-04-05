@@ -1,5 +1,6 @@
 import { TExternalPayment } from '../../../../domain/Tegrus/TExternalPayment';
 import InvoiceService from '../../../../service/invoiceService';
+import { TInvoice } from '../../../../domain/Tegrus/TInvoice';
 
 const externalPayment = async (req: any) => {
     const payload: TExternalPayment = req?.externalPayment;
@@ -19,8 +20,9 @@ const externalPayment = async (req: any) => {
                     returnOpah: {
                         err,
                         status: err ? 'failed' : 'success',
-                        messageError: message || undefined,
-                        ...(message ? { message } : {}),
+                        ...(err
+                            ? { messageError: message || undefined }
+                            : { message }),
                         ...(response ? { ...response } : {}),
                     },
                 },
@@ -29,7 +31,7 @@ const externalPayment = async (req: any) => {
     };
 
     try {
-        console.log('spotInvoiceFine', payload);
+        console.log('externalPayment', payload);
         const invoiceService = new InvoiceService();
         const resFindOne: any = await invoiceService.FindOne(payload.invoiceId);
         if (resFindOne.err)
@@ -40,20 +42,26 @@ const externalPayment = async (req: any) => {
                 true,
             );
 
-        /* 
-            atualizar a fatura
-        
-            {
-                "externalPayment": {
-                    "invoiceId": "number",
-                    "description": "string",
-                    "paidAt": "timestamp",
-                    "paymentMethod": "'ticket' | 'transfer' | 'credit' 'international_transfer', ‘courtesy’",
-                    "status_invoice": "'paid'"
-                }
-            }
+        const invoice: TInvoice = resFindOne.data;
+        const updataData: any = {
+            paymentDate: payload?.paiAt,
+            paymentMethod: payload?.paymentMethod,
+            statusInvoice: payload?.statusInvoice,
+        };
 
-        */
+        if (invoice.isRecurrence) {
+            // TO-DO
+            // desabilitarr recorrencia
+        }
+
+        const resUpdateIvoice = await invoiceService.Update(updataData);
+        if (resUpdateIvoice.err)
+            return returnTopic(
+                {
+                    message: 'Invoice successfully added',
+                },
+                true,
+            );
 
         return returnTopic({
             message: 'Invoice successfully added',

@@ -26,7 +26,7 @@ const statusInvoice = async (toReceive: any) => {
                         invoiceId: resFindOne.invoiceId,
                         statusInvoice: resFindOne.statusInvoice,
                         paymentMethod: resFindOne.paymentMethod,
-                        // “paymentDate”: “10/02/2022 23:02”, // data vinda da cielo
+                        // paymentDate: resFindOne.externalPayment, // data vinda da cielo
                         messageError: 'Invoice not found',
                     };
 
