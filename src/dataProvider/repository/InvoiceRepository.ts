@@ -57,7 +57,8 @@ export class InvoiceRepository {
     public Find = (filter: TInvoiceFilter) => {
         const db = getConnection()
             .getRepository(InvoiceEntity)
-            .createQueryBuilder('invoice');
+            .createQueryBuilder('invoice')
+            .leftJoinAndSelect('invoice.residentIdenty', 'resident')
 
         if (filter.startDate && filter.endDate) {
 
