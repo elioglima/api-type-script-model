@@ -59,12 +59,16 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice');
 
-        db.andWhere('invoice.date >= :startDate', {
-            startDate: filter.startDate,
-        });
-        db.andWhere('invoice.date <= :endDate', {
-            endDate: filter.endDate,
-        });
+        if (filter.startDate && filter.endDate) {
+
+            db.andWhere('invoice.date >= :startDate', {
+                startDate: filter.startDate,
+            });
+            db.andWhere('invoice.date <= :endDate', {
+                endDate: filter.endDate,
+            });
+
+        }
 
         db.andWhere('invoice.active = :active', {
             active: true,
@@ -78,13 +82,6 @@ export class InvoiceRepository {
             db.andWhere('invoice.residentIdenty = :residentId', {
                 residentId: filter.residentId,
             });
-        } else {
-            return {
-                err: true,
-                data: {
-                    message: 'invalid parameters',
-                },
-            };
         }
 
         if (filter.paymentMethod) {
