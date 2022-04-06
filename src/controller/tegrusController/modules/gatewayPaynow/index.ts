@@ -70,7 +70,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
 
         if (!resident)
             return returnTopic(
-                { message: 'resdent not found in database' },
+                { message: 'resident not found in database' },
                 true,
             );
 

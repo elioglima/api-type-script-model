@@ -9,7 +9,3 @@ tegrus
     .get('/topic/invoiceEngine', PaymentTegrusController.invoiceEnginePrivate)
     .get('/gateway/:hash', PaymentTegrusController.hashSearch)
     .post('/gateway/paynow', PaymentTegrusController.gatewayPaynow)
-    .put(
-        '/deactivateRecurrence/:recurrenceId',
-        PaymentTegrusController.deactivateRecurrence,
-    );

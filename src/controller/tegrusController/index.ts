@@ -16,9 +16,6 @@ export class TegrusController {
 
     public hashSearch = async (req: Request, res: Response) => {
         return await md.hashSearch(req, res);
-    };
+    }
 
-    public deactivateRecurrence = async (req: Request, res: Response) => {
-        return await md.deactivateRecurrence(req, res);
-    };
 }
