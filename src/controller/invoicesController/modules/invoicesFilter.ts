@@ -17,13 +17,20 @@ export const invoicesFilter = async (req: Request, res: Response) => {
             id: m.id,
             date: m.date,
             invoiceId: m.invoiceId,
-            residentId: m.residentId,
-            idUser: m.idUser,
+            apartmentId: m.apartmentId,
             description: m.description,
+            enterpriseId: m.enterpriseId,
             paymentMethod: m.paymentMethod,
             statusInvoice: m.statusInvoice,
             type: m.type,
             value: m.value,
+            condominium: m.condominium,
+            discount: m.discount,
+            refund: m.refund,
+            tax: m.tax,
+            fine: m.fine,
+            fineTickets: m.fineTickets,
+            resident: m.residentIdenty,
         }));
 
         return res.status(200).json({
