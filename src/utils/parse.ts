@@ -1,6 +1,6 @@
 import { TResident } from '../domain/Tegrus';
 
-export const invoiceToTResident = (residentIdenty: TResident) => {
+export const invoiceToTResident = (residentIdenty: any) => {
     if (!residentIdenty) return false;
 
     const resident: any = residentIdenty;

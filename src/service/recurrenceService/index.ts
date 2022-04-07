@@ -188,12 +188,13 @@ export default class RecurrenceService {
         }
     };
 
-    public DisableRecurrence = async (residentId: number) => {
+    public DisableRecurrence = async (resident: TResident) => {
         try {
             const paymentAdapter = new AdapterPayment();
             const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
     
-            const resRecu: any = await paymentRecurrenceRepo.getById(residentId);
+            const resRecu: any = await paymentRecurrenceRepo.getByResidentId(resident.id);
+            
             if (resRecu instanceof Error) return { err: true, data: resRecu };
             if (!resRecu)
                 return {
@@ -203,7 +204,9 @@ export default class RecurrenceService {
                     },
                 };
     
-            await paymentAdapter.init(Number(residentId));
+            console.log("123123123", resRecu)
+            
+            await paymentAdapter.init(Number(resident.enterpriseId));
             const deactivateRecu: reqRecurrentDeactivate = {
                 recurrenceId: resRecu.recurrenceId,
             };
@@ -211,12 +214,14 @@ export default class RecurrenceService {
             const resDeactivate: any = await paymentAdapter.recurrentDeactivate(
                 deactivateRecu,
             );
+
+            
     
             if (resDeactivate?.err)
                 return {
                     err: true,
                     data: {
-                        message: 'It was not possible deactivate recurrece',
+                        message: 'It was not possible deactivate recurrence',
                     },
                 };
     

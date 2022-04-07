@@ -38,10 +38,10 @@ export class RecurentMethods {
         if (!this.util) return this.error('this.util not started');
 
         // criando uma recorrencia agendada
-        return this.util.post<
+        return this.util.postToSales<
             resRecurrentCreate | TErrorGeneric,
             reqRecurrentCreate
-        >({ path: '/1/sales/' }, payload);
+        >(payload);
     }
 
     public Find(
