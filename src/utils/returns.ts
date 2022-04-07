@@ -36,7 +36,7 @@ export const rSuccess = (
 };
 
 
-export const defaultmessage = (code: string) => {
+export const defaultReturnMessage = (code: string) => {
     if (['51', '116', '121', 'A5'].includes(code)) {
         return {
             code: 7,

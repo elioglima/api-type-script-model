@@ -1,3 +1,4 @@
+import { defaultReturnMessage } from './../../../../utils/returns';
 import InvoiceService from '../../../../service/invoiceService';
 import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
@@ -5,7 +6,7 @@ import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoiceP
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import { TPayNowReq } from '../../../../domain/Tegrus';
 import { payAdatpter } from './payAdatpter';
-import { defaultReturnMessage } from 'src/utils';
+
 
 const returnMessage = (value: number) => {
     switch (value) {
