@@ -23,6 +23,9 @@ export class PaymentRecurrenceEntity {
     @Column({ name: 'active', type: 'boolean', default: 1 })
     active: boolean | undefined;
 
+    @Column({ name: 'isDeactivateError', type: 'boolean', default: 0 })
+    isDeactivateError: boolean | undefined;
+
     @Column({
         name: 'createdAt',
         type: 'timestamp',

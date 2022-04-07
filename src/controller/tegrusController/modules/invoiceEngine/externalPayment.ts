@@ -52,13 +52,10 @@ const externalPayment = async (req: any) => {
         };
         
 
-        if (invoice.isRecurrence) {
-            // TO-DO-NOW
-            // desabilitarr recorrencia
+        if (invoice.isRecurrence) { 
             const converRes:TResident | any = invoiceToTResident(invoice?.residentIdenty)
             const recurrenceService = new RecurrenceService();            
-            const resRecu: any = await recurrenceService.DisableRecurrence(converRes)            
-            
+            await recurrenceService.DisableRecurrence(converRes)                        
         }
 
         const resUpdateIvoice = await invoiceService.Update(updataData);

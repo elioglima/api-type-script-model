@@ -196,9 +196,11 @@ export default class RecurrenceService {
         try {
             const paymentAdapter = new AdapterPayment();
             const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
-    
-            const resRecu: any = await paymentRecurrenceRepo.getByResidentId(resident.id);
-            
+
+            const resRecu: any = await paymentRecurrenceRepo.getByResidentId(
+                resident.id,
+            );
+
             if (resRecu instanceof Error) return { err: true, data: resRecu };
             if (!resRecu)
                 return {
@@ -206,39 +208,46 @@ export default class RecurrenceService {
                     data: {
                         message: 'Recurrence not found.',
                     },
-                };            
-            
+                };
+
             await paymentAdapter.init(Number(resident.enterpriseId));
 
-            
             const deactivateRecu: reqRecurrentDeactivate = {
                 recurrenceId: resRecu?.data?.row?.recurrentPaymentId,
-            };            
-    
+            };
+
             const resDeactivate = await paymentAdapter.recurrentDeactivate(
                 deactivateRecu,
-            );          
-            
-            console.log("XABLAU", resDeactivate)    
+            );
 
-            if (resDeactivate?.err)
+            if (resDeactivate?.err) {
+                await paymentRecurrenceRepo.update({
+                    ...resRecu?.data?.row,
+                    active: true,
+                    updatedAt: new Date(),
+                    isDeactivateError: true                    
+                });
                 return {
                     err: true,
                     data: {
                         message: 'It was not possible deactivate recurrence',
                     },
                 };
-    
+            }
+
             const updateRecu: PaymentRecurrence = {
                 ...resRecu?.data?.row,
                 active: false,
                 updatedAt: new Date(),
             };
-    
-            const resRecuUpdate = await paymentRecurrenceRepo.update(updateRecu);
-    
-            if (updateRecu instanceof Error) return { err: true, data: updateRecu };
-    
+
+            const resRecuUpdate = await paymentRecurrenceRepo.update(
+                updateRecu,
+            );
+
+            if (updateRecu instanceof Error)
+                return { err: true, data: updateRecu };
+
             return {
                 err: false,
                 data: resRecuUpdate,
@@ -252,6 +261,5 @@ export default class RecurrenceService {
                 },
             };
         }
-    }
-
+    };
 }

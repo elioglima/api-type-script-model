@@ -24,7 +24,7 @@ export const rGeneric = (
     };
 };
 
- rError = (response: { message: string; [x: string]: any }) => {
+export const rError = (response: { message: string; [x: string]: any }) => {
     return rGeneric(response, true, true);
 };
 
