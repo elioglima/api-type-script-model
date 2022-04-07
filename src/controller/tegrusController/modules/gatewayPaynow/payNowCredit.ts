@@ -87,7 +87,7 @@ export const payNowCredit = async (
                     paymentMethod: invoice.paymentMethod,
                     dueDate: invoice.dueDate,
                     paymentDate: invoice.paymentDate,
-                    message: invoice.returnMessage,
+                    message: returnMessage(1),
                     value: invoice.value,
                 },
             });
@@ -112,9 +112,7 @@ export const payNowCredit = async (
                     statusInvoice: invoice.statusInvoice,
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
-                    message:
-                        resPayAdapter?.data?.message ||
-                        resPayAdapter?.data?.messageError,
+                    message: returnMessage(7),
                     referenceCode: 7,
                 },
                 true,
