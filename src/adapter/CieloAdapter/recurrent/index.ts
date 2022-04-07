@@ -65,10 +65,14 @@ export class RecurentMethods {
 
         if (!payload?.recurrenceId)
             return this.error('recurrenceId was not informed.');
-
-        return this.util.put({
-            path: `/1/RecurrentPayment/${payload?.recurrenceId}/Deactivate`,
-        });
+        try {
+            return this.util.put({
+                path: `/1/RecurrentPayment/${payload?.recurrenceId}/Deactivate`,
+            });
+        } catch (error) {
+            console.log('Cielo Adapter recurrentDeactivate', error);
+            throw new Error('Error Method recurrentDeactivate.');
+        }
     }
 
     public Reactivate(

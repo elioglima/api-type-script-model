@@ -136,7 +136,12 @@ export class CieloAdapter implements ICardAdapter {
         payload: reqRecurrentDeactivate,
     ): Promise<resRecurrentDeactivate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
-        return this.recurentMethods.Deactivate(payload);
+        try {            
+            return this.recurentMethods.Deactivate(payload);
+        } catch (error) {
+            console.log("Cielo Adapter recurrentDeactivate", error);
+            throw new Error('Error Method recurrentDeactivate.');            
+        }
     }
 
     public recurrentReactivate(

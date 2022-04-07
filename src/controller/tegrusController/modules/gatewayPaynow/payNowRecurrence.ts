@@ -48,8 +48,7 @@ export const payNowRecurrence = async (
     resident: TResident,
 ) => {
     try {
-        // efetuar o pagamento
-        console.log('payNowRecurrence', payload);
+        // efetuar o pagamento        
         const resPayAdapter: any = await payAdatpter(resident, {
             ...payload.card,
             hash: payload.card?.securityCode,
@@ -136,6 +135,8 @@ export const payNowRecurrence = async (
                 payloadRecurrence,
                 payload.card,
             );
+
+            console.log("resRecurrence", resRecurrence)
 
             if (resRecurrence?.err) {
                 return await returnTopic(resRecurrence?.data, true);

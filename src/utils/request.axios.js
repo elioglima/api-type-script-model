@@ -1,8 +1,8 @@
 import axios from 'axios';
 import camelcaseKeys from 'camelcase-keys';
 
-export default async (data, options) => {
-    try {
+export default async (data = {}, options) => {
+    try {        
         const dataPost = JSON.stringify(data)
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '');

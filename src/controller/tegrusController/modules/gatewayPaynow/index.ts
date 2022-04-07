@@ -63,8 +63,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 { message: 'invoice not found in database' },
                 true,
             );
-
-        console.log({ resInvoice });
+        
         const { residentIdenty, ...invoice }: any = resInvoice.data;
         const resident: TResident | any = invoiceToTResident(residentIdenty);
 

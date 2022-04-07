@@ -207,21 +207,21 @@ export default class RecurrenceService {
                     data: {
                         message: 'Recurrence not found.',
                     },
-                };
-    
-            console.log("123123123", resRecu)
+                };            
             
             await paymentAdapter.init(Number(resident.enterpriseId));
-            const deactivateRecu: reqRecurrentDeactivate = {
-                recurrenceId: resRecu.recurrenceId,
-            };
-    
-            const resDeactivate: any = await paymentAdapter.recurrentDeactivate(
-                deactivateRecu,
-            );
 
             
+            const deactivateRecu: reqRecurrentDeactivate = {
+                recurrenceId: resRecu?.data?.row?.recurrentPaymentId,
+            };            
     
+            const resDeactivate = await paymentAdapter.recurrentDeactivate(
+                deactivateRecu,
+            );          
+            
+            console.log("XABLAU", resDeactivate)    
+
             if (resDeactivate?.err)
                 return {
                     err: true,
@@ -231,7 +231,8 @@ export default class RecurrenceService {
                 };
     
             const updateRecu: PaymentRecurrence = {
-                ...resRecu,
+                ...resRecu?.data?.row,
+                active: false,
                 updatedAt: new Date(),
             };
     

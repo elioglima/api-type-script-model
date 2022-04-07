@@ -90,8 +90,7 @@ export class PaymentCardsRepository {
     };
 
     public findExists = async (filter: TFindExistsFilter) => {
-        try {
-            console.log('findExists.filter', filter);
+        try {            
             const db = getConnection()
                 .getRepository(PaymentCardsEntity)
                 .createQueryBuilder('paymentCards')

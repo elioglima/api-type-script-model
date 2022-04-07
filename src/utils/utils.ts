@@ -78,8 +78,11 @@ export class Utils {
             path,
             hostname: this.cieloConstructor.hostnameTransacao,
         });
+        const resp: any = await this.request<T>(options, data);
 
-        return this.request<T>(options, data);
+        console.log(9858585,resp )
+
+        return resp;
     }
 
     public getHttpRequestOptions(params: {
