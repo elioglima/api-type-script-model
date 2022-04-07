@@ -44,6 +44,8 @@ export const payNowCredit = async (
     resident: TResident,
 ) => {
     try {
+        //
+
         if (['00', '4'].includes(String(invoice?.returnCode))) {
             // verificando se esta paga a fatura
             return returnTopic({
@@ -57,6 +59,7 @@ export const payNowCredit = async (
                 paymentId: invoice.paymentId,
                 tid: invoice.tid,
                 returnCode: invoice.returnCode,
+                referenceCode: 1,
             });
         }
 
@@ -72,6 +75,7 @@ export const payNowCredit = async (
             true,
         );
 
+        let referenceCode = 0; // fazer tratativa de verificacao dos codigos
         if (resPayAdapter?.err)
             return returnTopic(
                 {
@@ -83,6 +87,7 @@ export const payNowCredit = async (
                     message:
                         resPayAdapter?.data?.message ||
                         resPayAdapter?.data?.messageError,
+                    referenceCode,
                 },
                 true,
             );
@@ -99,10 +104,10 @@ export const payNowCredit = async (
             paymentId: resPayAdapter.data.payment.paymentId,
             tid: resPayAdapter.data.payment.tid,
             returnCode: resPayAdapter.data.payment.returnCode,
+            referenceCode,
         };
 
         const resUpdate: any = await invoiceService.Update(updateInvoice);
-
         if (resUpdate.err)
             return returnTopic(
                 {
@@ -112,6 +117,7 @@ export const payNowCredit = async (
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
                     message: 'internal error updating invoice',
+                    referenceCode,
                 },
                 true,
             );
@@ -122,11 +128,12 @@ export const payNowCredit = async (
             statusInvoice: newStatusInvoice,
             paymentMethod: invoice.paymentMethod,
             type: invoice.type,
-            message: 'recurrence started successfully',
+            message: 'successful payment',
             returnMessage: resPayAdapter?.data?.payment?.returnMessage,
             paymentId: resPayAdapter.data.payment.paymentId,
             tid: resPayAdapter.data.payment.tid,
             returnCode: resPayAdapter.data.payment.returnCode,
+            referenceCode,
         });
     } catch (error: any) {
         return returnTopic(
@@ -137,6 +144,7 @@ export const payNowCredit = async (
                 paymentMethod: invoice.paymentMethod,
                 type: invoice.type,
                 message: error?.message,
+                referenceCode: 7,
             },
             true,
         );

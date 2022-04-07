@@ -12,7 +12,7 @@ export default class HashSearchService {
     public async execute(hash: string) {
         try {
             this.logger('Starting method HashSearchService');
-            const resp: any = await this.HashRep.getByHash(hash);            
+            const resp: any = await this.HashRep.getByHash(hash);
 
             if (!resp) {
                 return {
@@ -66,7 +66,7 @@ export default class HashSearchService {
     private async validateHashTTL(hashData: resHashData) {
         const timeNow: Date = moment().toDate();
         if (moment(hashData.lifeTime).isBefore(timeNow)) {
-            const resp = await this.terminateHashTTL(String(hashData.hash));
+            const resp = await this.TerminateHashTTL(String(hashData.hash));
             if (resp.err) {
                 return {
                     err: true,
@@ -91,7 +91,7 @@ export default class HashSearchService {
         };
     }
 
-    private async terminateHashTTL(hash: string) {
+    public async TerminateHashTTL(hash: string) {
         try {
             const resp = await this.HashRep.update(hash);
             if (resp.err) {

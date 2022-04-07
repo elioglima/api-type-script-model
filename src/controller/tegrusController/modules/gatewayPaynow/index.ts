@@ -43,18 +43,16 @@ const returnTopic = (
 
 const servicePrivate = async (payload: TPayNowReq) => {
     try {
-
         let resInvoice: {
             err?: boolean;
             data: TInvoice;
         };
 
         const invoiceService = new InvoiceService();
+        const hashServices = new HashSearchService();
+        const { hash } = payload;
 
         if (payload.hash) {
-            const hashServices = new HashSearchService();
-            const { hash } = payload;
-
             const resHash: any = await hashServices.execute(hash);
             if (resHash.err) return resHash;
 
@@ -63,9 +61,10 @@ const servicePrivate = async (payload: TPayNowReq) => {
 
             // const { enterpriseId } = resHash?.resident;
 
-            resInvoice = await invoiceService.FindOne(resHash?.invoice?.invoiceId);
-        }
-        else {
+            resInvoice = await invoiceService.FindOne(
+                resHash?.invoice?.invoiceId,
+            );
+        } else {
             resInvoice = await invoiceService.FindOne(payload.invoiceId);
         }
 
@@ -93,12 +92,9 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 expirationDate: String(card.expirationDate),
                 brand: card.brand as EnumBrands,
                 securityCode: Number(card.hash),
-
-
-            }
+            };
         }
 
-        console.log({ resInvoice });
         const { residentIdenty, ...invoice }: any = resInvoice.data;
         const resident: TResident | any = invoiceToTResident(residentIdenty);
 
@@ -124,6 +120,8 @@ const servicePrivate = async (payload: TPayNowReq) => {
                     invoice,
                     resident,
                 );
+
+                // hashServices.
                 return resPayNowCredit;
             } else {
                 return returnTopic(
