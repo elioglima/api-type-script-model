@@ -239,6 +239,7 @@ export default class RecurrenceService {
                 ...resRecu?.data?.row,
                 active: false,
                 updatedAt: new Date(),
+                isDeactivateError: false
             };
 
             const resRecuUpdate = await paymentRecurrenceRepo.update(
