@@ -162,7 +162,6 @@ export default class RecurrenceService {
 
             const resInvoice: any = await this.invoiceService.Update({
                 ...invoice,
-                // recurrenceId: resPersist?.data?.id,
             });
 
             if (resInvoice?.err) return rError(resInvoice?.data);

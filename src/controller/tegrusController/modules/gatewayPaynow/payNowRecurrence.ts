@@ -59,8 +59,9 @@ export const payNowRecurrence = async (
         if (resPayAdapter?.err)
             return returnTopic(
                 {
-                    invoiceId: invoice.invoiceId,
+                    nextRecurrency: null,
                     paymentDate: null,
+                    invoiceId: invoice.invoiceId,
                     statusInvoice: invoice.statusInvoice,
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
@@ -79,8 +80,9 @@ export const payNowRecurrence = async (
             if (resRecurrenceService?.err)
                 return await returnTopic(
                     {
-                        invoiceId: invoice.invoiceId,
+                        nextRecurrency: null,
                         paymentDate: null,
+                        invoiceId: invoice.invoiceId,
                         statusInvoice: invoice.statusInvoice,
                         paymentMethod: invoice.paymentMethod,
                         type: invoice.type,
@@ -100,6 +102,7 @@ export const payNowRecurrence = async (
                 return await returnTopic(
                     {
                         invoiceId: invoice.invoiceId,
+                        nextRecurrency: null, // retornar a  proxima recorrencia
                         paymentDate: null, // DATA DO pagamento
                         statusInvoice: invoice.statusInvoice, // status pelo da cielo
                         paymentMethod: invoice.paymentMethod,
@@ -112,8 +115,9 @@ export const payNowRecurrence = async (
                 */
                 return await returnTopic(
                     {
-                        invoiceId: invoice.invoiceId,
+                        nextRecurrency: null,
                         paymentDate: null,
+                        invoiceId: invoice.invoiceId,
                         statusInvoice: invoice.statusInvoice,
                         paymentMethod: invoice.paymentMethod,
                         type: invoice.type,
@@ -162,6 +166,7 @@ export const payNowRecurrence = async (
         return returnTopic(
             {
                 invoiceId: invoice.invoiceId,
+                nextRecurrency: null,
                 paymentDate: null,
                 statusInvoice: invoice.statusInvoice,
                 paymentMethod: invoice.paymentMethod,
