@@ -6,6 +6,25 @@ import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import { TPayNowReq } from '../../../../domain/Tegrus';
 import { payAdatpter } from './payAdatpter';
 
+const returnMessage = (value: number) => {
+    switch (value) {
+        case 1:
+            return 'Autorizada';
+        case 2:
+            return 'Não Autorizada';
+        case 3:
+            return 'Cartão Expirado';
+        case 4:
+            return 'Cartão Bloqueado';
+        case 5:
+            return 'Time Out';
+        case 6:
+            return 'Cartão Cancelado';
+        default:
+            return 'Problemas com o Cartão de Crédito';
+    }
+};
+
 const returnTopic = (
     response: {
         invoiceId: number;
@@ -118,7 +137,6 @@ export const payNowCredit = async (
             7 = Problemas com o Cartão de Crédito
 
         */
-
         let referenceCode = ['00', 0, 4].includes(returnCode) ? 1 : 7;
 
         const updateInvoice: TInvoice = {
@@ -141,8 +159,8 @@ export const payNowCredit = async (
                     statusInvoice: invoice.statusInvoice,
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
-                    message: 'internal error updating invoice',
                     referenceCode,
+                    message: returnMessage(referenceCode),
                 },
                 true,
             );
@@ -170,7 +188,7 @@ export const payNowCredit = async (
                 paymentMethod: invoice.paymentMethod,
                 dueDate: invoice.dueDate,
                 paymentDate: invoice.paymentDate,
-                message: invoice.returnMessage,
+                message: returnMessage(referenceCode),
                 value: invoice.value,
             },
         });
@@ -182,7 +200,7 @@ export const payNowCredit = async (
                 statusInvoice: invoice.statusInvoice,
                 paymentMethod: invoice.paymentMethod,
                 type: invoice.type,
-                message: error?.message,
+                message: returnMessage(7),
                 referenceCode: 7,
             },
             true,
