@@ -44,8 +44,6 @@ export const payNowCredit = async (
     resident: TResident,
 ) => {
     try {
-        //
-
         if (['00', '4'].includes(String(invoice?.returnCode))) {
             // verificando se esta paga a fatura
             return returnTopic({
@@ -59,12 +57,24 @@ export const payNowCredit = async (
                 paymentId: invoice.paymentId,
                 tid: invoice.tid,
                 returnCode: invoice.returnCode,
-                referenceCode: 1,
+                receipt: {
+                    referenceCode: 1,
+                    invoiceId: invoice.invoiceId,
+                    statusInvoice: invoice.statusInvoice,
+                    residentName: resident.name,
+                    enterpriseId: invoice.enterpriseId,
+                    apartmentId: invoice.apartmentId,
+                    paymentId: invoice.paymentId,
+                    paymentMethod: invoice.paymentMethod,
+                    dueDate: invoice.dueDate,
+                    paymentDate: invoice.paymentDate,
+                    message: invoice.returnMessage,
+                    value: invoice.value,
+                },
             });
         }
 
         const invoiceService = new InvoiceService();
-
         const resPayAdapter: any = await payAdatpter(
             resident,
             {
@@ -75,7 +85,6 @@ export const payNowCredit = async (
             true,
         );
 
-        let referenceCode = 7; // fazer tratativa de verificacao dos codigos
         if (resPayAdapter?.err)
             return returnTopic(
                 {
@@ -87,7 +96,7 @@ export const payNowCredit = async (
                     message:
                         resPayAdapter?.data?.message ||
                         resPayAdapter?.data?.messageError,
-                    referenceCode,
+                    referenceCode: 7,
                 },
                 true,
             );
@@ -95,6 +104,9 @@ export const payNowCredit = async (
         const paymentDate: Date =
             resPayAdapter?.payment?.receivedDate || new Date(); // so de exemplo
         const newStatusInvoice = EnumInvoiceStatus.paid; // so de exemplo
+
+        const returnCode = resPayAdapter.data.payment.returnCode;
+        let referenceCode = ['00', 0, 4].includes(returnCode) ? 1 : 7;
 
         const updateInvoice: TInvoice = {
             ...invoice,
@@ -134,6 +146,20 @@ export const payNowCredit = async (
             tid: resPayAdapter.data.payment.tid,
             returnCode: resPayAdapter.data.payment.returnCode,
             referenceCode,
+            receipt: {
+                referenceCode: 1,
+                invoiceId: invoice.invoiceId,
+                statusInvoice: invoice.statusInvoice,
+                residentName: resident.name,
+                enterpriseId: invoice.enterpriseId,
+                apartmentId: invoice.apartmentId,
+                paymentId: invoice.paymentId,
+                paymentMethod: invoice.paymentMethod,
+                dueDate: invoice.dueDate,
+                paymentDate: invoice.paymentDate,
+                message: invoice.returnMessage,
+                value: invoice.value,
+            },
         });
     } catch (error: any) {
         return returnTopic(
