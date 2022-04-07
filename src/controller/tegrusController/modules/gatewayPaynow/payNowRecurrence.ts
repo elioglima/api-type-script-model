@@ -91,6 +91,24 @@ export const payNowRecurrence = async (
             if (resRecurrenceService?.data?.row) {
                 // verificar a recorrencia na cielo
 
+                // TO-DO-BETO
+                //  CONSULTAR RECORRECIA NA CIELO
+                /*
+                
+                // caso sucesso
+                return await returnTopic(
+                    {
+                        invoiceId: invoice.invoiceId,
+                        paymentDate: null, // DATA DO pagamento
+                        statusInvoice: invoice.statusInvoice, // status pelo da cielo
+                        paymentMethod: invoice.paymentMethod,
+                        type: invoice.type,
+                        message: 'recurrence is already scheduled',
+                    },
+                    false,
+                );
+
+                */
                 return await returnTopic(
                     {
                         invoiceId: invoice.invoiceId,
@@ -122,31 +140,6 @@ export const payNowRecurrence = async (
             if (resRecurrence?.err) {
                 return await returnTopic(resRecurrence?.data, true);
             }
-
-            /*
-            para agendamento da recorrencia
-                - caso exista este dados utilizalos como base para gerar
-                    - startReferenceDate: Date; ou data de hoje = new Date()
-                    - endReferenceDate: Date; ou endDateContract: string;
-                - caso nao exista utilizar
-                    startDateContract: string; ou data de hoje = new Date()
-                    endDateContract: string; 
-
-                -- caso nao exista endDateContract ou endReferenceDate nao gerar recorrencia
-                    -- retornar erro informando que a recorrencia nao foi iniciada
-                    
-                    
-            - apos fazer a recorrencia guardar os dados
-                - paymentDate
-                - recurrenceId
-                - atualizar o status na fatura como paid
-
-
-            - modelo de retorno error
-            return returnTopic({
-                message: 'something went wrong, recurrence not started.',
-            }, true);
-        */
 
             const paymentDate: Date = new Date(resRecurrence?.data?.paidAt);
             const newStatusInvoice = EnumInvoiceStatus.issued;
