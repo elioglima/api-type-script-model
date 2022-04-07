@@ -13,6 +13,7 @@ import { payAdatpter } from './payAdatpter';
 
 const returnTopic = (
     response: {
+        nextRecurrency: Date | any;
         invoiceId: number;
         paymentDate: Date | any;
         statusInvoice: EnumInvoiceStatus;
@@ -145,6 +146,7 @@ export const payNowRecurrence = async (
             const newStatusInvoice = EnumInvoiceStatus.issued;
 
             return await returnTopic({
+                nextRecurrency: resRecurrence?.data?.nextRecurrency,
                 invoiceId: invoice.invoiceId,
                 paymentDate,
                 statusInvoice: newStatusInvoice,
