@@ -57,9 +57,8 @@ const externalPayment = async (req: any) => {
             // desabilitarr recorrencia
             const converRes:TResident | any = invoiceToTResident(invoice?.residentIdenty)
             const recurrenceService = new RecurrenceService();            
-            const resRecu: any = await recurrenceService.DisableRecurrence(converRes)
+            const resRecu: any = await recurrenceService.DisableRecurrence(converRes)            
             
-            console.log(1231231233, resRecu )
         }
 
         const resUpdateIvoice = await invoiceService.Update(updataData);

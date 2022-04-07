@@ -80,7 +80,7 @@ export class Utils {
         });
         const resp: any = await this.request<T>(options, data);
 
-        console.log(9858585,resp )
+        console.log(9858585, resp);
 
         return resp;
     }
@@ -118,6 +118,8 @@ export class Utils {
             ) && eval('(' + text + ')')
         );
     }
+
+    
 }
 
 export enum HttpRequestMethodEnum {

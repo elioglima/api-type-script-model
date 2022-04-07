@@ -207,6 +207,13 @@ export class InvoiceEntity {
     })
     returnCode: string | undefined;
 
+    @Column({
+        name: 'referenceCode',
+        type: 'int',
+        nullable: true,
+    })
+    referenceCode: number | undefined;
+
     @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'residentIdenty' })
     residentIdenty: number | undefined;

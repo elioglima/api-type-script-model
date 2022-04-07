@@ -5,6 +5,26 @@ import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoiceP
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import { TPayNowReq } from '../../../../domain/Tegrus';
 import { payAdatpter } from './payAdatpter';
+import { defaultReturnMessage } from 'src/utils';
+
+const returnMessage = (value: number) => {
+    switch (value) {
+        case 1:
+            return 'Autorizada';
+        case 2:
+            return 'Não Autorizada';
+        case 3:
+            return 'Cartão Expirado';
+        case 4:
+            return 'Cartão Bloqueado';
+        case 5:
+            return 'Time Out';
+        case 6:
+            return 'Cartão Cancelado';
+        default:
+            return 'Problemas com o Cartão de Crédito';
+    }
+};
 
 const returnTopic = (
     response: {
@@ -57,11 +77,24 @@ export const payNowCredit = async (
                 paymentId: invoice.paymentId,
                 tid: invoice.tid,
                 returnCode: invoice.returnCode,
+                receipt: {
+                    referenceCode: 1,
+                    invoiceId: invoice.invoiceId,
+                    statusInvoice: invoice.statusInvoice,
+                    residentName: resident.name,
+                    enterpriseId: invoice.enterpriseId,
+                    apartmentId: invoice.apartmentId,
+                    paymentId: invoice.paymentId,
+                    paymentMethod: invoice.paymentMethod,
+                    dueDate: invoice.dueDate,
+                    paymentDate: invoice.paymentDate,
+                    message: returnMessage(1),
+                    value: invoice.value,
+                },
             });
         }
 
         const invoiceService = new InvoiceService();
-
         const resPayAdapter: any = await payAdatpter(
             resident,
             {
@@ -80,9 +113,8 @@ export const payNowCredit = async (
                     statusInvoice: invoice.statusInvoice,
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
-                    message:
-                        resPayAdapter?.data?.message ||
-                        resPayAdapter?.data?.messageError,
+                    message: returnMessage(7),
+                    referenceCode: 7,
                 },
                 true,
             );
@@ -91,18 +123,24 @@ export const payNowCredit = async (
             resPayAdapter?.payment?.receivedDate || new Date(); // so de exemplo
         const newStatusInvoice = EnumInvoiceStatus.paid; // so de exemplo
 
+        const returnCode = resPayAdapter.data.payment.returnCode;
+
+        const { code, message }: any = defaultReturnMessage(returnCode);
+
+        let referenceCode = ['00', 0, 4].includes(returnCode) ? 1 : 7;
+
         const updateInvoice: TInvoice = {
             ...invoice,
             paymentDate,
             statusInvoice: newStatusInvoice,
-            returnMessage: resPayAdapter.data.payment.returnMessage,
+            returnMessage: message,
             paymentId: resPayAdapter.data.payment.paymentId,
             tid: resPayAdapter.data.payment.tid,
-            returnCode: resPayAdapter.data.payment.returnCode,
+            returnCode: code,
+            referenceCode,
         };
 
         const resUpdate: any = await invoiceService.Update(updateInvoice);
-
         if (resUpdate.err)
             return returnTopic(
                 {
@@ -111,7 +149,8 @@ export const payNowCredit = async (
                     statusInvoice: invoice.statusInvoice,
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
-                    message: 'internal error updating invoice',
+                    referenceCode,
+                    message: returnMessage(referenceCode),
                 },
                 true,
             );
@@ -122,11 +161,26 @@ export const payNowCredit = async (
             statusInvoice: newStatusInvoice,
             paymentMethod: invoice.paymentMethod,
             type: invoice.type,
-            message: 'recurrence started successfully',
+            message: 'successful payment',
             returnMessage: resPayAdapter?.data?.payment?.returnMessage,
             paymentId: resPayAdapter.data.payment.paymentId,
             tid: resPayAdapter.data.payment.tid,
             returnCode: resPayAdapter.data.payment.returnCode,
+            referenceCode,
+            receipt: {
+                referenceCode: 1,
+                invoiceId: invoice.invoiceId,
+                statusInvoice: invoice.statusInvoice,
+                residentName: resident.name,
+                enterpriseId: invoice.enterpriseId,
+                apartmentId: invoice.apartmentId,
+                paymentId: invoice.paymentId,
+                paymentMethod: invoice.paymentMethod,
+                dueDate: invoice.dueDate,
+                paymentDate: invoice.paymentDate,
+                message: returnMessage(referenceCode),
+                value: invoice.value,
+            },
         });
     } catch (error: any) {
         return returnTopic(
@@ -136,7 +190,8 @@ export const payNowCredit = async (
                 statusInvoice: invoice.statusInvoice,
                 paymentMethod: invoice.paymentMethod,
                 type: invoice.type,
-                message: error?.message,
+                message: returnMessage(7),
+                referenceCode: 7,
             },
             true,
         );

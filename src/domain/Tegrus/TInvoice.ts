@@ -36,6 +36,7 @@ export type TInvoice = {
     returnCode?: string;
     isExpired?: boolean;
     atUpdate?: boolean;
+    referenceCode?: number;
 };
 
 export type TInvoiceFilter = {

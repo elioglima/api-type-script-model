@@ -5,12 +5,14 @@ import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
+import { EnumBrands } from '../../../../enum';
 
 import HashSearchService from './hashSearchService';
 import { payNowCredit } from './payNowCredit';
 import { payNowRecurrence } from './payNowRecurrence';
 import { TPayNowReq } from '../../../../domain/Tegrus/TPayNow';
 import { invoiceToTResident } from '../../../../utils';
+import { FindCardByIdService } from '../../../../service/FindCardByIdService';
 
 const returnTopic = (
     response: {
@@ -41,29 +43,58 @@ const returnTopic = (
 
 const servicePrivate = async (payload: TPayNowReq) => {
     try {
+        let resInvoice: {
+            err?: boolean;
+            data: TInvoice;
+        };
+
+        const invoiceService = new InvoiceService();
         const hashServices = new HashSearchService();
         const { hash } = payload;
 
-        const resHash: any = await hashServices.execute(hash);
-        if (resHash.err) return resHash;
+        if (payload.hash) {
+            const resHash: any = await hashServices.execute(hash);
+            if (resHash.err) return resHash;
 
-        // if (resHash?.invoice?.recurrenceId)
-        //     return { err: true, data: 'Already exists a scheduled recurrence' };
+            // if (resHash?.invoice?.recurrenceId)
+            //     return { err: true, data: 'Already exists a scheduled recurrence' };
 
-        // const { enterpriseId } = resHash?.resident;
+            // const { enterpriseId } = resHash?.resident;
 
-        const invoiceService = new InvoiceService();
-        const resInvoice: {
-            err?: boolean;
-            data: TInvoice;
-        } = await invoiceService.FindOne(resHash?.invoice?.invoiceId);
+            resInvoice = await invoiceService.FindOne(
+                resHash?.invoice?.invoiceId,
+            );
+        } else {
+            resInvoice = await invoiceService.FindOne(payload.invoiceId);
+        }
 
         if (resInvoice?.err)
             return returnTopic(
                 { message: 'invoice not found in database' },
                 true,
             );
-        
+
+        if (payload.cardId) {
+            const findCardByIdService = new FindCardByIdService();
+            const card = await findCardByIdService.execute(payload.cardId);
+
+            if (card instanceof Error) {
+                return returnTopic(
+                    { message: 'card not found in database' },
+                    true,
+                );
+            }
+
+            payload.card = {
+                cardNumber: String(card.hashC),
+                customerName: String(card.holder),
+                holder: String(card.holder),
+                expirationDate: String(card.expirationDate),
+                brand: card.brand as EnumBrands,
+                securityCode: Number(card.hash),
+            };
+        }
+
         const { residentIdenty, ...invoice }: any = resInvoice.data;
         const resident: TResident | any = invoiceToTResident(residentIdenty);
 
@@ -89,6 +120,8 @@ const servicePrivate = async (payload: TPayNowReq) => {
                     invoice,
                     resident,
                 );
+
+                // hashServices.
                 return resPayNowCredit;
             } else {
                 return returnTopic(
