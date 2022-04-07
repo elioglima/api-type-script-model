@@ -168,10 +168,15 @@ export default class RecurrenceService {
 
             if (resInvoice?.err) return rError(resInvoice?.data);
 
+            console.log(resRecurrentCreate?.payment?.recurrentPayment);
+
             const response: TRecurrencyStatus = {
                 message: 'successful recurrence scheduling',
                 invoiceId: invoice?.invoiceId,
                 description: resRecurrentCreate?.payment?.softDescriptor,
+                nextRecurrency: new Date(
+                    resRecurrentCreate?.payment?.recurrentPayment?.nextRecurrency,
+                ),
                 paidAt: new Date(
                     resRecurrentCreate?.payment?.recurrentPayment?.nextRecurrency,
                 ),

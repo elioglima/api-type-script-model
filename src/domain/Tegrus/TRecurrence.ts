@@ -59,6 +59,7 @@ export type TRecurrencyStatus = {
     invoiceId: number;
     description?: string;
     paidAt: Date;
+    nextRecurrency?: Date;
     paymentMethod: EnumInvoicePaymentMethod;
     amountOfFailure?: number;
     statusInvoice: EnumInvoiceStatus;
