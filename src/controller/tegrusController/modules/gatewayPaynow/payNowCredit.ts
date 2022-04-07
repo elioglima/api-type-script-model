@@ -75,7 +75,7 @@ export const payNowCredit = async (
             true,
         );
 
-        let referenceCode = 0; // fazer tratativa de verificacao dos codigos
+        let referenceCode = 7; // fazer tratativa de verificacao dos codigos
         if (resPayAdapter?.err)
             return returnTopic(
                 {
