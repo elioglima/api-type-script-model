@@ -30,6 +30,7 @@ export class PaymentCardsRepository {
                 hash: paymentCard.hash,
                 hashC: paymentCard.hashC,
                 holder: paymentCard.holder,
+                expirationDate: paymentCard.expirationDate,
                 firstFourNumbers: paymentCard.firstFourNumbers,
                 token: paymentCard.token,
             };
