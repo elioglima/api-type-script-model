@@ -66,11 +66,6 @@ const contractCancel = async (req: any) => {
 
                     // if (resDisableRecurrence?.err) return resDisableRecurrence;
 
-                    /* 
-                        TO-DO
-                        desativar usuario do app e backoffice
-                    
-                    */
                     return {
                         err: false,
                         data: {

@@ -5,6 +5,9 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
         console.log(req.body);
         /*
 
+
+            obs: ver tempo de tentatias
+            obs: enviar mensagem cliente
             obs: esta funcao sera chamada por um servico ou uma cron 2x por dia
 
             - consultar todas no prazo de 60 dias invoices que sejam:
