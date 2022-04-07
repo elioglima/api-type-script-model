@@ -84,6 +84,13 @@ export class PaymentCardsEntity {
     holder: string | undefined;
 
     @Column({
+        name: 'expirationDate',
+        type: 'varchar',
+        length: 20,
+    })
+    expirationDate: string | undefined;
+
+    @Column({
         name: 'createdAt',
         type: 'timestamp',
         default: () => 'CURRENT_TIMESTAMP()',

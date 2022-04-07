@@ -19,6 +19,10 @@ export class FindCardByIdService {
             card.hash = await this.cryptIntegrationGateway.decryptData(
                 String(card.hash),
             );
+
+        if (card.hashC)
+            card.hashC = await this.cryptIntegrationGateway.decryptData(String(card.hashC));
+            
         return card;
     };
 }
