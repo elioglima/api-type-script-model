@@ -106,6 +106,19 @@ export const payNowCredit = async (
         const newStatusInvoice = EnumInvoiceStatus.paid; // so de exemplo
 
         const returnCode = resPayAdapter.data.payment.returnCode;
+
+        /* 
+            TO-DO-BETO
+            1 = Autorizada
+            2 = Não Autorizada
+            3 = Cartão Expirado
+            4 = Cartão Bloqueado
+            5 = Time Out
+            6 = Cartão Cancelado
+            7 = Problemas com o Cartão de Crédito
+
+        */
+
         let referenceCode = ['00', 0, 4].includes(returnCode) ? 1 : 7;
 
         const updateInvoice: TInvoice = {
