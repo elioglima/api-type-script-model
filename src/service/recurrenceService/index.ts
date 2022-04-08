@@ -18,6 +18,7 @@ import InvoiceService from '../invoiceService';
 import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
 import moment from 'moment';
+import { Request, Response } from 'express';
 
 export default class RecurrenceService {
     private logger = debug('payment-api:RecurrenceService');
@@ -225,7 +226,7 @@ export default class RecurrenceService {
                     ...resRecu?.data?.row,
                     active: true,
                     updatedAt: new Date(),
-                    isDeactivateError: true                    
+                    isDeactivateError: true,
                 });
                 return {
                     err: true,
@@ -239,7 +240,7 @@ export default class RecurrenceService {
                 ...resRecu?.data?.row,
                 active: false,
                 updatedAt: new Date(),
-                isDeactivateError: false
+                isDeactivateError: false,
             };
 
             const resRecuUpdate = await paymentRecurrenceRepo.update(
@@ -262,5 +263,37 @@ export default class RecurrenceService {
                 },
             };
         }
+    };
+
+    public GetRecurrenceByResident = async (req: Request, res: Response) => {
+        try {
+            const paymentAdapter = new AdapterPayment();
+            const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
+            const { residentId } = req.query;
+
+            const resRecu: any = await paymentRecurrenceRepo.getByResidentId(
+                Number(residentId),
+            );
+
+            if (resRecu instanceof Error) return { err: true, data: resRecu };
+            if (!resRecu)
+                return {
+                    err: true,
+                    data: {
+                        message: 'Recurrence not found.',
+                    },
+                };
+
+            //console.log("resRecu", resRecu)
+
+            await paymentAdapter.init(Number(1));
+            const recurrence = await paymentAdapter.recurrenceFind(
+               { recurrenceId: resRecu.data.row.recurrentPaymentId}
+            );
+
+            console.log('RECU', recurrence);
+
+            return;
+        } catch (error) {}
     };
 }

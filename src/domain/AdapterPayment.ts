@@ -20,6 +20,7 @@ import {
     reqRecurrentDeactivate,
     resRecurrentCreate,
     resRecurrentDeactivate,
+    reqRecurrentPaymentConsult    
 } from './RecurrentPayment';
 import { rError, rSuccess } from '../utils';
 
@@ -139,6 +140,20 @@ export class AdapterPayment implements IAdapter {
             throw new Error('Error Method recurrentDeactivate.');
         }
     }
+
+    public recurrenceFind(
+        payload: reqRecurrentPaymentConsult,
+    ): Promise<resRecurrentDeactivate | TErrorGeneric> {
+        if (!this.paymentProvider) throw new Error('Error provider not found.');
+        try {
+            return this.paymentProvider.recurrentFind(payload);
+        } catch (error) {
+            console.log('recurrentDeactivate', error);
+            throw new Error('Error Method recurrentDeactivate.');
+        }
+    }
+
+
 
     // public repayPayment(payload: reqRepayPayment): resRepayPayment {
     //     if (!this.paymentProvider)

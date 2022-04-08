@@ -11,7 +11,7 @@ export class Utils {
         this.cieloConstructor = params;
     }
 
-    public get<T>(params: { path: string }): Promise<T | TErrorGeneric> {
+    public async get<T>(params: { path: string }): Promise<T | TErrorGeneric> {
         const hostname: String | any = this.cieloConstructor.hostnameQuery;
         const { path } = params;
         const method = HttpRequestMethodEnum.GET;
@@ -21,6 +21,7 @@ export class Utils {
             hostname,
             method,
         });
+        
         return this.request<T>(options, {});
     }
 

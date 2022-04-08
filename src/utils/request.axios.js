@@ -2,11 +2,11 @@ import axios from 'axios';
 import camelcaseKeys from 'camelcase-keys';
 
 export default async (data = {}, options) => {
-    try {        
+    try {                
         const dataPost = JSON.stringify(data)
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '');
-
+        
         if (options && options.headers)
             options.headers['Content-Length'] = Buffer.byteLength(dataPost);
 
@@ -23,12 +23,11 @@ export default async (data = {}, options) => {
         }
         else if (options.method == 'GET') {
             response = await axios.get(
-                `${options.hostname}/${options.path}`,
-                dataPost,
+                `${options.hostname}/${options.path}`,                
                 {
                     headers: options.headers,
                 },
-            );
+            );            
         }
         else if (options.method == 'POST') {
             response = await axios.post(
