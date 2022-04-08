@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
-import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
+import { TInvoice, TInvoiceFilter, TResident } from '../../domain/Tegrus';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -39,13 +39,27 @@ export default class InvoiceService {
     };
 
     public FindOne = async (invoiceId: number) => {
-        this.logger(`Find One`);
+        try {
+            this.logger(`Find One`);
 
-        const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
-            invoiceId,
-        );
+            const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
+                invoiceId,
+            );
 
-        if (resInvoiceId instanceof Error) {
+            if (resInvoiceId instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: 'no invoice found',
+                    },
+                };
+            }
+
+            return {
+                err: false,
+                data: resInvoiceId,
+            };
+        } catch (error) {
             return {
                 err: true,
                 data: {
@@ -53,11 +67,6 @@ export default class InvoiceService {
                 },
             };
         }
-
-        return {
-            err: false,
-            data: resInvoiceId,
-        };
     };
 
     public FindOneDisabled = async (invoiceId: number) => {
@@ -96,30 +105,48 @@ export default class InvoiceService {
         };
     };
 
-    public FindOneInclude = async (invoice: TInvoice) => {
-        this.logger(`Find One Include`);
+    public FindOneInclude = async (invoiceData: TInvoice) => {
+        try {
+            this.logger(`Find One Include`);
 
-        const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
-            invoice.invoiceId,
-        );
+            const { resident: residentData, ...invoiceTwo }: any = invoiceData;
+            const resident: TResident = residentData;
+            const invoice: TInvoice = invoiceTwo;
+            
+            const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
+                invoice.invoiceId,
+            );
 
-        if (resInvoiceId) {
-            // fatura existe
+            if (resInvoiceId) {
+                // fatura existe
+                return {
+                    err: true,
+                    data: {
+                        message: 'Invoice is already processed',
+                    },
+                };
+            }
+
+            const resPersist = await this.invoiceRepository.persist({
+                ...invoice,
+                residentIdenty: resident.id,
+            });
+
+            if (resPersist instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: 'Error writing invoice',
+                    },
+                };
+            }
+
             return {
-                err: true,
-                data: {
-                    message: 'Invoice is already processed',
-                },
+                err: false,
+                data: resPersist,
             };
-        }
-
-        const { resident } = invoice;
-        const resPersist = await this.invoiceRepository.persist({
-            ...invoice,
-            residentIdenty: resident.id,
-        });
-
-        if (resPersist instanceof Error) {
+        } catch (error) {
+            console.log(333, error);
             return {
                 err: true,
                 data: {
@@ -127,11 +154,6 @@ export default class InvoiceService {
                 },
             };
         }
-
-        return {
-            err: false,
-            data: resPersist,
-        };
     };
 
     public Find = async (payload: TInvoiceFilter) => {

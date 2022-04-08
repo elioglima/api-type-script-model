@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import InvoiceService from '../../../../service/invoiceService';
+import RecurrenceService from '../../../../service/recurrenceService';
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
 import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
@@ -56,11 +57,6 @@ const servicePrivate = async (payload: TPayNowReq) => {
             const resHash: any = await hashServices.execute(hash);
             if (resHash.err) return resHash;
 
-            // if (resHash?.invoice?.recurrenceId)
-            //     return { err: true, data: 'Already exists a scheduled recurrence' };
-
-            // const { enterpriseId } = resHash?.resident;
-
             resInvoice = await invoiceService.FindOne(
                 resHash?.invoice?.invoiceId,
             );
@@ -95,8 +91,9 @@ const servicePrivate = async (payload: TPayNowReq) => {
             };
         }
 
-        const { residentIdenty, ...invoice }: any = resInvoice.data;
+        const { residentIdenty, ...invoiceData }: any = resInvoice.data;
         const resident: TResident | any = invoiceToTResident(residentIdenty);
+        const invoice: TInvoice = invoiceData;
 
         if (!resident)
             return returnTopic(
@@ -112,8 +109,28 @@ const servicePrivate = async (payload: TPayNowReq) => {
             ].includes(invoice.type)
         ) {
             if (invoice.paymentMethod == EnumInvoicePaymentMethod.credit) {
-                if (invoice.isRecurrence && !invoice.atUpdate)
-                    return await payNowRecurrence(payload, invoice, resident);
+                const recurrenceService = new RecurrenceService();
+
+                // desativa a recorrencia caso ela exista
+                await recurrenceService.DisableIsExist(resident);
+
+                const checkedReturn = async (result: any) => {
+                    if (result?.err) return result;
+
+                    // desativa hash caso o pagamento seja efetuado
+                    await hashServices.TerminateHashTTL(hash);
+                    return result;
+                };
+
+                if (invoice.isRecurrence && !invoice.atUpdate) {
+                    const resPayNowRecurrence = await payNowRecurrence(
+                        payload,
+                        invoice,
+                        resident,
+                    );
+
+                    return await checkedReturn(resPayNowRecurrence);
+                }
 
                 const resPayNowCredit: any = await payNowCredit(
                     payload,
@@ -121,8 +138,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
                     resident,
                 );
 
-                // hashServices.
-                return resPayNowCredit;
+                return await checkedReturn(resPayNowCredit);
             } else {
                 return returnTopic(
                     { message: 'type not implemented for payment' },

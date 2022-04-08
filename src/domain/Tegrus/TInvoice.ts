@@ -26,9 +26,8 @@ export type TInvoice = {
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumInvoiceStatus;
     isRecurrence: boolean;
-    resident: TResident;
     residentIdenty?: number;
-    recurrenceId?: number;
+    // recurrenceId?: number;
     paymentDate?: Date;
     returnMessage?: string;
     paymentId?: string;
@@ -37,6 +36,7 @@ export type TInvoice = {
     isExpired?: boolean;
     atUpdate?: boolean;
     referenceCode?: number;
+    resident: TResident;
 };
 
 export type TInvoiceFilter = {
