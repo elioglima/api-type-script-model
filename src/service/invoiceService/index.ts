@@ -113,11 +113,10 @@ export default class InvoiceService {
             const resident: TResident = residentData;
             const invoice: TInvoice = invoiceTwo;
 
-            console.log(222, invoice);
-
             const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
                 invoice.invoiceId,
             );
+            console.log(222, invoice);
 
             if (resInvoiceId) {
                 // fatura existe
