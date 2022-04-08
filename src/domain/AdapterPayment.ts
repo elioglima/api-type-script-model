@@ -132,17 +132,6 @@ export class AdapterPayment implements IAdapter {
         if (!this.paymentProvider) throw new Error('Error provider not found.');
         return this.paymentProvider.recurrentDeactivate(payload);
     }
-
-    // public repayPayment(payload: reqRepayPayment): resRepayPayment {
-    //     if (!this.paymentProvider)
-    //         throw new Error('Error provider not found.');
-
-    //     try {
-    //         return this.paymentProvider.repayPayment(payload);
-    //     } catch (error) {
-    //         throw new Error('Error Method repayPayment.');
-    //     }
-    // }
 }
 
 export default AdapterPayment;

@@ -44,6 +44,56 @@ export default class RecurrenceService {
         }
     };
 
+    public DisableIsExist = async (resident: TResident) => {
+        try {
+            this.logger(`Find One Disable`);
+
+            const checkExists: {
+                err?: boolean;
+                data?: any | TRecurrence;
+                message?: string;
+            } = await this.FindOneResidentId(resident.id);
+
+            if (checkExists?.err)
+                return rError({
+                    message:
+                        'error when querying the recurrence in the database',
+                });
+
+            const resCreateAdapter = await this.paymentAdapter.init(
+                resident.enterpriseId,
+            );
+            if (checkExists?.err) return rError(resCreateAdapter.data);
+
+            const recurrenceId = checkExists.data.recurrenceId;
+
+            const resRecurrentDeactivate: any =
+                await this.paymentAdapter.recurrentDeactivate({ recurrenceId });
+
+            if (resRecurrentDeactivate instanceof Error)
+                return rError({
+                    message: 'error deleting local recurrence',
+                });
+
+            if (resRecurrentDeactivate?.err) return resRecurrentDeactivate;
+
+            const resDelete: TRecurrence = await this.repository.delete(
+                checkExists.data.id,
+            );
+
+            if (!resDelete)
+                return rError({
+                    message: 'error deleting local recurrence',
+                });
+
+            return rSuccess(checkExists.data);
+        } catch (error: any) {
+            return rError({
+                message: error?.message,
+            });
+        }
+    };
+
     public ScheduleRecurrence = async (
         resident: TResident,
         invoice: TInvoice,
