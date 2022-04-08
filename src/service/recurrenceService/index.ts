@@ -275,7 +275,7 @@ export default class RecurrenceService {
                     ...resRecu?.data?.row,
                     active: true,
                     updatedAt: new Date(),
-                    isDeactivateError: true                    
+                    isDeactivateError: true,
                 });
                 return {
                     err: true,
@@ -289,7 +289,7 @@ export default class RecurrenceService {
                 ...resRecu?.data?.row,
                 active: false,
                 updatedAt: new Date(),
-                isDeactivateError: false
+                isDeactivateError: false,
             };
 
             const resRecuUpdate = await paymentRecurrenceRepo.update(

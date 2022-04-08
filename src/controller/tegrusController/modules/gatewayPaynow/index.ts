@@ -112,7 +112,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 const recurrenceService = new RecurrenceService();
 
                 // desativa a recorrencia caso ela exista
-                await recurrenceService.DisableIsExist(resident.id);
+                await recurrenceService.DisableIsExist(resident);
 
                 const checkedReturn = async (result: any) => {
                     if (result?.err) return result;
