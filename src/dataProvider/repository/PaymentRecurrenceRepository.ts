@@ -126,4 +126,20 @@ export class PaymentRecurrenceRepository {
                 },
             );
     };
+
+    public delete = async (id: number) => {
+        return await getConnection()
+            .getRepository(PaymentRecurrenceEntity)
+            .createQueryBuilder('paymentRecurrence')
+            .delete()
+            .where('id = :id', { id })
+            .execute()
+            .then(
+                res => res,
+                onRejected => {
+                    this.logger('Error ', onRejected);
+                    return onRejected;
+                },
+            );
+    };
 }

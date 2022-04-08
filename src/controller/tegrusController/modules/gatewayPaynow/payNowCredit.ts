@@ -61,6 +61,7 @@ export const payNowCredit = async (
                 returnCode: resMessage.code,
                 receipt: {
                     referenceCode: 1,
+                    tid: invoice.tid,
                     invoiceId: invoice.invoiceId,
                     statusInvoice: invoice.statusInvoice,
                     residentName: resident.name,
@@ -152,6 +153,7 @@ export const payNowCredit = async (
             receipt: {
                 referenceCode: 1,
                 invoiceId: invoice.invoiceId,
+                tid: resPayAdapter.data.payment.tid,
                 statusInvoice: invoice.statusInvoice,
                 residentName: resident.name,
                 enterpriseId: invoice.enterpriseId,
