@@ -29,19 +29,13 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Tag name ref
-        id: github-tag
-        run: |
-          echo "${GITHUB_REF##*/}" &&
-          echo "::set-output name=tagname::${GITHUB_REF##*/}.${GITHUB_RUN_NUMBER}"
-
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.APP_NAME }}
           ECR_FOLDER: prd
-          IMAGE_TAG: ${{ steps.github-tag.outputs.tagname }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
@@ -98,12 +92,12 @@ jobs:
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             SANDBOX: ${{ secrets.SANDBOX }}
-            DB_DRIVE: ${{ secrets.RDS_HML_DRIVE }}
+            DB_DRIVE: ${{ secrets.RDS_DRIVE }}
             DB_HOST: ${{ secrets.RDS_HOST }}
-            DB_USER: ${{ secrets.RDS_HML_USER }}
+            DB_USER: ${{ secrets.RDS_USER }}
             DB_PASSWORD: ${{ secrets.RDS_PASSWORD }}
-            DB_DATABASE: ${{ secrets.RDS_HML_DATABASE }}
-            DB_PORT: ${{ secrets.RDS_HML_PORT }}
+            DB_DATABASE: ${{ secrets.RDS_DATABASE }}
+            DB_PORT: ${{ secrets.RDS_PORT }}
             DB_LOG: true
             DB_SYNC: false
         env:
