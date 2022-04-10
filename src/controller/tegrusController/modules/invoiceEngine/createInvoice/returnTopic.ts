@@ -17,8 +17,10 @@ const returnTopic = async (
                     err,
                     type: request.type,
                     status: err ? 'failed' : 'success',
-                    messageError: response?.message || undefined,
                     ...(response ? { ...response } : {}),
+                    ...(err
+                        ? { messageError: response?.message || undefined }
+                        : { message: response.message }),
                     ...(EnumInvoicePaymentMethod.credit == request.paymentMethod
                         ? linkInvoice
                             ? { linkInvoice }

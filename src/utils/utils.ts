@@ -11,17 +11,19 @@ export class Utils {
         this.cieloConstructor = params;
     }
 
-    public get<T>(params: { path: string }): Promise<T | TErrorGeneric> {
+    public async get<T>(params: { path: string }) {
         const hostname: String | any = this.cieloConstructor.hostnameQuery;
         const { path } = params;
         const method = HttpRequestMethodEnum.GET;
 
-        const options: IHttpRequestOptions = this.getHttpRequestOptions({
+        const options: IHttpRequestOptions = await this.getHttpRequestOptions({
             path,
             hostname,
             method,
         });
-        return this.request<T>(options, {});
+
+        const response = await this.request<T>(options, {});
+        return response;
     }
 
     public postToSales<T, U>(data: U): Promise<T | TErrorGeneric> {
@@ -33,7 +35,10 @@ export class Utils {
                     data,
                 )
                     .then(capture => {
-                        console.log('postToSales :: ok');
+                        console.log('postToSales :: ok', {
+                            onSuccess,
+                            capture,
+                        });
                         return { ...onSuccess, capture };
                     })
                     .catch(error => {
@@ -80,8 +85,6 @@ export class Utils {
         });
         const resp: any = await this.request<T>(options, data);
 
-        console.log(9858585, resp);
-
         return resp;
     }
 
@@ -96,6 +99,7 @@ export class Utils {
             hostname: params.hostname,
             port: 443,
             encoding: 'utf-8',
+            timeout: 3000,
             headers: {
                 MerchantId: this.cieloConstructor.merchantId,
                 MerchantKey: this.cieloConstructor.merchantKey,
@@ -118,8 +122,6 @@ export class Utils {
             ) && eval('(' + text + ')')
         );
     }
-
-    
 }
 
 export enum HttpRequestMethodEnum {

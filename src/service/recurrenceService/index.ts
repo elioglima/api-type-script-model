@@ -15,29 +15,62 @@ import { reqRecurrentCreate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
 import AdapterPayment from '../../domain/AdapterPayment';
 import InvoiceService from '../invoiceService';
+import ResidentService from '../residentService';
 import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
 import moment from 'moment';
+import { Request, Response } from 'express';
+import { defaultReturnMessage } from './../../utils/returns';
 
 export default class RecurrenceService {
     private logger = debug('payment-api:RecurrenceService');
     private repository = new PaymentRecurrenceRepository();
     private invoiceService = new InvoiceService();
     private paymentAdapter = new AdapterPayment();
+    private residentService = new ResidentService();
 
     public FindOneResidentId = async (residenteId: number) => {
         try {
             this.logger(`Find One FindOneResidentId`);
 
-            const response: TRecurrence = await this.repository.getByResidentId(
+            const checkExists: any = await this.repository.getByResidentId(
                 residenteId,
             );
 
-            if (response?.err)
+            if (checkExists?.err)
                 return rError({
-                    message: 'No resident found',
+                    message: 'recurrence error find',
                 });
-            return rSuccess(response?.data);
+
+            if (!checkExists?.data?.row)
+                return rSuccess({
+                    message: 'recurrence not found',
+                });
+
+            const resResident: any = await this.residentService.FindOne(
+                residenteId,
+            );
+            if (resResident?.err) return rError(resResident.data);
+
+            const resident: TResident = resResident.data;
+
+            const resAdapter = await this.paymentAdapter.init(
+                Number(resident.enterpriseId),
+            );
+            if (resAdapter?.err) return rError(resAdapter.data);
+
+            const recurrenceId: number =
+                checkExists.data.row.recurrentPaymentId;
+
+            const resRecurrence: any = await this.paymentAdapter.recurrenceFind(
+                {
+                    recurrenceId,
+                },
+            );
+
+            if (resRecurrence.err) return rSuccess(resRecurrence.data, true);
+
+            return rSuccess(resRecurrence.data);
         } catch (error: any) {
             return rError({
                 message: error?.message,
@@ -124,33 +157,35 @@ export default class RecurrenceService {
             );
             if (checkExists?.err) return rError(resCreateAdapter.data);
 
-            const makeRecurrent: reqRecurrentCreate = {
-                merchantOrderId: invoice?.invoiceId
+            const makeRecurrent: any = {
+                MerchantOrderId: invoice?.invoiceId
                     .toString()
                     .concat(
                         moment()
-                            .format('YYYYMMDDHH:mm')
+                            .format('YYYYMMDDHH:mm:ss')
                             .concat(card?.cardNumber.slice(-4)),
                     ),
-                customer: {
-                    name: resident?.name,
+                Customer: {
+                    Name: resident?.name,
                 },
                 payment: {
-                    type: 'CreditCard',
-                    amount: invoice?.value,
-                    installments: 1,
-                    softDescriptor: 'Recorrencia JFL',
-                    recurrentPayment: {
-                        authorizeNow: true,
-                        endDate: recurrence.endDateContract,
-                        interval: 'Monthly',
+                    Type: 'CreditCard',
+                    Amount: invoice?.value,
+                    Installments: 1,
+                    SoftDescriptor: 'Recorrencia JFL',
+                    RecurrentPayment: {
+                        AuthorizeNow: true,
+                        EndDate: recurrence.endDateContract,
+                        Interval: 'Monthly',
                     },
-                    creditCard: {
-                        cardNumber: card?.cardNumber,
-                        holder: card?.holder,
-                        expirationDate: card?.expirationDate,
-                        customerName: card?.customerName || '',
-                        brand: card?.brand,
+                    CreditCard: {
+                        // customerName: card?.customerName || '',
+                        CardNumber: card?.cardNumber,
+                        Holder: card?.holder,
+                        ExpirationDate: card?.expirationDate,
+                        Brand: card?.brand,
+                        SecurityCode: String(card.securityCode),
+                        SaveCard: true,
                     },
                 },
             };
@@ -159,6 +194,19 @@ export default class RecurrenceService {
                 await this.paymentAdapter.recurrentCreate(makeRecurrent);
 
             if (resRecurrentCreate?.err) return resRecurrentCreate;
+
+            console.log(
+                99,
+                'recorrent',
+                JSON.stringify(
+                    {
+                        payload: makeRecurrent,
+                        response: resRecurrentCreate,
+                    },
+                    null,
+                    4,
+                ),
+            );
 
             const payCardNumber =
                 resRecurrentCreate?.payment?.creditCard?.cardNumber;
@@ -173,10 +221,6 @@ export default class RecurrenceService {
             const recurrentPaymentId =
                 resRecurrentCreate?.payment?.recurrentPayment
                     ?.recurrentPaymentId;
-            const reasonCode =
-                resRecurrentCreate?.payment?.recurrentPayment?.reasonCode;
-            const reasonMessage =
-                resRecurrentCreate?.payment?.recurrentPayment?.reasonMessage;
             const nextRecurrency =
                 resRecurrentCreate?.payment?.recurrentPayment?.nextRecurrency;
             const interval =
@@ -188,7 +232,6 @@ export default class RecurrenceService {
 
             const persisRecurrency: TRecurrencePayment = {
                 residentId: resident?.id,
-
                 value: resRecurrentCreate?.payment?.amount,
                 createdAt: new Date(),
                 payCardNumber,
@@ -197,32 +240,68 @@ export default class RecurrenceService {
                 payCardSaveCard,
                 payCardBrand,
                 recurrentPaymentId,
-                reasonCode,
-                reasonMessage,
+                returnCode:
+                    resRecurrentCreate?.payment?.recurrentPayment?.returnCode,
+                returnMessage:
+                    resRecurrentCreate?.payment?.recurrentPayment
+                        ?.returnMessage,
                 nextRecurrency,
                 interval,
                 linkRecurrentPayment,
                 authorizeNow,
             };
 
-            const resPersist: any = await this.repository.persist(
-                persisRecurrency,
-            );
+            const returnCode = resRecurrentCreate?.payment?.returnCode;
+            const returnMessage = resRecurrentCreate?.payment?.returnMessage;
+            const resDefaultReturnMessage: any =
+                defaultReturnMessage(returnCode);
 
-            if (resPersist.err) return rError(resPersist.data);
+            const recurreceError =
+                !persisRecurrency?.returnCode ||
+                ![0, 4].includes(
+                    Number(
+                        resRecurrentCreate?.payment?.recurrentPayment
+                            ?.returnCode,
+                    ),
+                );
 
+            console.log(123, { recurreceError, returnCode });
+
+            if (![0, 4].includes(Number(returnCode))) {
+                const response: any = {
+                    recurrence: {
+                        err: recurreceError,
+                        ...(recurreceError
+                            ? {
+                                  message:
+                                      'Error return in Cielo when scheduling the recurrence',
+                              }
+                            : {}),
+                        ...resRecurrentCreate?.payment?.recurrentPayment,
+                    },
+                    invoiceId: invoice?.invoiceId,
+                    description: resRecurrentCreate?.payment?.softDescriptor,
+                    returnCode,
+                    returnMessage,
+                    referenceCode: resDefaultReturnMessage.code,
+                    message: resDefaultReturnMessage.message,
+                };
+
+                return rError({
+                    ...response,
+                });
+            }
+
+            console.log('atuolizou o pagamento');
             const resInvoice: any = await this.invoiceService.Update({
                 ...invoice,
             });
 
             if (resInvoice?.err) return rError(resInvoice?.data);
 
-            console.log(resRecurrentCreate?.payment?.recurrentPayment);
-
-            const response: TRecurrencyStatus = {
-                message: 'successful recurrence scheduling',
-                invoiceId: invoice?.invoiceId,
-                description: resRecurrentCreate?.payment?.softDescriptor,
+            const paymentSccess: any = {
+                returnCode,
+                returnMessage,
                 nextRecurrency: new Date(
                     resRecurrentCreate?.payment?.recurrentPayment?.nextRecurrency,
                 ),
@@ -230,7 +309,43 @@ export default class RecurrenceService {
                     resRecurrentCreate?.payment?.recurrentPayment?.nextRecurrency,
                 ),
                 paymentMethod: EnumInvoicePaymentMethod.credit,
-                statusInvoice: EnumInvoiceStatus.issued,
+                statusInvoice: EnumInvoiceStatus.paid,
+                invoiceId: invoice?.invoiceId,
+                description: resRecurrentCreate?.payment?.softDescriptor,
+                tid: resRecurrentCreate?.payment?.tid,
+                paymentDate: resRecurrentCreate?.payment?.receivedDate,
+                paymentId: resRecurrentCreate?.payment?.paymentId,
+            };
+
+            if (recurreceError) {
+                console.log('erro ao gerar a recorrencia');
+
+                const response: any = {
+                    recurrence: {
+                        err: recurreceError,
+                        message:
+                            'Error return in Cielo when scheduling the recurrence',
+                        ...resRecurrentCreate?.payment?.recurrentPayment,
+                    },
+                    ...paymentSccess,
+                };
+
+                return rSuccess(response);
+            }
+
+            console.log('gravando a recorrencia');
+            const resPersist: any = await this.repository.persist(
+                persisRecurrency,
+            );
+            if (resPersist.err) return rError(resPersist.data);
+
+            const response: any = {
+                recurrence: {
+                    err: false,
+                    ...resRecurrentCreate?.payment?.recurrentPayment,
+                },
+                ...paymentSccess,
+                message: 'successful recurrence scheduling',
             };
 
             return rSuccess(response);
@@ -307,6 +422,41 @@ export default class RecurrenceService {
             console.log('ERR', error);
             return {
                 err: false,
+                data: {
+                    message: error?.message || 'unexpected error',
+                },
+            };
+        }
+    };
+
+    public GetRecurrenceByResident = async (req: Request, res: Response) => {
+        try {
+            const paymentAdapter = new AdapterPayment();
+            const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
+            const { residentId } = req.query;
+
+            const resRecu: any = await paymentRecurrenceRepo.getByResidentId(
+                Number(residentId),
+            );
+
+            if (resRecu instanceof Error) return { err: true, data: resRecu };
+            if (!resRecu)
+                return {
+                    err: true,
+                    data: {
+                        message: 'Recurrence not found.',
+                    },
+                };
+
+            await paymentAdapter.init(Number(1));
+            const recurrence = await paymentAdapter.recurrenceFind({
+                recurrenceId: resRecu.data.row.recurrentPaymentId,
+            });
+
+            return { err: false, data: recurrence };
+        } catch (error: any) {
+            return {
+                err: true,
                 data: {
                     message: error?.message || 'unexpected error',
                 },

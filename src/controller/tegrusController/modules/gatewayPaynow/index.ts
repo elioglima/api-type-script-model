@@ -108,6 +108,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 EnumInvoiceType.spot,
             ].includes(invoice.type)
         ) {
+            console.log({ invoice });
             if (invoice.paymentMethod == EnumInvoicePaymentMethod.credit) {
                 const recurrenceService = new RecurrenceService();
 
