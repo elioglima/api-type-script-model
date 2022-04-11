@@ -55,14 +55,6 @@ export default class InvoiceService {
                 };
             }
 
-            // if (!resInvoiceId)
-            //     return {
-            //         err: true,
-            //         data: {
-            //             message: 'no invoice found',
-            //         },
-            //     };
-
             return {
                 err: false,
                 data: resInvoiceId,

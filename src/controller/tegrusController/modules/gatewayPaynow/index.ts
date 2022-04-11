@@ -53,7 +53,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
         const hashServices = new HashSearchService();
         const { hash } = payload;
 
-        if (payload.hash) {
+        if (payload?.hash) {
             const resHash: any = await hashServices.execute(hash);
             if (resHash.err) return resHash;
 
@@ -62,7 +62,6 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 !resHash?.data?.isValid
             )
                 return resHash;
-            console.log(123, resHash);
 
             resInvoice = await invoiceService.FindOne(
                 resHash?.invoice?.invoiceId,
@@ -76,6 +75,15 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 { message: 'invoice not found in database' },
                 true,
             );
+
+        if (resInvoice?.data?.statusInvoice == 'paid') {
+            return {
+                err: true,
+                data: {
+                    message: 'invoice is already paid',
+                },
+            };
+        }
 
         if (payload.cardId) {
             const findCardByIdService = new FindCardByIdService();

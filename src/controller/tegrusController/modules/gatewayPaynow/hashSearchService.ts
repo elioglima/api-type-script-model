@@ -17,25 +17,39 @@ export default class HashSearchService {
             if (!resp) {
                 return {
                     err: true,
-                    data: 'Hash dont found.',
+                    data: {
+                        message: 'Hash dont found.',
+                    },
                 };
             }
 
-            if (resp?.err) {
+            if (!resp?.valid) {
                 return {
                     err: true,
-                    data: resp,
+                    data: {
+                        message: 'invalid link.',
+                    },
                 };
             }
 
             const resValidate = await this.validateHashTTL(resp);
 
             if (resValidate.err) {
-                return resValidate;
+                return {
+                    err: true,
+                    data: {
+                        message: 'invalid link.',
+                    },
+                };
             }
 
             if (!resValidate?.data?.isValid) {
-                return resValidate;
+                return {
+                    err: true,
+                    data: {
+                        message: 'invalid link.',
+                    },
+                };
             }
 
             const resInvoicePreUser: any = await this.InvRep.getByInvoiceId(
@@ -43,10 +57,24 @@ export default class HashSearchService {
             );
 
             if (!resInvoicePreUser)
-                return { err: true, data: 'Invoice doesnt found.' };
+                return {
+                    err: true,
+                    data: {
+                        message: 'Invoice doesnt found.',
+                    },
+                };
 
             if (resInvoicePreUser instanceof Error)
                 return { err: true, data: resInvoicePreUser };
+
+            if (resInvoicePreUser?.data?.statusInvoice == 'paid') {
+                return {
+                    err: true,
+                    data: {
+                        message: 'invoice is already paid',
+                    },
+                };
+            }
 
             const res: resHashData = {
                 resident: resInvoicePreUser.resident,
@@ -66,18 +94,11 @@ export default class HashSearchService {
     private async validateHashTTL(hashData: resHashData) {
         const timeNow: Date = moment().toDate();
         if (moment(hashData.lifeTime).isBefore(timeNow)) {
-            const resp = await this.TerminateHashTTL(String(hashData.hash));
-            if (resp.err) {
-                return {
-                    err: true,
-                    data: {
-                        isValid: false,
-                    },
-                };
-            }
+            await this.TerminateHashTTL(String(hashData.hash));
             return {
                 err: false,
                 data: {
+                    message: 'invalid link.',
                     isValid: false,
                 },
             };
@@ -94,15 +115,14 @@ export default class HashSearchService {
     public async TerminateHashTTL(hash: string) {
         try {
             const resp = await this.HashRep.update(hash);
-            if (resp.err) {
-                return { err: true, data: resp.err };
-            }
-
+            if (resp.err) return { err: true, data: resp.err };
             return resp;
-        } catch (error) {
+        } catch (error: any) {
             return {
                 err: true,
-                data: error,
+                data: {
+                    message: error?.message,
+                },
             };
         }
     }
