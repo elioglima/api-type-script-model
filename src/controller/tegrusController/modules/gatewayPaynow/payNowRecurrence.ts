@@ -9,6 +9,7 @@ import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 
 import RecurrenceService from '../../../../service/recurrenceService';
 import { TPayNowReq } from '../../../../domain/Tegrus';
+import InvoiceService from '../../../../service/invoiceService';
 
 const returnTopic = (
     response: {
@@ -49,6 +50,7 @@ export const payNowRecurrence = async (
     resident: TResident,
 ) => {
     try {
+        const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();
         const resRecurrenceService = await recurrenceService.FindOneResidentId(
             resident.id,
@@ -99,13 +101,32 @@ export const payNowRecurrence = async (
             payload.card,
         );
 
-        console.log('resRecurrence', resRecurrence);
-
         if (resRecurrence?.err) {
-            return await returnTopic(resRecurrence?.data, true);
+            return await returnTopic(
+                {
+                    invoiceId: invoice.invoiceId,
+                    ...resRecurrence?.data,
+                },
+                true,
+            );
         }
 
         const newStatusInvoice = EnumInvoiceStatus.paid;
+        const updateInvoiceData: TInvoice = {
+            ...invoice,
+            statusInvoice: newStatusInvoice,
+            paymentDate: resRecurrence.data.paymentDate,
+        };
+
+        const resUpdate = await invoiceService.Update(updateInvoiceData);
+        if (resUpdate.err)
+            return await returnTopic(
+                {
+                    invoiceId: invoice.invoiceId,
+                    ...resUpdate.data,
+                },
+                true,
+            );
 
         return await returnTopic({
             nextRecurrency: resRecurrence?.data?.nextRecurrency,

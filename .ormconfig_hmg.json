@@ -6,7 +6,7 @@
     "password": "6Yj4yB70SwZe6MYe8Uwc",
     "database": "jflrealty",
     "synchronize": true,
-    "logging": true,
+    "logging": false,
     "entities": ["src/dataProvider/entity/*.ts"],
     "migrations": ["src/dataProvider/migration/*.ts"],
     "subscribers": ["src/dataProvider/subscriber/*.ts"],

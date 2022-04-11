@@ -194,33 +194,42 @@ export default class InvoiceService {
     };
 
     public Update = async (payload: TInvoice) => {
-        this.logger(`Update`);
-        const resInvoiceUpdate: any = await this.invoiceRepository.update(
-            payload,
-        );
+        try {
+            this.logger(`Update`);
+            const resInvoiceUpdate: any = await this.invoiceRepository.update(
+                payload,
+            );
 
-        if (resInvoiceUpdate instanceof Error) {
+            if (resInvoiceUpdate instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: 'Error writing invoice in database',
+                    },
+                };
+            }
+
+            const invoice: TInvoice = resInvoiceUpdate;
+            if (resInvoiceUpdate.err)
+                return {
+                    err: true,
+                    data: {
+                        message: 'data updated successfully in database',
+                        row: invoice,
+                    },
+                };
+
+            return {
+                err: false,
+                data: resInvoiceUpdate,
+            };
+        } catch (error: any) {
             return {
                 err: true,
                 data: {
-                    message: 'Error writing invoice',
+                    message: error?.message || 'unexpected error',
                 },
             };
         }
-
-        const invoice: TInvoice = resInvoiceUpdate;
-        if (resInvoiceUpdate.err)
-            return {
-                err: true,
-                data: {
-                    message: 'data updated successfully',
-                    row: invoice,
-                },
-            };
-
-        return {
-            err: false,
-            data: resInvoiceUpdate,
-        };
     };
 }

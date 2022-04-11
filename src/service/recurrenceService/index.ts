@@ -344,7 +344,9 @@ export default class RecurrenceService {
                 return rSuccess(response);
             }
 
-            console.log('gravando a recorrencia');
+            // TO-DO-BETO
+            // caso ja exista update
+
             const resPersist: any = await this.repository.persist(
                 persisRecurrency,
             );
