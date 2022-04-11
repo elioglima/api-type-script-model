@@ -6,12 +6,10 @@ import {
     TInvoice,
     TRecurrenceSchedule,
     TRecurrencePayment,
-    TRecurrencyStatus,
 } from '../../domain/Tegrus';
 import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 import { rError, rSuccess } from '../../utils';
-import { reqRecurrentCreate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
 import AdapterPayment from '../../domain/AdapterPayment';
 import InvoiceService from '../invoiceService';
@@ -19,7 +17,6 @@ import ResidentService from '../residentService';
 import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
 import moment from 'moment';
-import { Request, Response } from 'express';
 import { defaultReturnMessage } from './../../utils/returns';
 
 export default class RecurrenceService {
@@ -436,41 +433,6 @@ export default class RecurrenceService {
             console.log('ERR', error);
             return {
                 err: false,
-                data: {
-                    message: error?.message || 'unexpected error',
-                },
-            };
-        }
-    };
-
-    public GetRecurrenceByResident = async (req: Request, res: Response) => {
-        try {
-            const paymentAdapter = new AdapterPayment();
-            const paymentRecurrenceRepo = new PaymentRecurrenceRepository();
-            const { residentId } = req.query;
-
-            const resRecu: any = await paymentRecurrenceRepo.getByResidentId(
-                Number(residentId),
-            );
-
-            if (resRecu instanceof Error) return { err: true, data: resRecu };
-            if (!resRecu)
-                return {
-                    err: true,
-                    data: {
-                        message: 'Recurrence not found.',
-                    },
-                };
-
-            await paymentAdapter.init(Number(1));
-            const recurrence = await paymentAdapter.recurrenceFind({
-                recurrenceId: resRecu.data.row.recurrentPaymentId,
-            });
-
-            return { err: false, data: recurrence };
-        } catch (error: any) {
-            return {
-                err: true,
                 data: {
                     message: error?.message || 'unexpected error',
                 },
