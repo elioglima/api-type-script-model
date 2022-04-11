@@ -7,12 +7,12 @@ export default async (data = {}, options) => {
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '');
 
-        if (options && options.headers)
-            options.headers['Content-Length'] = Buffer.byteLength(dataPost);
-
         let response;
 
         if (options.method == 'PUT') {
+            if (options && options.headers)
+                options.headers['Content-Length'] = Buffer.byteLength(dataPost);
+
             response = await axios.put(
                 `${options.hostname}/${options.path}`,
                 dataPost,
@@ -28,6 +28,9 @@ export default async (data = {}, options) => {
                 headers: options.headers,
             });
         } else if (options.method == 'POST') {
+            if (options && options.headers)
+                options.headers['Content-Length'] = Buffer.byteLength(dataPost);
+
             response = await axios.post(
                 `${options.hostname}/${options.path}`,
                 dataPost,

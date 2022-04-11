@@ -111,19 +111,19 @@ export class PaymentRecurrenceEntity {
     linkRecurrentPayment: string | undefined;
 
     @Column({
-        name: 'returnCode',
+        name: 'reasonCode',
         type: 'int',
         nullable: true,
     })
-    returnCode: number | undefined;
+    reasonCode: number | undefined;
 
     @Column({
-        name: 'returnMessage',
+        name: 'reasonMessage',
         type: 'varchar',
         length: 50,
         nullable: true,
     })
-    returnMessage: string | undefined;
+    reasonMessage: string | undefined;
 
     @Column({ name: 'authorizeNow', type: 'boolean', default: false })
     authorizeNow: boolean | undefined;

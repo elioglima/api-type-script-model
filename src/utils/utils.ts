@@ -11,15 +11,16 @@ export class Utils {
         this.cieloConstructor = params;
     }
 
-    public async get<T>(params: { path: string }) {
+    public async get<T>(params: { path: string; notContentType?: boolean }) {
         const hostname: String | any = this.cieloConstructor.hostnameQuery;
-        const { path } = params;
+        const { path, notContentType } = params;
         const method = HttpRequestMethodEnum.GET;
 
-        const options: IHttpRequestOptions = await this.getHttpRequestOptions({
+        const options: IHttpRequestOptions = this.getHttpRequestOptions({
             path,
             hostname,
             method,
+            notContentType: notContentType || false,
         });
 
         const response = await this.request<T>(options, {});
@@ -92,6 +93,7 @@ export class Utils {
         hostname: string;
         path: string;
         method: HttpRequestMethodEnum;
+        notContentType?: boolean;
     }): IHttpRequestOptions {
         return {
             method: params.method,
@@ -103,8 +105,10 @@ export class Utils {
             headers: {
                 MerchantId: this.cieloConstructor.merchantId,
                 MerchantKey: this.cieloConstructor.merchantKey,
-                RequestId: params.method || '',
-                'Content-Type': 'application/json',
+                // RequestId: params.method || '',
+                ...(params?.notContentType == true
+                    ? {}
+                    : { 'Content-Type': 'application/json' }),
             },
         } as IHttpRequestOptions;
     }

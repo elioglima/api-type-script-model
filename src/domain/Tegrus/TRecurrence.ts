@@ -46,8 +46,8 @@ export interface TRecurrencePayment {
     payCardBrand?: string;
 
     recurrentPaymentId?: string;
-    returnCode?: number;
-    returnMessage?: string;
+    reasonCode?: number;
+    reasonMessage?: string;
     nextRecurrency?: Date;
     interval?: number;
     linkRecurrentPayment?: string;

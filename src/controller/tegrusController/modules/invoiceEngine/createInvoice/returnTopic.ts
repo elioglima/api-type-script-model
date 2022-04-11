@@ -15,8 +15,6 @@ const returnTopic = async (
                 ...(request ? { ...request } : {}),
                 returnOpah: {
                     err,
-                    type: request.type,
-                    status: err ? 'failed' : 'success',
                     ...(response ? { ...response } : {}),
                     ...(err
                         ? { messageError: response?.message || undefined }

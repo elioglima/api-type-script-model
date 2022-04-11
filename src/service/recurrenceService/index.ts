@@ -54,23 +54,31 @@ export default class RecurrenceService {
 
             const resident: TResident = resResident.data;
 
+            // consultar recorrencia pelo id
+
             const resAdapter = await this.paymentAdapter.init(
                 Number(resident.enterpriseId),
             );
             if (resAdapter?.err) return rError(resAdapter.data);
 
-            const recurrenceId: number =
-                checkExists.data.row.recurrentPaymentId;
+            const recurrentPaymentId: string =
+                checkExists?.data?.row?.recurrentPaymentId;
 
             const resRecurrence: any = await this.paymentAdapter.recurrenceFind(
                 {
-                    recurrenceId,
+                    recurrentPaymentId,
                 },
             );
 
-            if (resRecurrence.err) return rSuccess(resRecurrence.data, true);
+            if (resRecurrence instanceof Error) return rError(resRecurrence);
 
-            return rSuccess(resRecurrence.data);
+            if (!resRecurrence?.recurrentPayment)
+                return rError({
+                    ...resRecurrence,
+                    message: 'Failed to query a recurrence in Cielo',
+                });
+
+            return rSuccess(resRecurrence?.recurrentPayment);
         } catch (error: any) {
             return rError({
                 message: error?.message,
@@ -240,11 +248,11 @@ export default class RecurrenceService {
                 payCardSaveCard,
                 payCardBrand,
                 recurrentPaymentId,
-                returnCode:
-                    resRecurrentCreate?.payment?.recurrentPayment?.returnCode,
-                returnMessage:
+                reasonCode:
+                    resRecurrentCreate?.payment?.recurrentPayment?.reasonCode,
+                reasonMessage:
                     resRecurrentCreate?.payment?.recurrentPayment
-                        ?.returnMessage,
+                        ?.reasonMessage,
                 nextRecurrency,
                 interval,
                 linkRecurrentPayment,
@@ -257,15 +265,21 @@ export default class RecurrenceService {
                 defaultReturnMessage(returnCode);
 
             const recurreceError =
-                !persisRecurrency?.returnCode ||
+                persisRecurrency?.reasonCode == undefined ||
                 ![0, 4].includes(
                     Number(
                         resRecurrentCreate?.payment?.recurrentPayment
-                            ?.returnCode,
+                            ?.reasonCode,
                     ),
                 );
 
-            console.log(123, { recurreceError, returnCode });
+            console.log({
+                recurreceError,
+                'persisRecurrency?.returnCode': persisRecurrency?.reasonCode,
+                'resRecurrentCreate?.payment?.recurrentPayment?.returnCode':
+                    resRecurrentCreate?.payment?.recurrentPayment?.returnCode
+                        ?.returnCode,
+            });
 
             if (![0, 4].includes(Number(returnCode))) {
                 const response: any = {
@@ -324,7 +338,7 @@ export default class RecurrenceService {
                     recurrence: {
                         err: recurreceError,
                         message:
-                            'Error return in Cielo when scheduling the recurrence',
+                            'successful refundable payment, (return error in retribution)',
                         ...resRecurrentCreate?.payment?.recurrentPayment,
                     },
                     ...paymentSccess,

@@ -52,19 +52,9 @@ const invoicing = async (payload: TInvoice) => {
         if (resRecurrence.err)
             return returnTopic(payload, resRecurrence.data, true);
 
-        if (resRecurrence.abortProcess)
-            return returnTopic(
-                payload,
-                {
-                    message: 'Failed to query a recurrence in Cielo',
-                    reference: resRecurrence?.data?.message,
-                },
-                true,
-            );
-
         return returnTopic(
             payload,
-            { message: 'recurrence is already active' },
+            { ...resRecurrence.data, message: 'recurrence is already active' },
             false,
         );
     } catch (error: any) {
