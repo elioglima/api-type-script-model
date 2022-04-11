@@ -2,7 +2,7 @@ import { TExternalPayment } from '../../../../domain/Tegrus/TExternalPayment';
 import InvoiceService from '../../../../service/invoiceService';
 import { TInvoice } from '../../../../domain/Tegrus/TInvoice';
 import RecurrenceService from '../../../../service/recurrenceService';
-import { invoiceToTResident } from 'src/utils';
+import { invoiceToTResident } from '../../../../utils';
 import { TResident } from '../../../../domain/Tegrus/';
 
 const externalPayment = async (req: any) => {
