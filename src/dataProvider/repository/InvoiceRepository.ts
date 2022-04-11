@@ -58,17 +58,15 @@ export class InvoiceRepository {
         const db = getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
-            .leftJoinAndSelect('invoice.residentIdenty', 'resident')
+            .leftJoinAndSelect('invoice.residentIdenty', 'resident');
 
         if (filter.startDate && filter.endDate) {
-
             db.andWhere('invoice.date >= :startDate', {
                 startDate: filter.startDate,
             });
             db.andWhere('invoice.date <= :endDate', {
                 endDate: filter.endDate,
             });
-
         }
 
         db.andWhere('invoice.active = :active', {

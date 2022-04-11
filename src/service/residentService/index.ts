@@ -28,21 +28,29 @@ export default class ResidentService {
 
     public FindOne = async (id: number) => {
         this.logger(`Find One`);
+        try {
+            const resResident: TResident = await this.repository.getById(id);
 
-        const resResident: TResident = await this.repository.getById(id);
+            if (resResident instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: 'No resident found',
+                    },
+                };
+            }
 
-        if (resResident instanceof Error) {
+            return {
+                err: false,
+                data: resResident,
+            };
+        } catch (error: any) {
             return {
                 err: true,
                 data: {
-                    message: 'No resident found',
+                    message: error?.message || 'unexpected error',
                 },
             };
         }
-
-        return {
-            err: false,
-            data: resResident,
-        };
     };
 }

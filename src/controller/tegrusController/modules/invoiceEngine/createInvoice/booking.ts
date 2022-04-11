@@ -9,7 +9,7 @@ const booking = async (payload: TInvoice) => {
         const invoiceService = new InvoiceService();
 
         const resFindOne = await invoiceService.FindOne(payload.invoiceId);
-        if (resFindOne.data)
+        if (!resFindOne?.err && resFindOne?.data)
             return returnTopic(
                 payload,
                 {
@@ -18,6 +18,7 @@ const booking = async (payload: TInvoice) => {
                 true,
             );
 
+        
         const linkInvoice: any = await firstPaymentCreateService(payload);
 
         if (linkInvoice.err)
@@ -31,8 +32,7 @@ const booking = async (payload: TInvoice) => {
             false,
             linkInvoice,
         );
-    } catch (error: any) {
-        console.log(999, error);
+    } catch (error: any) {        
         return returnTopic(
             payload,
             { message: error?.message || 'Unexpect Error' },

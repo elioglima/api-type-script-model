@@ -20,6 +20,7 @@ import {
     reqRecurrentDeactivate,
     resRecurrentCreate,
     resRecurrentDeactivate,
+    reqRecurrentPaymentConsult,
 } from './RecurrentPayment';
 import { rError, rSuccess } from '../utils';
 
@@ -36,11 +37,8 @@ export class AdapterPayment implements IAdapter {
                 await this.FindPaymentConfigService.execute(enterpriseId);
 
             if (paymentConfig instanceof Error) {
-                console.log({ paymentConfig });
                 return rError({ message: paymentConfig.message });
             }
-
-            console.log({ paymentConfig });
 
             switch (paymentConfig.provider) {
                 case 'CIELO':
@@ -123,26 +121,36 @@ export class AdapterPayment implements IAdapter {
         payload: reqRecurrentCreate,
     ): Promise<resRecurrentCreate | TErrorGeneric> {
         if (!this.paymentProvider) throw new Error('Error provider not found.');
-        return this.paymentProvider.recurrentCreate(payload);
+        try {
+            return this.paymentProvider.recurrentCreate(payload);
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error Method recurrentDeactivate.');
+        }
     }
 
     public recurrentDeactivate(
         payload: reqRecurrentDeactivate,
     ): Promise<resRecurrentDeactivate | TErrorGeneric> {
         if (!this.paymentProvider) throw new Error('Error provider not found.');
-        return this.paymentProvider.recurrentDeactivate(payload);
+        try {
+            return this.paymentProvider.recurrentDeactivate(payload);
+        } catch (error) {
+            console.log('recurrentDeactivate', error);
+            throw new Error('Error Method recurrentDeactivate.');
+        }
     }
 
-    // public repayPayment(payload: reqRepayPayment): resRepayPayment {
-    //     if (!this.paymentProvider)
-    //         throw new Error('Error provider not found.');
-
-    //     try {
-    //         return this.paymentProvider.repayPayment(payload);
-    //     } catch (error) {
-    //         throw new Error('Error Method repayPayment.');
-    //     }
-    // }
+    public async recurrenceFind(payload: reqRecurrentPaymentConsult) {
+        if (!this.paymentProvider) throw new Error('Error provider not found.');
+        try {
+            const response = await this.paymentProvider.recurrentFind(payload);
+            return await response;
+        } catch (error) {
+            console.log('recurrenceFind', error);
+            throw new Error('Error Method recurrenceFind.');
+        }
+    }
 }
 
 export default AdapterPayment;

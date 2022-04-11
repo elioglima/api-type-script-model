@@ -23,6 +23,9 @@ export class PaymentRecurrenceEntity {
     @Column({ name: 'active', type: 'boolean', default: 1 })
     active: boolean | undefined;
 
+    @Column({ name: 'isDeactivateError', type: 'boolean', default: 0 })
+    isDeactivateError: boolean | undefined;
+
     @Column({
         name: 'createdAt',
         type: 'timestamp',
@@ -85,21 +88,6 @@ export class PaymentRecurrenceEntity {
     recurrentPaymentId: string | undefined;
 
     @Column({
-        name: 'reasonCode',
-        type: 'int',
-        nullable: true,
-    })
-    reasonCode: number | undefined;
-
-    @Column({
-        name: 'reasonMessage',
-        type: 'varchar',
-        length: 50,
-        nullable: true,
-    })
-    reasonMessage: string | undefined;
-
-    @Column({
         name: 'nextRecurrency',
         type: 'varchar',
         length: 50,
@@ -121,6 +109,21 @@ export class PaymentRecurrenceEntity {
         nullable: true,
     })
     linkRecurrentPayment: string | undefined;
+
+    @Column({
+        name: 'reasonCode',
+        type: 'int',
+        nullable: true,
+    })
+    reasonCode: number | undefined;
+
+    @Column({
+        name: 'reasonMessage',
+        type: 'varchar',
+        length: 50,
+        nullable: true,
+    })
+    reasonMessage: string | undefined;
 
     @Column({ name: 'authorizeNow', type: 'boolean', default: false })
     authorizeNow: boolean | undefined;

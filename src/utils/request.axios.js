@@ -1,51 +1,51 @@
 import axios from 'axios';
 import camelcaseKeys from 'camelcase-keys';
 
-export default async (data, options) => {
+export default async (data = {}, options) => {
     try {
         const dataPost = JSON.stringify(data)
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '');
 
-        if (options && options.headers)
-            options.headers['Content-Length'] = Buffer.byteLength(dataPost);
-
         let response;
 
         if (options.method == 'PUT') {
+            if (options && options.headers)
+                options.headers['Content-Length'] = Buffer.byteLength(dataPost);
+
             response = await axios.put(
                 `${options.hostname}/${options.path}`,
                 dataPost,
                 {
+                    timeout: 5000,
                     headers: options.headers,
                 },
             );
-        }
-        else if (options.method == 'GET') {
-            response = await axios.get(
-                `${options.hostname}/${options.path}`,
-                dataPost,
-                {
-                    headers: options.headers,
-                },
-            );
-        }
-        else if (options.method == 'POST') {
+        } else if (options.method == 'GET') {
+            const url = `${options.hostname}/${options.path}`;
+            response = await axios.get(url, {
+                timeout: 5000,
+                headers: options.headers,
+            });
+        } else if (options.method == 'POST') {
+            if (options && options.headers)
+                options.headers['Content-Length'] = Buffer.byteLength(dataPost);
+
             response = await axios.post(
                 `${options.hostname}/${options.path}`,
                 dataPost,
                 {
+                    timeout: 5000,
                     headers: options.headers,
                 },
             );
-        }
-        else {
+        } else {
             return {
                 err: true,
                 data: {
-                    message: 'Method undefined'
+                    message: 'Method undefined',
                 },
-            }
+            };
         }
 
         if (
@@ -56,7 +56,7 @@ export default async (data, options) => {
                 err: true,
                 data: {
                     message: response.data,
-                    status: response.status
+                    status: response.status,
                 },
             });
 
@@ -71,7 +71,7 @@ export default async (data, options) => {
             data: {
                 message:
                     error?.response?.statusText ||
-                        typeof error?.response?.data == 'string'
+                    typeof error?.response?.data == 'string'
                         ? error?.response?.data
                         : error?.message || 'unexpected error',
             },
