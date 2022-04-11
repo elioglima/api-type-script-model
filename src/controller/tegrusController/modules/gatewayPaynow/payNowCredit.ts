@@ -103,8 +103,8 @@ export const payNowCredit = async (
             );
 
         const paymentDate: Date =
-            resPayAdapter?.payment?.receivedDate || new Date(); // so de exemplo
-        const newStatusInvoice = EnumInvoiceStatus.paid; // so de exemplo
+            resPayAdapter?.payment?.receivedDate || new Date();
+        const newStatusInvoice = EnumInvoiceStatus.paid;
 
         const returnCode = resPayAdapter.data.payment.returnCode;
 
