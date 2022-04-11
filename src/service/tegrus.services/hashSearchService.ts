@@ -12,45 +12,76 @@ export default class HashSearchService {
     public async execute(hash: string) {
         try {
             this.logger('Starting method HashSearchService');
-            const resp: any = await this.HashRep.getByHash(hash);                        
+            const resp: any = await this.HashRep.getByHash(hash);
 
-            if(!resp) {
+            if (!resp) {
                 return {
                     err: true,
-                    data: 'Hash dont found.'
+                    data: {
+                        message: 'Hash dont found.',
+                    },
                 };
             }
 
-            if (resp?.err) {
+            if (!resp?.valid) {
                 return {
                     err: true,
-                    data: resp,
+                    data: {
+                        message: 'invalid link.',
+                    },
                 };
             }
 
             const resValidate = await this.validateHashTTL(resp);
-
             if (resValidate.err) {
-                return resValidate;
+                return {
+                    err: true,
+                    data: {
+                        message: 'invalid link.',
+                    },
+                };
             }
-            
+
             if (!resValidate?.data?.isValid) {
-                return resValidate;
+                return {
+                    err: true,
+                    data: {
+                        message: 'invalid link.',
+                    },
+                };
             }
 
             const resInvoicePreUser: any = await this.InvRep.getByInvoiceId(
                 resp.invoiceId,
             );
 
-            if(!resInvoicePreUser) return {err: true, data: "Invoice doesnt found."}
+            if (!resInvoicePreUser)
+                return {
+                    err: true,
+                    data: {
+                        message: 'Invoice doesnt found.',
+                    },
+                };
 
-            if(resInvoicePreUser instanceof Error) return {err: true, data: resInvoicePreUser}
-                 
+            if (resInvoicePreUser instanceof Error)
+                return { err: true, data: resInvoicePreUser };
+
             const res: resHashData = {
                 resident: resInvoicePreUser.resident,
                 invoice: delete resInvoicePreUser.resident && resInvoicePreUser,
+            };
+
+            if (res.invoice.statusInvoice == 'paid') {
+                const teste = await this.terminateHashTTL(hash);
+                console.log(teste, hash);
+                return {
+                    err: true,
+                    data: {
+                        message: 'invoice is already paid',
+                    },
+                };
             }
-            
+
             return res;
         } catch (error) {
             console.log(error);
@@ -64,18 +95,11 @@ export default class HashSearchService {
     private async validateHashTTL(hashData: resHashData) {
         const timeNow: Date = moment().toDate();
         if (moment(hashData.lifeTime).isBefore(timeNow)) {
-            const resp = await this.terminateHashTTL(String(hashData.hash));
-            if (resp.err) {
-                return {
-                    err: true,
-                    data: {
-                        isValid: false,
-                    },
-                };
-            }
+            await this.terminateHashTTL(String(hashData.hash));
             return {
                 err: false,
                 data: {
+                    message: 'invalid link.',
                     isValid: false,
                 },
             };
@@ -97,10 +121,12 @@ export default class HashSearchService {
             }
 
             return resp;
-        } catch (error) {
+        } catch (error: any) {
             return {
                 err: true,
-                data: error,
+                data: {
+                    message: error?.message,
+                },
             };
         }
     }
