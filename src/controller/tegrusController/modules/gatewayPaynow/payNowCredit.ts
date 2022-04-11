@@ -44,7 +44,7 @@ export const payNowCredit = async (
     invoice: TInvoice,
     resident: TResident,
 ) => {
-    const resMessage: any = defaultReturnMessage(String(invoice?.returnCode))
+    const resMessage: any = defaultReturnMessage(String(invoice?.returnCode));
     try {
         if (['00', '4'].includes(String(invoice?.returnCode))) {
             // verificando se esta paga a fatura
@@ -138,34 +138,41 @@ export const payNowCredit = async (
                 true,
             );
 
-        return returnTopic({
-            invoiceId: invoice.invoiceId,
-            paymentDate,
-            statusInvoice: newStatusInvoice,
-            paymentMethod: invoice.paymentMethod,
-            type: invoice.type,
-            message: 'successful payment',
-            returnMessage: resPayAdapter?.data?.payment?.returnMessage,
-            paymentId: resPayAdapter.data.payment.paymentId,
-            tid: resPayAdapter.data.payment.tid,
-            returnCode: resPayAdapter.data.payment.returnCode,
-            referenceCode,
-            receipt: {
-                referenceCode: 1,
+        return returnTopic(
+            {
                 invoiceId: invoice.invoiceId,
-                tid: resPayAdapter.data.payment.tid,
-                statusInvoice: invoice.statusInvoice,
-                residentName: resident.name,
-                enterpriseId: invoice.enterpriseId,
-                apartmentId: invoice.apartmentId,
-                paymentId: invoice.paymentId,
+                paymentDate,
+                statusInvoice: newStatusInvoice,
                 paymentMethod: invoice.paymentMethod,
-                dueDate: invoice.dueDate,
-                paymentDate: invoice.paymentDate,
-                message: message,
-                value: invoice.value,
+                type: invoice.type,
+                message:
+                    referenceCode == 1
+                        ? 'successful payment'
+                        : 'payment payment problems',
+                returnMessage: resPayAdapter?.data?.payment?.returnMessage,
+                paymentId: resPayAdapter.data.payment.paymentId,
+                tid: resPayAdapter.data.payment.tid,
+                returnCode: resPayAdapter.data.payment.returnCode,
+                referenceCode,
+                receipt: {
+                    err: referenceCode == 7,
+                    referenceCode,
+                    invoiceId: invoice.invoiceId,
+                    tid: resPayAdapter.data.payment.tid,
+                    statusInvoice: invoice.statusInvoice,
+                    residentName: resident.name,
+                    enterpriseId: invoice.enterpriseId,
+                    apartmentId: invoice.apartmentId,
+                    paymentId: invoice.paymentId,
+                    paymentMethod: invoice.paymentMethod,
+                    dueDate: invoice.dueDate,
+                    paymentDate: invoice.paymentDate,
+                    message: message,
+                    value: invoice.value,
+                },
             },
-        });
+            referenceCode == 7,
+        );
     } catch (error: any) {
         return returnTopic(
             {
@@ -174,7 +181,7 @@ export const payNowCredit = async (
                 statusInvoice: invoice.statusInvoice,
                 paymentMethod: invoice.paymentMethod,
                 type: invoice.type,
-                message: "Problemas com o Cartão de Crédito",
+                message: 'Problemas com o Cartão de Crédito',
                 referenceCode: 7,
             },
             true,
