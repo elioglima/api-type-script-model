@@ -38,23 +38,22 @@ export class RecurentMethods {
         if (!this.util) return this.error('this.util not started');
 
         // criando uma recorrencia agendada
-        return this.util.post<
+        return this.util.postToSales<
             resRecurrentCreate | TErrorGeneric,
             reqRecurrentCreate
-        >({ path: '/1/sales/' }, payload);
+        >(payload);
     }
 
-    public Find(
-        payload: reqRecurrentPaymentConsult,
-    ): Promise<resRecurrentPaymentConsult | TErrorGeneric> {
+    public async Find(payload: reqRecurrentPaymentConsult) {
         if (!this.util) return this.error('this.util not started');
 
-        if (!payload.recurrenceId)
+        if (!payload.recurrentPaymentId)
             return this.error('recurrenceId was not informed.');
 
         // consultando uma recorrencia
-        return this.util.get<resRecurrentPaymentConsult | TErrorGeneric>({
-            path: `/1/sales/${payload.recurrenceId}`,
+        return await this.util.get<resRecurrentPaymentConsult | TErrorGeneric>({
+            path: `/1/RecurrentPayment/${payload.recurrentPaymentId}`,
+            notContentType: true,
         });
     }
 
@@ -65,10 +64,14 @@ export class RecurentMethods {
 
         if (!payload?.recurrenceId)
             return this.error('recurrenceId was not informed.');
-
-        return this.util.put({
-            path: `/1/RecurrentPayment/${payload?.recurrenceId}/Deactivate`,
-        });
+        try {
+            return this.util.put({
+                path: `/1/RecurrentPayment/${payload?.recurrenceId}/Deactivate`,
+            });
+        } catch (error) {
+            console.log('Cielo Adapter recurrentDeactivate', error);
+            throw new Error('Error Method recurrentDeactivate.');
+        }
     }
 
     public Reactivate(

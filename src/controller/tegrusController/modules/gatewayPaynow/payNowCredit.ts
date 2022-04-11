@@ -1,3 +1,4 @@
+import { defaultReturnMessage } from './../../../../utils/returns';
 import InvoiceService from '../../../../service/invoiceService';
 import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { TInvoice, TResident } from '../../../../domain/Tegrus';
@@ -5,25 +6,6 @@ import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoiceP
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import { TPayNowReq } from '../../../../domain/Tegrus';
 import { payAdatpter } from './payAdatpter';
-
-const returnMessage = (value: number) => {
-    switch (value) {
-        case 1:
-            return 'Autorizada';
-        case 2:
-            return 'Não Autorizada';
-        case 3:
-            return 'Cartão Expirado';
-        case 4:
-            return 'Cartão Bloqueado';
-        case 5:
-            return 'Time Out';
-        case 6:
-            return 'Cartão Cancelado';
-        default:
-            return 'Problemas com o Cartão de Crédito';
-    }
-};
 
 const returnTopic = (
     response: {
@@ -62,6 +44,7 @@ export const payNowCredit = async (
     invoice: TInvoice,
     resident: TResident,
 ) => {
+    const resMessage: any = defaultReturnMessage(String(invoice?.returnCode))
     try {
         if (['00', '4'].includes(String(invoice?.returnCode))) {
             // verificando se esta paga a fatura
@@ -75,7 +58,7 @@ export const payNowCredit = async (
                 returnMessage: invoice.returnMessage,
                 paymentId: invoice.paymentId,
                 tid: invoice.tid,
-                returnCode: invoice.returnCode,
+                returnCode: resMessage.code,
                 receipt: {
                     referenceCode: 1,
                     tid: invoice.tid,
@@ -88,7 +71,7 @@ export const payNowCredit = async (
                     paymentMethod: invoice.paymentMethod,
                     dueDate: invoice.dueDate,
                     paymentDate: invoice.paymentDate,
-                    message: returnMessage(1),
+                    message: resMessage.message,
                     value: invoice.value,
                 },
             });
@@ -113,7 +96,7 @@ export const payNowCredit = async (
                     statusInvoice: invoice.statusInvoice,
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
-                    message: returnMessage(7),
+                    message: resMessage.message,
                     referenceCode: 7,
                 },
                 true,
@@ -125,27 +108,18 @@ export const payNowCredit = async (
 
         const returnCode = resPayAdapter.data.payment.returnCode;
 
-        /* 
-            TO-DO-BETO
-            1 = Autorizada
-            2 = Não Autorizada
-            3 = Cartão Expirado
-            4 = Cartão Bloqueado
-            5 = Time Out
-            6 = Cartão Cancelado
-            7 = Problemas com o Cartão de Crédito
+        const { code, message }: any = defaultReturnMessage(returnCode);
 
-        */
         let referenceCode = ['00', 0, 4].includes(returnCode) ? 1 : 7;
 
         const updateInvoice: TInvoice = {
             ...invoice,
             paymentDate,
             statusInvoice: newStatusInvoice,
-            returnMessage: resPayAdapter.data.payment.returnMessage,
+            returnMessage: message,
             paymentId: resPayAdapter.data.payment.paymentId,
             tid: resPayAdapter.data.payment.tid,
-            returnCode: resPayAdapter.data.payment.returnCode,
+            returnCode: code,
             referenceCode,
         };
 
@@ -159,7 +133,7 @@ export const payNowCredit = async (
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
                     referenceCode,
-                    message: returnMessage(referenceCode),
+                    message: message,
                 },
                 true,
             );
@@ -188,7 +162,7 @@ export const payNowCredit = async (
                 paymentMethod: invoice.paymentMethod,
                 dueDate: invoice.dueDate,
                 paymentDate: invoice.paymentDate,
-                message: returnMessage(referenceCode),
+                message: message,
                 value: invoice.value,
             },
         });
@@ -200,7 +174,7 @@ export const payNowCredit = async (
                 statusInvoice: invoice.statusInvoice,
                 paymentMethod: invoice.paymentMethod,
                 type: invoice.type,
-                message: returnMessage(7),
+                message: "Problemas com o Cartão de Crédito",
                 referenceCode: 7,
             },
             true,

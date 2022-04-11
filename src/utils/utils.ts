@@ -11,17 +11,20 @@ export class Utils {
         this.cieloConstructor = params;
     }
 
-    public get<T>(params: { path: string }): Promise<T | TErrorGeneric> {
+    public async get<T>(params: { path: string; notContentType?: boolean }) {
         const hostname: String | any = this.cieloConstructor.hostnameQuery;
-        const { path } = params;
+        const { path, notContentType } = params;
         const method = HttpRequestMethodEnum.GET;
 
         const options: IHttpRequestOptions = this.getHttpRequestOptions({
             path,
             hostname,
             method,
+            notContentType: notContentType || false,
         });
-        return this.request<T>(options, {});
+
+        const response = await this.request<T>(options, {});
+        return response;
     }
 
     public postToSales<T, U>(data: U): Promise<T | TErrorGeneric> {
@@ -33,7 +36,10 @@ export class Utils {
                     data,
                 )
                     .then(capture => {
-                        console.log('postToSales :: ok');
+                        console.log('postToSales :: ok', {
+                            onSuccess,
+                            capture,
+                        });
                         return { ...onSuccess, capture };
                     })
                     .catch(error => {
@@ -78,14 +84,16 @@ export class Utils {
             path,
             hostname: this.cieloConstructor.hostnameTransacao,
         });
+        const resp: any = await this.request<T>(options, data);
 
-        return this.request<T>(options, data);
+        return resp;
     }
 
     public getHttpRequestOptions(params: {
         hostname: string;
         path: string;
         method: HttpRequestMethodEnum;
+        notContentType?: boolean;
     }): IHttpRequestOptions {
         return {
             method: params.method,
@@ -93,11 +101,14 @@ export class Utils {
             hostname: params.hostname,
             port: 443,
             encoding: 'utf-8',
+            timeout: 3000,
             headers: {
                 MerchantId: this.cieloConstructor.merchantId,
                 MerchantKey: this.cieloConstructor.merchantKey,
-                RequestId: params.method || '',
-                'Content-Type': 'application/json',
+                // RequestId: params.method || '',
+                ...(params?.notContentType == true
+                    ? {}
+                    : { 'Content-Type': 'application/json' }),
             },
         } as IHttpRequestOptions;
     }

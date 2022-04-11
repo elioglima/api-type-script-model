@@ -1,6 +1,9 @@
 import { TExternalPayment } from '../../../../domain/Tegrus/TExternalPayment';
 import InvoiceService from '../../../../service/invoiceService';
 import { TInvoice } from '../../../../domain/Tegrus/TInvoice';
+import RecurrenceService from '../../../../service/recurrenceService';
+import { invoiceToTResident } from 'src/utils';
+import { TResident } from '../../../../domain/Tegrus/';
 
 const externalPayment = async (req: any) => {
     const payload: TExternalPayment = req?.externalPayment;
@@ -30,8 +33,7 @@ const externalPayment = async (req: any) => {
         };
     };
 
-    try {
-        console.log('externalPayment', payload);
+    try {        
         const invoiceService = new InvoiceService();
         const resFindOne: any = await invoiceService.FindOne(payload.invoiceId);
         if (resFindOne.err)
@@ -48,10 +50,12 @@ const externalPayment = async (req: any) => {
             paymentMethod: payload?.paymentMethod,
             statusInvoice: payload?.statusInvoice,
         };
+        
 
-        if (invoice.isRecurrence) {
-            // TO-DO-NOW
-            // desabilitarr recorrencia
+        if (invoice.isRecurrence) { 
+            const converRes:TResident | any = invoiceToTResident(invoice?.residentIdenty)
+            const recurrenceService = new RecurrenceService();            
+            await recurrenceService.DisableRecurrence(converRes)                        
         }
 
         const resUpdateIvoice = await invoiceService.Update(updataData);

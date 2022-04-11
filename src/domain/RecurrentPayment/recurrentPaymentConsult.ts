@@ -26,7 +26,8 @@ export interface RecurrentConsultRecurrentPaymentConsultResponseModel {
 }
 
 export type reqRecurrentPaymentConsult = {
-    recurrenceId: number;
+    recurrenceId?: number;
+    recurrentPaymentId?: string;
 };
 
 export type resRecurrentPaymentConsult = {

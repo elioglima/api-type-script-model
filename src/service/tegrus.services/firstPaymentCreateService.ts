@@ -15,39 +15,78 @@ import InvoiceService from '../../service/invoiceService';
 export default async (
     payload: TInvoice,
 ): Promise<TErrorGeneric | resFirstPaymentCreate> => {
-    const residentService = new ResidentService();
-    const invoiceService = new InvoiceService();
-    const HashRep = new HashDataRepository();
+    try {
+        const residentService = new ResidentService();
+        const invoiceService = new InvoiceService();
+        const HashRep = new HashDataRepository();
 
-    const { resident, ...invoice } = payload;
+        const { resident, ...invoice } = payload;
 
-    const resultPR: any = await residentService.add(resident);
+        const resultPR: any = await residentService.add(resident);
 
-    if (resultPR?.err) {
-        return resultPR;
-    }
+        if (resultPR?.err) {
+            return resultPR;
+        }
 
-    const resultIN: any = await invoiceService.FindOneInclude({
-        ...payload,
-        residentIdenty: payload.resident.id,
-    });
-    if (resultIN?.err) {
-        return resultPR;
-    }
+        const resultIN: any = await invoiceService.FindOneInclude({
+            ...payload,
+            residentIdenty: payload.resident.id,
+            resident,
+        });
 
-    const dataHash: reqCreateHash = {
-        invoiceId: invoice.invoiceId,
-    };
+        if (resultIN?.err) {
+            return resultPR;
+        }
 
-    const resultHash: resCreateHash = await createHash(dataHash);
-    if (resultHash?.err) {
-        return {
-            err: true,
-            data: resultHash,
+        const dataHash: reqCreateHash = {
+            invoiceId: invoice.invoiceId,
         };
-    }
 
-    if (!resultHash?.hash) {
+        const resultHash: resCreateHash = await createHash(dataHash);
+        if (resultHash?.err) {
+            return {
+                err: true,
+                data: resultHash,
+            };
+        }
+
+        if (!resultHash?.hash) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error hash not created',
+                },
+            };
+        }
+
+        const hashD: hashData = {
+            hash: String(resultHash.hash),
+            lifeTime: moment().add('days', 3).toDate(),
+            invoiceId: Number(invoice.invoiceId),
+        };
+
+        const resHashRep = await HashRep.persist(hashD);
+        if (resHashRep?.err) {
+            return resHashRep;
+        }
+
+        if (!resultHash?.hash || !resultHash?.hash.toString().length) {
+            return {
+                err: true,
+                data: {
+                    message: 'Error hash not created',
+                },
+            };
+        }
+
+        const link_invoice: resFirstPaymentCreate = {
+            invoiceId: invoice.invoiceId,
+            hashCredit: resultHash?.hash,
+        };
+
+        return PromiseExec(link_invoice);
+    } catch (error) {
+        console.log(888, error);
         return {
             err: true,
             data: {
@@ -55,31 +94,4 @@ export default async (
             },
         };
     }
-
-    const hashD: hashData = {
-        hash: String(resultHash.hash),
-        lifeTime: moment().add('days', 3).toDate(),
-        invoiceId: Number(invoice.invoiceId),
-    };
-
-    const resHashRep = await HashRep.persist(hashD);
-    if (resHashRep?.err) {
-        return resHashRep;
-    }
-
-    if (!resultHash?.hash || !resultHash?.hash.toString().length) {
-        return {
-            err: true,
-            data: {
-                message: 'Error hash not created',
-            },
-        };
-    }
-
-    const link_invoice: resFirstPaymentCreate = {
-        invoiceId: invoice.invoiceId,
-        hashCredit: resultHash?.hash,
-    };
-
-    return PromiseExec(link_invoice);
 };

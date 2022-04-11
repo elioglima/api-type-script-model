@@ -37,6 +37,7 @@ export type TInvoice = {
     atUpdate?: boolean;
     referenceCode?: number;
     resident: TResident;
+    residentId?: number;
 };
 
 export type TInvoiceFilter = {
