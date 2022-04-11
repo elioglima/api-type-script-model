@@ -1,7 +1,6 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter, TResident } from '../../domain/Tegrus';
-import RecurrenceService from '../../service/recurrenceService';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');

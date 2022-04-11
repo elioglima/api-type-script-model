@@ -1,8 +1,65 @@
+import {
+    TInvoiceFilter,
+    EnumTypeInvoice,
+} from './../../../../domain/Tegrus/TInvoice';
+import { EnumInvoiceStatus } from './../../../../domain/Tegrus/EnumInvoiceStatus';
 import { Request, Response } from 'express';
+import InvoiceService from 'src/service/invoiceService';
+import RecurrenceService from 'src/service/recurrenceService';
+import ResidentService from 'src/service/residentService';
+import { invoiceToTResident } from '../../../../utils/parse';
+import moment from 'moment';
+import { TResident } from 'src/domain/Tegrus';
 
 const invoiceEnginePrivate = async (req: Request, res: Response) => {
     try {
-        console.log(req.body);
+        const invoiceService = new InvoiceService();
+        const recurrenceService = new RecurrenceService();
+
+        const todayDate: string = moment().format('YYYY-MM-DD 23:59:59');
+        const backwardDate: string = moment(todayDate)
+            .subtract(20, 'days')
+            .format('YYYY-MM-DD 00:00:00');
+
+        const invoiceSearch: TInvoiceFilter = {
+            startDate: backwardDate,
+            endDate: todayDate,
+            active: true,
+            type: EnumTypeInvoice.rent,
+            statusInvoice: EnumInvoiceStatus.issued,
+        };
+
+        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);
+
+        if (invoicesFounded.err) return invoicesFounded;
+
+        if (!invoicesFounded.data.length) return;
+
+        const result = await Promise.all(
+            invoicesFounded.data.map(async (invoice: any) => {
+                const resident: TResident | any = invoiceToTResident(invoice?.residentIdenty)
+                console.log("invoice", invoice)
+                console.log("resident", resident)
+                const recurrency = await recurrenceService.FindOneResidentId(resident.id);
+                if (
+                    recurrency?.data?.message
+                        .toString()
+                        .toLocaleLowerCase()
+                        .trim() == 'recurrence not found'
+                )
+                    return {
+                        err: false,
+                        data: recurrency.data.message,
+                    };
+
+                return recurrency;
+            }),
+        );
+
+        console.log(
+            'RESULT',
+            result
+        );
 
         /*
             obs: ver tempo de tentatias
@@ -76,8 +133,10 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
             }
 
         */
-        res.status(200).json(req.body);
-    } catch (error) {}
+        res.status(200).json(invoicesFounded);
+    } catch (error) {
+        console.log('ERROR', error);
+    }
 };
 
 export { invoiceEnginePrivate };

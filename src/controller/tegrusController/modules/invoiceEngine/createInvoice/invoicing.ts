@@ -1,10 +1,5 @@
-import {
-    TInvoice,
-    TLinkInvoice,
-    TResident,
-} from '../../../../../domain/Tegrus';
+import { TInvoice, TResident } from '../../../../../domain/Tegrus';
 import InvoiceService from '../../../../../service/invoiceService';
-import createHash from '../createHash';
 import { returnTopic } from './returnTopic';
 import RecurrenceService from '../../../../../service/recurrenceService';
 import ResidentService from '../../../../../service/residentService';

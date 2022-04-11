@@ -48,7 +48,15 @@ export type TInvoiceFilter = {
     userId?: number;
     paymentMethod?: EnumInvoicePaymentMethod;
     statusInvoice?: EnumInvoiceStatus;
+    active?: boolean;
+    type?: EnumTypeInvoice;    
 };
+
+export const enum EnumTypeInvoice {
+    rent = 'rent',
+    booking = 'booking',   
+}
+
 
 export type TLinkInvoice = {
     invoiceId?: number;

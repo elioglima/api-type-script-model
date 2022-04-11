@@ -25,7 +25,6 @@ import {
     reqRecurrentCreate,
     resRecurrentCreate,
     reqRecurrentPaymentConsult,
-    resRecurrentPaymentConsult,
     reqRecurrentDeactivate,
     resRecurrentDeactivate,
     reqRecurrentReactivate,

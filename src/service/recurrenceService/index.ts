@@ -6,12 +6,10 @@ import {
     TInvoice,
     TRecurrenceSchedule,
     TRecurrencePayment,
-    TRecurrencyStatus,
 } from '../../domain/Tegrus';
 import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 import { rError, rSuccess } from '../../utils';
-import { reqRecurrentCreate } from '../../domain/RecurrentPayment';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
 import AdapterPayment from '../../domain/AdapterPayment';
 import InvoiceService from '../invoiceService';
@@ -19,7 +17,6 @@ import ResidentService from '../residentService';
 import { EnumInvoicePaymentMethod } from '../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
 import moment from 'moment';
-import { Request, Response } from 'express';
 import { defaultReturnMessage } from './../../utils/returns';
 
 export default class RecurrenceService {
@@ -70,6 +67,7 @@ export default class RecurrenceService {
                 },
             );
 
+                        
             if (resRecurrence instanceof Error) return rError(resRecurrence);
 
             if (!resRecurrence?.recurrentPayment)
@@ -421,5 +419,4 @@ export default class RecurrenceService {
             };
         }
     };
-
 }

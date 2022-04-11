@@ -69,27 +69,7 @@ export const payNowRecurrence = async (
             );
 
         if (resRecurrenceService?.data?.row) {
-            // verificar a recorrencia na cielo
-
-            // TO-DO-BETO
-            //  CONSULTAR RECORRECIA NA CIELO
-            /*
-                
-                // caso sucesso
-                return await returnTopic(
-                    {
-                        invoiceId: invoice.invoiceId,
-                        nextRecurrency: null, // retornar a  proxima recorrencia
-                        paymentDate: null, // DATA DO pagamento
-                        statusInvoice: invoice.statusInvoice, // status pelo da cielo
-                        paymentMethod: invoice.paymentMethod,
-                        type: invoice.type,
-                        message: 'recurrence is already scheduled',
-                    },
-                    false,
-                );
-
-                */
+         
             return await returnTopic(
                 {
                     nextRecurrency: null,
@@ -156,8 +136,6 @@ export const payNowRecurrence = async (
             },
         });
 
-        // caso nao seja uma recorrencia
-        // pagamento cartao de credito
     } catch (error: any) {
         return returnTopic(
             {
