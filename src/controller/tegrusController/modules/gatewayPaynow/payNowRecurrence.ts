@@ -69,7 +69,10 @@ export const payNowRecurrence = async (
             );
 
         if (resRecurrenceService?.data?.row) {
+<<<<<<< HEAD
          
+=======
+>>>>>>> b3ded8591381d4d1097e9dfdc6574068894f7522
             return await returnTopic(
                 {
                     nextRecurrency: null,
@@ -135,7 +138,10 @@ export const payNowRecurrence = async (
                 },
             },
         });
+<<<<<<< HEAD
 
+=======
+>>>>>>> b3ded8591381d4d1097e9dfdc6574068894f7522
     } catch (error: any) {
         return returnTopic(
             {
