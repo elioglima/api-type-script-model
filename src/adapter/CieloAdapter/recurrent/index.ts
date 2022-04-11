@@ -44,17 +44,16 @@ export class RecurentMethods {
         >(payload);
     }
 
-    public Find(
-        payload: reqRecurrentPaymentConsult,
-    ): Promise<resRecurrentPaymentConsult | TErrorGeneric> {
+    public async Find(payload: reqRecurrentPaymentConsult) {
         if (!this.util) return this.error('this.util not started');
 
-        if (!payload.recurrenceId)
+        if (!payload.recurrentPaymentId)
             return this.error('recurrenceId was not informed.');
 
         // consultando uma recorrencia
-        return this.util.get<resRecurrentPaymentConsult | TErrorGeneric>({
-            path: `/1/RecurrentPayment/${payload.recurrenceId}`,
+        return await this.util.get<resRecurrentPaymentConsult | TErrorGeneric>({
+            path: `/1/RecurrentPayment/${payload.recurrentPaymentId}`,
+            notContentType: true,
         });
     }
 

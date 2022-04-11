@@ -1,6 +1,7 @@
 import debug from 'debug';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter, TResident } from '../../domain/Tegrus';
+import RecurrenceService from '../../service/recurrenceService';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -55,11 +56,20 @@ export default class InvoiceService {
                 };
             }
 
+            // if (!resInvoiceId)
+            //     return {
+            //         err: true,
+            //         data: {
+            //             message: 'no invoice found',
+            //         },
+            //     };
+
             return {
                 err: false,
                 data: resInvoiceId,
             };
         } catch (error) {
+            console.log(444, error);
             return {
                 err: true,
                 data: {
@@ -112,17 +122,25 @@ export default class InvoiceService {
             const { resident: residentData, ...invoiceTwo }: any = invoiceData;
             const resident: TResident = residentData;
             const invoice: TInvoice = invoiceTwo;
-            
             const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
                 invoice.invoiceId,
             );
 
-            if (resInvoiceId) {
-                // fatura existe
+            if (resInvoiceId instanceof Error) {
                 return {
                     err: true,
                     data: {
+                        message: 'Error query invoice',
+                    },
+                };
+            }
+
+            if (resInvoiceId) {
+                return {
+                    err: false,
+                    data: {
                         message: 'Invoice is already processed',
+                        ...resInvoiceId,
                     },
                 };
             }

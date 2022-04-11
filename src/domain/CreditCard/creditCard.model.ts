@@ -41,5 +41,5 @@ export interface CreditCardModel {
      */
     PaymentAccountReference?: string;
 
-    customerName: string;
+    customerName?: string;
 }

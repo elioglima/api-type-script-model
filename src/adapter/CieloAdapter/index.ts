@@ -125,22 +125,20 @@ export class CieloAdapter implements ICardAdapter {
         return this.recurentMethods.Create(payload);
     }
 
-    public recurrentFind(
-        payload: reqRecurrentPaymentConsult,
-    ): Promise<resRecurrentPaymentConsult | TErrorGeneric> {
+    public async recurrentFind(payload: reqRecurrentPaymentConsult) {
         if (!this.util) return this.error('this.util not started');
-        return this.recurentMethods.Find(payload);
+        return await this.recurentMethods.Find(payload);
     }
 
     public recurrentDeactivate(
         payload: reqRecurrentDeactivate,
     ): Promise<resRecurrentDeactivate | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
-        try {            
+        try {
             return this.recurentMethods.Deactivate(payload);
         } catch (error) {
-            console.log("Cielo Adapter recurrentDeactivate", error);
-            throw new Error('Error Method recurrentDeactivate.');            
+            console.log('Cielo Adapter recurrentDeactivate', error);
+            throw new Error('Error Method recurrentDeactivate.');
         }
     }
 

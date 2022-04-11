@@ -57,6 +57,13 @@ const servicePrivate = async (payload: TPayNowReq) => {
             const resHash: any = await hashServices.execute(hash);
             if (resHash.err) return resHash;
 
+            if (
+                Object.keys(resHash?.data || {}).find(f => f == 'isValid') &&
+                !resHash?.data?.isValid
+            )
+                return resHash;
+            console.log(123, resHash);
+
             resInvoice = await invoiceService.FindOne(
                 resHash?.invoice?.invoiceId,
             );
@@ -91,7 +98,11 @@ const servicePrivate = async (payload: TPayNowReq) => {
             };
         }
 
-        const { residentIdenty, ...invoiceData }: any = resInvoice.data;
+        const { residentIdenty, ...invoiceData }: any = {
+            residentIdenty: undefined,
+            ...resInvoice.data,
+        };
+
         const resident: TResident | any = invoiceToTResident(residentIdenty);
         const invoice: TInvoice = invoiceData;
 
@@ -152,6 +163,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
             );
         }
     } catch (error: any) {
+        console.log(error);
         return returnTopic(
             { message: 'resident not found in database, unexpected error' },
             true,
