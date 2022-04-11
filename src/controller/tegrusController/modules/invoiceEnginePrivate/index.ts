@@ -37,9 +37,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
 
         const result = await Promise.all(
             invoicesFounded.data.map(async (invoice: any) => {
-                const resident: TResident | any = invoiceToTResident(invoice?.residentIdenty)
-                console.log("invoice", invoice)
-                console.log("resident", resident)
+                const resident: TResident | any = invoiceToTResident(invoice?.residentIdenty)        
                 const recurrency = await recurrenceService.FindOneResidentId(resident.id);
                 if (
                     recurrency?.data?.message
