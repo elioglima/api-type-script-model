@@ -29,7 +29,7 @@ export default async (data = {}, options) => {
                 },
             );            
         }
-        else if (options.method == 'POST') {
+        else if (options.method == 'POST') {            
             response = await axios.post(
                 `${options.hostname}/${options.path}`,
                 dataPost,

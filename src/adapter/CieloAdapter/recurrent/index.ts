@@ -54,7 +54,7 @@ export class RecurentMethods {
 
         // consultando uma recorrencia
         return this.util.get<resRecurrentPaymentConsult | TErrorGeneric>({
-            path: `/1/sales/${payload.recurrenceId}`,
+            path: `/1/RecurrentPayment/${payload.recurrenceId}`,
         });
     }
 

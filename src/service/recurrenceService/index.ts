@@ -334,8 +334,8 @@ export default class RecurrenceService {
                     },
                 };
 
-            //console.log("resRecu", resRecu)
-
+            console.log("XXXXXX", resRecu.data.row.recurrentPaymentId)
+            
             await paymentAdapter.init(Number(1));
             const recurrence = await paymentAdapter.recurrenceFind(
                { recurrenceId: resRecu.data.row.recurrentPaymentId}

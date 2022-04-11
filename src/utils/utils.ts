@@ -22,6 +22,7 @@ export class Utils {
             method,
         });
         
+        console.log("OPTIONS", options)
         return this.request<T>(options, {});
     }
 
@@ -79,9 +80,7 @@ export class Utils {
             path,
             hostname: this.cieloConstructor.hostnameTransacao,
         });
-        const resp: any = await this.request<T>(options, data);
-
-        console.log(9858585, resp);
+        const resp: any = await this.request<T>(options, data);        
 
         return resp;
     }
@@ -100,7 +99,7 @@ export class Utils {
             headers: {
                 MerchantId: this.cieloConstructor.merchantId,
                 MerchantKey: this.cieloConstructor.merchantKey,
-                RequestId: params.method || '',
+                //RequestId: params.method || '',
                 'Content-Type': 'application/json',
             },
         } as IHttpRequestOptions;
