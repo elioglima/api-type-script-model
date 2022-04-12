@@ -74,7 +74,6 @@ export const defaultReturnMessage = (code: string) => {
         message: 'Não Autorizada',
     };
 };
-<<<<<<< HEAD
 
 export const parseStatusCielo = (code: number) => {
     enum EnumStatusCielo {
@@ -110,5 +109,3 @@ export const parseStatusCielo = (code: number) => {
             EnumStatusCielo.Scheduled;
     }
 };
-=======
->>>>>>> 675fb001b7a77afe17ee728c7e3f294658fe4c53
