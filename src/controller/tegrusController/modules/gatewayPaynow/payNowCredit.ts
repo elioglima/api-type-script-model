@@ -106,11 +106,14 @@ export const payNowCredit = async (
             resPayAdapter?.payment?.receivedDate || new Date();
         const newStatusInvoice = EnumInvoiceStatus.paid;
 
+        console.log(111, resPayAdapter.data.payment);
         const returnCode = resPayAdapter.data.payment.returnCode;
 
         const { code, message }: any = defaultReturnMessage(returnCode);
 
-        let referenceCode = ['00', 0, 4].includes(returnCode) ? 1 : 7;
+        let referenceCode = ['00', 0, '04', '4', 4].includes(returnCode)
+            ? 1
+            : 7;
 
         const updateInvoice: TInvoice = {
             ...invoice,
