@@ -62,7 +62,6 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 !resHash?.data?.isValid
             )
                 return resHash;
-            console.log(123, resHash);
 
             resInvoice = await invoiceService.FindOne(
                 resHash?.invoice?.invoiceId,
