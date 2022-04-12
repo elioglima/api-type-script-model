@@ -18,6 +18,7 @@ export default class HashSearchService {
                 return {
                     err: true,
                     data: {
+                        code: 1,
                         message: 'Hash dont found.',
                     },
                 };
@@ -25,9 +26,10 @@ export default class HashSearchService {
 
             if (!resp?.valid) {
                 return {
-                    err: true,
+                    err: false,
                     data: {
-                        message: 'invalid link.',
+                        code: 2,
+                        message: 'hash already used.',
                     },
                 };
             }
@@ -37,16 +39,18 @@ export default class HashSearchService {
                 return {
                     err: true,
                     data: {
-                        message: 'invalid link.',
+                        code: 3,
+                        ...resValidate.data,
                     },
                 };
             }
 
             if (!resValidate?.data?.isValid) {
                 return {
-                    err: true,
+                    err: false,
                     data: {
-                        message: 'invalid link.',
+                        code: 4,
+                        ...resValidate.data,
                     },
                 };
             }
@@ -59,6 +63,7 @@ export default class HashSearchService {
                 return {
                     err: true,
                     data: {
+                        code: 5,
                         message: 'Invoice doesnt found.',
                     },
                 };
@@ -77,6 +82,7 @@ export default class HashSearchService {
                 return {
                     err: true,
                     data: {
+                        code: 6,
                         message: 'invoice is already paid',
                     },
                 };
@@ -93,24 +99,36 @@ export default class HashSearchService {
     }
 
     private async validateHashTTL(hashData: resHashData) {
-        const timeNow: Date = moment().toDate();
-        if (moment(hashData.lifeTime).isBefore(timeNow)) {
-            await this.terminateHashTTL(String(hashData.hash));
+        try {
+            const timeNow: Date = moment().toDate();
+            if (moment(hashData.lifeTime).isBefore(timeNow)) {
+                await this.terminateHashTTL(String(hashData.hash));
+                return {
+                    err: false,
+                    data: {
+                        err: false,
+                        data: {
+                            message: 'hash expired or is invalid.',
+                            isValid: false,
+                        },
+                    },
+                };
+            }
+
             return {
                 err: false,
                 data: {
-                    message: 'invalid link.',
-                    isValid: false,
+                    isValid: true,
+                },
+            };
+        } catch (error: any) {
+            return {
+                err: true,
+                data: {
+                    message: error?.message || 'unexpected error',
                 },
             };
         }
-
-        return {
-            err: false,
-            data: {
-                isValid: true,
-            },
-        };
     }
 
     private async terminateHashTTL(hash: string) {

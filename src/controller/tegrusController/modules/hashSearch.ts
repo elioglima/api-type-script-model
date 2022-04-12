@@ -23,7 +23,7 @@ const hashSearch = async (req: Request, res: Response) => {
             return res.status(422).json({
                 err: true,
                 status: 422,
-                data: dataRes?.data,
+                data: dataRes?.data?.data || dataRes?.data,
             });
         }
 
@@ -41,7 +41,7 @@ const hashSearch = async (req: Request, res: Response) => {
         return res.status(200).json({
             err: false,
             status: 200,
-            data: dataRes,
+            data: dataRes?.data || dataRes,
         });
     } catch (error: any) {
         return res.status(422).json(error);
