@@ -23,7 +23,7 @@ export class PaymentsMethods {
         );
     }
 
-    public Find(
+    public async Find(
         payload: reqFindPayment,
     ): Promise<resFindPayment | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
@@ -36,8 +36,7 @@ export class PaymentsMethods {
             url = `/1/sales/${payload.paymentId}`;
         } else if (!!payload.merchantOrderId) {
             url = `/1/sales?merchantOrderId=${payload.merchantOrderId}`;
-        } else return this.error('Find :: unexpected error.');
-
+        } else return this.error('Find :: unexpected error.');        
         return this.util.get<resFindPayment | TErrorGeneric>({ path: url });
     }
 }

@@ -1,3 +1,4 @@
+import { parseStatusCielo } from './../../../../utils/returns';
 import {
     TInvoiceFilter,
     EnumTypeInvoice,
@@ -18,7 +19,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
 
         const todayDate: string = moment().format('YYYY-MM-DD 23:59:59');
         const backwardDate: string = moment(todayDate)
-            .subtract(20, 'days')
+            .subtract(30, 'days')
             .format('YYYY-MM-DD 00:00:00');
 
         const invoiceSearch: TInvoiceFilter = {
@@ -29,7 +30,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
             statusInvoice: EnumInvoiceStatus.issued,
         };
 
-        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);
+        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);        
 
         if (invoicesFounded.err) return invoicesFounded;
 
@@ -59,24 +60,42 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                                 err: true,
                                 data: recurrency.data.message,
                             };
+                                       
 
+                        const paymentId: string =
+                            recurrency?.data?.recurrentTransactions[0]
+                                ?.paymentId;
+                        const tryNumber: number =
+                            recurrency?.data?.recurrentTransactions[0]
+                                ?.tryNumber;
+                        const enterpriseId: number = resident.enterpriseId;
+                        const receiptCielo: any =
+                            await invoiceService.GetInvoiceCielo(
+                                paymentId,
+                                enterpriseId,
+                            );
+                        
+                                                
                         if (
-                            Number(
-                                recurrency?.data?.RecurrentTransactions
-                                    ?.TryNumber,
-                            ) == 3
+                            tryNumber >= 3 &&
+                            ![1, 2].includes(
+                                Number(receiptCielo?.payment.status),
+                            )
                         ) {
-                            // desativar recorrencia
+                            await recurrenceService.DisableRecurrence(resident);
                             await invoiceService.Update({
                                 ...invoice,
                                 statusInvoice: EnumInvoiceStatus.paymentError,
+                                tryNumber,                                                                
                             });
                             return {
                                 statusInvoice: {
                                     invoiceId: invoice.invoiceId,
                                     recurrentPaymentId:
                                         recurrency.data.recurrentPaymentId,
-                                    statusInvoice: 'payment_error',
+                                    statusInvoice: parseStatusCielo(
+                                        10
+                                    ),
                                     paymentMethod: 'credit',
                                     paymentDate: new Date(),
                                     recurence: {
@@ -88,13 +107,10 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                         }
 
                         if (
-                            Number(
-                                recurrency?.data?.RecurrentTransactions
-                                    ?.TryNumber,
-                            ) == 1
+                            [1, 2].includes(
+                                Number(receiptCielo?.payment?.status),
+                            )
                         ) {
-                            // verificacao de sucesso do pagamento
-                            // verificar a recorrencia
                             await invoiceService.Update({
                                 ...invoice,
                                 statusInvoice: EnumInvoiceStatus.paid,
@@ -102,37 +118,53 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                                     recurrency?.data?.RecurrentTransactions
                                         ?.PaymentId,
                                 paymentDate: new Date(),
+                                tryNumber,
                             });
                             return {
-                                statusInvoice: {
-                                    invoiceId: invoice.invoiceId,
-                                    recurrentPaymentId:
-                                        recurrency.data.recurrentPaymentId,
-                                    statusInvoice: 'payment_error',
-                                    paymentMethod: 'credit',
-                                    paymentDate: new Date(),
-                                    recurence: {
-                                        ...recurrency.data,
-                                    },
+                                err: false,
+                                invoiceId: invoice.invoiceId,
+                                recurrentPaymentId:
+                                    recurrency.data.recurrentPaymentId,
+                                statusInvoice: parseStatusCielo(
+                                    Number(recurrency?.data?.status),
+                                ),
+                                paymentMethod: 'credit',
+                                paymentDate: new Date(),
+                                recurence: {
+                                    ...recurrency.data,
                                 },
                             };
                         }
 
-                        // atualzar trynumber
-                        // retornar erro
+                        await invoiceService.Update({
+                            ...invoice,
+                            statusInvoice: EnumInvoiceStatus.paid,
+                            paymentId:
+                                recurrency?.data?.RecurrentTransactions
+                                    ?.PaymentId,
+                            paymentDate: new Date(),
+                            tryNumber,
+                        });
+
                         return {
                             err: true,
                             invoiceId: invoice.invoiceId,
                             recurrentPaymentId:
                                 recurrency.data.recurrentPaymentId,
+                            statusInvoice: parseStatusCielo(
+                                Number(recurrency?.data?.status),
+                            ),
                             paymentMethod: 'credit',
                             paymentDate: new Date(),
-                            recurenceL: {
+                            recurence: {
                                 ...recurrency.data,
                             },
                         };
-                    } catch (error) {
-                        // retornar erro
+                    } catch (error: any) {
+                        return {
+                            err: true,
+                            data: error,
+                        }
                     }
                 })
                 .filter((f: any) => !f?.err),
@@ -143,8 +175,12 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                 invoices: [...result],
             },
         });
-    } catch (error) {
+    } catch (error: any) {
         console.log('ERROR', error);
+        return {
+            err: true,
+            data: error,
+        }
     }
 };
 

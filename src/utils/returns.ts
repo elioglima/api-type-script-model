@@ -35,7 +35,6 @@ export const rSuccess = (
     return rGeneric({ ...response }, false, abortProcess);
 };
 
-
 export const defaultReturnMessage = (code: string) => {
     if (['51', '116', '121', 'A5'].includes(code)) {
         return {
@@ -74,4 +73,39 @@ export const defaultReturnMessage = (code: string) => {
         code: 2,
         message: 'Não Autorizada',
     };
-}
+};
+
+export const parseStatusCielo = (code: number) => {
+    enum EnumStatusCielo {
+        NotFinished = 'NotFinished',
+        Authorized = 'Authorized',
+        PaymentConfirmed = 'PaymentConfirmed',
+        Denied = 'Denied',
+        Voided = 'Voided',
+        Refunded = 'Refunded',
+        Pending = 'Pending',
+        Aborted = 'Aborted',
+        Scheduled = 'Scheduled',
+    }
+
+    switch (code) {
+        case 0:
+            return EnumStatusCielo.NotFinished;
+        case 1:
+            return EnumStatusCielo.Authorized;
+        case 2:
+            return EnumStatusCielo.PaymentConfirmed;
+        case 3:
+            return EnumStatusCielo.Denied;
+        case 10:
+            return EnumStatusCielo.Voided;
+        case 11:
+            return EnumStatusCielo.Refunded;
+        case 12:
+            return EnumStatusCielo.Pending;
+        case 13:
+            return EnumStatusCielo.Aborted;
+        case 20:
+            EnumStatusCielo.Scheduled;
+    }
+};
