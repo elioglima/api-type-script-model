@@ -37,10 +37,11 @@ export class Utils {
                     data,
                 )
                     .then(capture => {
-                        console.log('postToSales :: ok', {
-                            onSuccess,
-                            capture,
-                        });
+                        // console.log(paymentId, onSuccess?.payment?.links);
+                        // console.log('postToSales :: ok', {
+                        //     onSuccess,
+                        //     capture,
+                        // });
                         return { ...onSuccess, capture };
                     })
                     .catch(error => {
@@ -51,7 +52,7 @@ export class Utils {
         );
     }
 
-    /**
+    /** 33
      * Realiza um post na API da Cielo
      * @param params path do post
      * @param data payload de envio
