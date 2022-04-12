@@ -9,7 +9,7 @@ const hashSearch = async (req: Request, res: Response) => {
     try {
         const hash: string = req?.params?.hash;
         if (!hash)
-            return res.status(400).json({
+            return res.status(422).json({
                 err: true,
                 data: {
                     message: 'No hash was sent.',
@@ -20,20 +20,18 @@ const hashSearch = async (req: Request, res: Response) => {
             await new tegrusServices.HashSearchService().execute(hash);
         if (dataRes?.err) {
             logger('Error', dataRes?.data);
-            return res.status(500).json({
+            return res.status(422).json({
                 err: true,
-                status: 500,
-                data: {
-                    message: dataRes?.data,
-                },
+                status: 422,
+                data: dataRes?.data,
             });
         }
 
         if (!dataRes) {
             logger('Error', 'Nothing was found');
-            return res.status(404).json({
+            return res.status(422).json({
                 err: true,
-                status: 404,
+                status: 422,
                 data: {
                     message: 'Nothing was found',
                 },
