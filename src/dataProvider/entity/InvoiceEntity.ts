@@ -63,6 +63,12 @@ export class InvoiceEntity {
     value: number | undefined;
 
     @Column({
+        name: 'valueTotal',
+        type: 'decimal',
+    })
+    valueTotal: number | undefined;
+
+    @Column({
         name: 'condominium',
         type: 'decimal',
         nullable: true,
@@ -143,6 +149,18 @@ export class InvoiceEntity {
         type: 'timestamp',
     })
     referenceDate: Date | undefined;
+
+    @Column({
+        name: 'startReferenceDate',
+        type: 'timestamp',
+    })
+    startReferenceDate: Date | undefined;
+
+    @Column({
+        name: 'endReferenceDate',
+        type: 'timestamp',
+    })
+    endReferenceDate: Date | undefined;
 
     @Column({
         name: 'type',

@@ -11,6 +11,7 @@ export type TInvoice = {
     apartmentId: number;
     enterpriseId: number;
     value: number; // double,
+    valueTotal: number; // double,
     condominium: number; // double,
     discount: number; // double,
     tax: number; // double,
@@ -38,6 +39,8 @@ export type TInvoice = {
     referenceCode?: number;
     resident: TResident;
     residentId?: number;
+    startReferenceDate: Date;
+    endReferenceDate: Date;
 };
 
 export type TInvoiceFilter = {

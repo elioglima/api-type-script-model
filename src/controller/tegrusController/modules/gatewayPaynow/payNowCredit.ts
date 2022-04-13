@@ -73,6 +73,9 @@ export const payNowCredit = async (
                     paymentDate: invoice.paymentDate,
                     message: resMessage.message,
                     value: invoice.value,
+                    valueTotal: invoice.valueTotal,
+                    startReferenceDate: invoice.startReferenceDate,
+                    endReferenceDate: invoice.endReferenceDate,
                 },
             });
         }
@@ -172,6 +175,9 @@ export const payNowCredit = async (
                     paymentDate: invoice.paymentDate,
                     message: message,
                     value: invoice.value,
+                    valueTotal: invoice.valueTotal,
+                    startReferenceDate: invoice.startReferenceDate,
+                    endReferenceDate: invoice.endReferenceDate,
                 },
             },
             referenceCode == 7,

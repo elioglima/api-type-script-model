@@ -175,7 +175,7 @@ export default class RecurrenceService {
                 },
                 payment: {
                     Type: 'CreditCard',
-                    Amount: invoice?.value,
+                    Amount: invoice?.valueTotal,
                     Installments: 1,
                     SoftDescriptor: 'Recorrencia JFL',
                     RecurrentPayment: {
