@@ -177,10 +177,10 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
         });
     } catch (error: any) {
         console.log('ERROR', error);
-        return {
+        return res.status(500).json({
             err: true,
             data: error,
-        }
+        })
     }
 };
 
