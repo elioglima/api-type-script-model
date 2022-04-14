@@ -97,6 +97,13 @@ export class InvoiceEntity {
     refund: number | undefined;
 
     @Column({
+        name: 'expense',
+        type: 'decimal',
+        nullable: true,
+    })
+    expense: number | undefined;
+
+    @Column({
         name: 'fine',
         type: 'decimal',
         nullable: true,
