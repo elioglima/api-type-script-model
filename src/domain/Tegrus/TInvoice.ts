@@ -16,6 +16,7 @@ export type TInvoice = {
     discount: number; // double,
     tax: number; // double,
     refund: number; // double,
+    expense: number; // double,
     fine: number; // double,
     fineTicket?: number;
     dueDate: Date; //timestamp,
