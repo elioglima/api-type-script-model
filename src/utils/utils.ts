@@ -31,17 +31,17 @@ export class Utils {
     public postToSales<T, U>(data: U): Promise<T | TErrorGeneric> {
         return this.post<T, U>({ path: '/1/sales/' }, data).then(
             (onSuccess: any) => {
-                const { paymentId }: any = onSuccess?.payment;
+                const valueURL: any =
+                    onSuccess?.payment?.paymentId ||
+                    onSuccess?.RecurrentPayment?.RecurrentPaymentId;
+
+                if (!valueURL) return onSuccess;
+
                 return this.put<T, U>(
-                    { path: `/1/sales/${paymentId}/capture` },
+                    { path: `/1/sales/${valueURL}/capture` },
                     data,
                 )
                     .then(capture => {
-                        // console.log(paymentId, onSuccess?.payment?.links);
-                        // console.log('postToSales :: ok', {
-                        //     onSuccess,
-                        //     capture,
-                        // });
                         return { ...onSuccess, capture };
                     })
                     .catch(error => {

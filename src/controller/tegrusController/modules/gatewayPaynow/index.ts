@@ -77,7 +77,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
 
         if (resInvoice?.data?.statusInvoice == 'paid') {
             return {
-                err: true,
+                err: false,
                 data: {
                     message: 'invoice is already paid',
                 },

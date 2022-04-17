@@ -6,6 +6,7 @@ const updateInvoice = async (toReceive: any) => {
         // retorno do app >> bff >> tegrus
         const updataData: any = {
             value: toReceive?.updateInvoice?.value,
+            valueTotal: toReceive?.updateInvoice?.valueTotal,
             condominium: toReceive?.updateInvoice?.condominium,
             discount: toReceive?.updateInvoice?.discount,
             tax: toReceive?.updateInvoice?.tax,
@@ -21,6 +22,8 @@ const updateInvoice = async (toReceive: any) => {
             apartmentId: toReceive?.updateInvoice?.apartmentId,
             invoiceId: toReceive?.updateInvoice?.invoiceId,
             isExpired: toReceive?.updateInvoice?.isExpired,
+            startReferenceDate: toReceive?.updateInvoice?.startReferenceDate,
+            endReferenceDate: toReceive?.updateInvoice?.endReferenceDate,
         };
 
         const invoiceService = new InvoiceService();

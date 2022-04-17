@@ -11,10 +11,12 @@ export type TInvoice = {
     apartmentId: number;
     enterpriseId: number;
     value: number; // double,
+    valueTotal: number; // double,
     condominium: number; // double,
     discount: number; // double,
     tax: number; // double,
     refund: number; // double,
+    expense: number; // double,
     fine: number; // double,
     fineTicket?: number;
     dueDate: Date; //timestamp,
@@ -38,7 +40,12 @@ export type TInvoice = {
     referenceCode?: number;
     resident: TResident;
     residentId?: number;
+<<<<<<< HEAD
     tryNumber?: number;
+=======
+    startReferenceDate: Date;
+    endReferenceDate: Date;
+>>>>>>> develop
 };
 
 export type TInvoiceFilter = {
