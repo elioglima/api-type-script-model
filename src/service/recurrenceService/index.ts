@@ -67,6 +67,7 @@ export default class RecurrenceService {
                 },
             );
 
+                        
             if (resRecurrence instanceof Error) return rError(resRecurrence);
 
             if (!resRecurrence?.recurrentPayment)
@@ -200,19 +201,6 @@ export default class RecurrenceService {
 
             if (resRecurrentCreate?.err) return resRecurrentCreate;
 
-            console.log(
-                99,
-                'recorrent',
-                JSON.stringify(
-                    {
-                        payload: makeRecurrent,
-                        response: resRecurrentCreate,
-                    },
-                    null,
-                    4,
-                ),
-            );
-
             const payCardNumber =
                 resRecurrentCreate?.payment?.creditCard?.cardNumber;
             const payCardHolder =
@@ -269,14 +257,6 @@ export default class RecurrenceService {
                             ?.reasonCode,
                     ),
                 );
-
-            console.log({
-                recurreceError,
-                'persisRecurrency?.returnCode': persisRecurrency?.reasonCode,
-                'resRecurrentCreate?.payment?.recurrentPayment?.returnCode':
-                    resRecurrentCreate?.payment?.recurrentPayment?.returnCode
-                        ?.returnCode,
-            });
 
             if (![0, 4].includes(Number(returnCode))) {
                 const response: any = {

@@ -14,7 +14,7 @@ export class Utils {
     public async get<T>(params: { path: string; notContentType?: boolean }) {
         const hostname: String | any = this.cieloConstructor.hostnameQuery;
         const { path, notContentType } = params;
-        const method = HttpRequestMethodEnum.GET;
+        const method = HttpRequestMethodEnum.GET;        
 
         const options: IHttpRequestOptions = this.getHttpRequestOptions({
             path,
@@ -22,8 +22,9 @@ export class Utils {
             method,
             notContentType: notContentType || false,
         });
+        
+        const response = await this.request<T>(options, {});        
 
-        const response = await this.request<T>(options, {});
         return response;
     }
 
@@ -65,8 +66,7 @@ export class Utils {
             method: HttpRequestMethodEnum.POST,
             path,
             hostname: this.cieloConstructor.hostnameTransacao,
-        });
-
+        });        
         return this.request<T>(options, data);
     }
 

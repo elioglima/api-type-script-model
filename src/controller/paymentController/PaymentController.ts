@@ -1,3 +1,4 @@
+import { payNowPix } from './../tegrusController/modules/gatewayPaynow/payNowPix';
 import debug from 'debug';
 import { Request, Response } from 'express';
 
@@ -248,4 +249,56 @@ export class PaymentController {
 
         return res.status(200).json(data);
     };
+
+    public makePix = async (req: Request, res: Response) =>{
+        try {
+            this.logger(`Creating payment`, req.body);
+            const dataRequest = camelcaseKeys(req.body, { deep: true });
+            const MakePixService = new service.MakePixService();
+            const data = await MakePixService.execute(dataRequest);
+
+            if (data instanceof Error) {
+                this.logger('Error', data.message);
+                return res.status(422).json(data.message);
+            }
+
+            if (data.err) {
+                this.logger('Error', data.message);
+                return res.status(422).json(data.message);
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            console.log(error);
+            this.logger(`Creating payment`, error);
+            return res.status(422).json(error);
+        }
+    }
+
+    public getReceiptPix = async(req: Request, res: Response) => {
+        try {
+            this.logger(`Creating payment`, req.body);
+            const dataRequest = req.params.merchantOrderId;
+            const MakePixService = new service.MakePixService();
+            const data = await MakePixService.getPixReceipt(dataRequest);
+
+            if (data instanceof Error) {
+                this.logger('Error', data.message);
+                return res.status(422).json(data.message);
+            }
+
+            if (data.err) {
+                this.logger('Error', data.message);
+                return res.status(422).json(data.message);
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            console.log(error);
+            this.logger(`Creating payment`, error);
+            return res.status(422).json(error);
+        } 
+
+    }
+
 }
