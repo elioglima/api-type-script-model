@@ -2,7 +2,6 @@ import debug from 'debug';
 import { PaymentRepository } from '../dataProvider/repository/PaymentRepository';
 import { TransactioPixRequestModel } from '../domain/Payment/Payment';
 import AdapterPayment from '../domain/AdapterPayment';
-import { cieloStatusConverter } from '../utils/cieloStatus';
 
 export default class MakePixService {
     private logger = debug('payment-api:MakePaymentService');
@@ -23,17 +22,6 @@ export default class MakePixService {
             if (response?.err == true) {
                 return response;
             }
-
-            // response.payment.status = cieloStatusConverter(
-            //     response.payment.status,
-            // );
-
-            // if (response.payment.status !== 'PAGO') {
-            //     return {
-            //         err: true,
-            //         message: `Payment ${response.payment.status}`,
-            //     };
-            // }
 
             return await this.paymentRepository
                 .persist({
