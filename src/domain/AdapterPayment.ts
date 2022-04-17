@@ -105,6 +105,19 @@ export class AdapterPayment implements IAdapter {
         }
     }
 
+    public makePix(
+        payload: reqMakePayment,
+    ): Promise<reqMakePayment | TErrorGeneric> {
+        if (!this.paymentProvider) throw new Error('Error provider not found.');
+
+        try {
+            return this.paymentProvider.makePix(payload);
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error Method makePayment.');
+        }
+    }
+
     public refoundPayment(
         payload: reqRefoundPayment,
     ): Promise<resRefoundPayment | TErrorGeneric> {

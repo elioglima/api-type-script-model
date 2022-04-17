@@ -1,4 +1,4 @@
-import { parseStatusCielo } from './../../../../utils/returns';
+import { cieloStatusConverter } from '../../../../utils/cieloStatus';
 import {
     TInvoiceFilter,
     EnumTypeInvoice,
@@ -93,7 +93,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                                     invoiceId: invoice.invoiceId,
                                     recurrentPaymentId:
                                         recurrency.data.recurrentPaymentId,
-                                    statusInvoice: parseStatusCielo(
+                                    statusInvoice: cieloStatusConverter(
                                         10
                                     ),
                                     paymentMethod: 'credit',
@@ -125,7 +125,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                                 invoiceId: invoice.invoiceId,
                                 recurrentPaymentId:
                                     recurrency.data.recurrentPaymentId,
-                                statusInvoice: parseStatusCielo(
+                                statusInvoice: cieloStatusConverter(
                                     Number(recurrency?.data?.status),
                                 ),
                                 paymentMethod: 'credit',
@@ -151,7 +151,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                             invoiceId: invoice.invoiceId,
                             recurrentPaymentId:
                                 recurrency.data.recurrentPaymentId,
-                            statusInvoice: parseStatusCielo(
+                            statusInvoice: cieloStatusConverter(
                                 Number(recurrency?.data?.status),
                             ),
                             paymentMethod: 'credit',

@@ -66,8 +66,7 @@ export class Utils {
             method: HttpRequestMethodEnum.POST,
             path,
             hostname: this.cieloConstructor.hostnameTransacao,
-        });
-
+        });        
         return this.request<T>(options, data);
     }
 
