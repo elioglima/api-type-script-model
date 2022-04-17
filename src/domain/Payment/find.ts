@@ -62,7 +62,7 @@ interface resPaymentId {
 }
 
 export type reqFindPayment = {
-    merchantOrderId: string; // 	Campo Identificador do Pedido na Loja.
+    merchantOrderId?: string; // 	Campo Identificador do Pedido na Loja.
     paymentId: string; // Numero de identificação do Pagamento.
 }
 

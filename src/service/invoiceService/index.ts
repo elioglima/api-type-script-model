@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { AdapterPayment } from '../../domain/AdapterPayment';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter, TResident } from '../../domain/Tegrus';
 
@@ -216,6 +217,27 @@ export default class InvoiceService {
                 data: resInvoiceUpdate,
             };
         } catch (error: any) {
+            return {
+                err: true,
+                data: {
+                    message: error?.message || 'unexpected error',
+                },
+            };
+        }
+    };
+
+    public GetInvoiceCielo = async (
+        paymentId: string,
+        enterpriseId: number,
+    ) => {
+        this.logger(`GetInvoiceCielo`);
+        try {
+            const paymentAdapter = new AdapterPayment();
+            await paymentAdapter.init(enterpriseId);
+            const response = await paymentAdapter.find({ paymentId });            
+            return response
+        } catch (error: any) {
+            console.log("ERROR", error)
             return {
                 err: true,
                 data: {
