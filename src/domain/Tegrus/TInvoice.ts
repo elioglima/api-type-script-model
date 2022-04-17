@@ -40,12 +40,10 @@ export type TInvoice = {
     referenceCode?: number;
     resident: TResident;
     residentId?: number;
-<<<<<<< HEAD
     tryNumber?: number;
-=======
     startReferenceDate: Date;
     endReferenceDate: Date;
->>>>>>> develop
+
 };
 
 export type TInvoiceFilter = {
