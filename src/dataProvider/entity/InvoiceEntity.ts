@@ -63,10 +63,10 @@ export class InvoiceEntity {
     value: number | undefined;
 
     @Column({
-        name: 'valueTotal',
+        name: 'totalValue',
         type: 'decimal',
     })
-    valueTotal: number | undefined;
+    totalValue: number | undefined;
 
     @Column({
         name: 'condominium',
@@ -242,7 +242,7 @@ export class InvoiceEntity {
     @Column({
         name: 'tryNumber',
         type: 'int',
-        default: 0
+        default: 0,
     })
     tryNumber: number | undefined;
 

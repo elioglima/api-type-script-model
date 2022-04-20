@@ -11,7 +11,7 @@ export type TInvoice = {
     apartmentId: number;
     enterpriseId: number;
     value: number; // double,
-    valueTotal: number; // double,
+    totalValue: number; // double,
     condominium: number; // double,
     discount: number; // double,
     tax: number; // double,
@@ -43,7 +43,6 @@ export type TInvoice = {
     tryNumber?: number;
     startReferenceDate: Date;
     endReferenceDate: Date;
-
 };
 
 export type TInvoiceFilter = {
@@ -55,14 +54,13 @@ export type TInvoiceFilter = {
     paymentMethod?: EnumInvoicePaymentMethod;
     statusInvoice?: EnumInvoiceStatus;
     active?: boolean;
-    type?: EnumTypeInvoice;    
+    type?: EnumTypeInvoice;
 };
 
 export const enum EnumTypeInvoice {
     rent = 'rent',
-    booking = 'booking',   
+    booking = 'booking',
 }
-
 
 export type TLinkInvoice = {
     invoiceId?: number;

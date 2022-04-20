@@ -67,7 +67,6 @@ export default class RecurrenceService {
                 },
             );
 
-                        
             if (resRecurrence instanceof Error) return rError(resRecurrence);
 
             if (!resRecurrence?.recurrentPayment)
@@ -176,11 +175,10 @@ export default class RecurrenceService {
                 },
                 payment: {
                     Type: 'CreditCard',
-                    Amount: invoice?.valueTotal,
+                    Amount: invoice?.totalValue,
                     Installments: 1,
                     SoftDescriptor: 'Recorrencia JFL',
                     RecurrentPayment: {
-                        AuthorizeNow: true,
                         EndDate: recurrence.endDateContract,
                         Interval: 'Monthly',
                     },

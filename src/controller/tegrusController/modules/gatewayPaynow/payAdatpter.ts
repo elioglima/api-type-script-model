@@ -63,7 +63,7 @@ export const payAdatpter = async (
                 },
                 payment: {
                     type: EnumCardType.CREDIT,
-                    amount: Number(invoice?.valueTotal),
+                    amount: Number(invoice?.totalValue),
                     installments: 1,
                     softDescriptor: 'Pagamento Credito',
                     creditCard: {

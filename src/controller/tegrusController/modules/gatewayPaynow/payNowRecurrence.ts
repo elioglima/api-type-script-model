@@ -142,7 +142,7 @@ export const payNowRecurrence = async (
                 tid: resRecurrence.data.tid,
                 dueDate: invoice.dueDate,
                 value: invoice.value,
-                valueTotal: invoice.valueTotal,
+                totalValue: invoice.totalValue,
                 tax: invoice.tax,
                 refund: invoice.refund,
                 expense: invoice.expense,
