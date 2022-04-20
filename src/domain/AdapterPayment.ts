@@ -23,6 +23,7 @@ import {
     reqRecurrentPaymentConsult,
 } from './RecurrentPayment';
 import { rError, rSuccess } from '../utils';
+import { reqFindPayment } from './Payment';
 
 export class AdapterPayment implements IAdapter {
     API_URL: string | undefined;
@@ -104,6 +105,19 @@ export class AdapterPayment implements IAdapter {
         }
     }
 
+    public makePix(
+        payload: reqMakePayment,
+    ): Promise<reqMakePayment | TErrorGeneric> {
+        if (!this.paymentProvider) throw new Error('Error provider not found.');
+
+        try {
+            return this.paymentProvider.makePix(payload);
+        } catch (error) {
+            console.log(error);
+            throw new Error('Error Method makePayment.');
+        }
+    }
+
     public refoundPayment(
         payload: reqRefoundPayment,
     ): Promise<resRefoundPayment | TErrorGeneric> {
@@ -146,6 +160,17 @@ export class AdapterPayment implements IAdapter {
         try {
             const response = await this.paymentProvider.recurrentFind(payload);
             return await response;
+        } catch (error) {
+            console.log('recurrenceFind', error);
+            throw new Error('Error Method recurrenceFind.');
+        }
+    }
+
+    public async find(payload: reqFindPayment) {
+        if (!this.paymentProvider) throw new Error('Error provider not found.');
+        try {
+            const response = await this.paymentProvider.find(payload);            
+            return response;
         } catch (error) {
             console.log('recurrenceFind', error);
             throw new Error('Error Method recurrenceFind.');

@@ -7,7 +7,6 @@ import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import { EnumBrands } from '../../../../enum';
-
 import HashSearchService from './hashSearchService';
 import { payNowCredit } from './payNowCredit';
 import { payNowRecurrence } from './payNowRecurrence';

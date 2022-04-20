@@ -28,7 +28,7 @@ export type TInvoice = {
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumInvoiceStatus;
     isRecurrence: boolean;
-    residentIdenty?: number;
+    residentIdenty?: any;
     // recurrenceId?: number;
     paymentDate?: Date;
     returnMessage?: string;
@@ -40,8 +40,10 @@ export type TInvoice = {
     referenceCode?: number;
     resident: TResident;
     residentId?: number;
+    tryNumber?: number;
     startReferenceDate: Date;
     endReferenceDate: Date;
+
 };
 
 export type TInvoiceFilter = {
@@ -52,7 +54,15 @@ export type TInvoiceFilter = {
     userId?: number;
     paymentMethod?: EnumInvoicePaymentMethod;
     statusInvoice?: EnumInvoiceStatus;
+    active?: boolean;
+    type?: EnumTypeInvoice;    
 };
+
+export const enum EnumTypeInvoice {
+    rent = 'rent',
+    booking = 'booking',   
+}
+
 
 export type TLinkInvoice = {
     invoiceId?: number;

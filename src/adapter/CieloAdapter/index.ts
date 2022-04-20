@@ -147,4 +147,14 @@ export class CieloAdapter implements ICardAdapter {
         if (!this.util) return this.error('this.util not started');
         return this.recurentMethods.Reactivate(payload);
     }
+
+    public makePix(
+        payload: reqMakePayment,
+    ): Promise<resMakePayment | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started');
+        return this.util.post<resMakePayment, reqMakePayment | TErrorGeneric>(
+            { path: '/1/sales/' },
+            payload,
+        );
+    }
 }

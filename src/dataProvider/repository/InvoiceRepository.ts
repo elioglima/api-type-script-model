@@ -54,7 +54,7 @@ export class InvoiceRepository {
             .orderBy('invoice.id', 'DESC')
             .getMany();
 
-    public Find = (filter: TInvoiceFilter) => {
+    public Find = async (filter: TInvoiceFilter) => {
         const db = getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
@@ -94,8 +94,8 @@ export class InvoiceRepository {
                 statusInvoice: filter.statusInvoice,
             });
         }
-
-        return db.getMany();
+        
+        return await db.getMany();
     };
 
     public update = async (invoice: TInvoice) => {
