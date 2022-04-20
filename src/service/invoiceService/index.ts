@@ -143,6 +143,7 @@ export default class InvoiceService {
             });
 
             if (resPersist instanceof Error) {
+                console.log(resPersist);
                 return {
                     err: true,
                     data: {
@@ -234,10 +235,10 @@ export default class InvoiceService {
         try {
             const paymentAdapter = new AdapterPayment();
             await paymentAdapter.init(enterpriseId);
-            const response = await paymentAdapter.find({ paymentId });            
-            return response
+            const response = await paymentAdapter.find({ paymentId });
+            return response;
         } catch (error: any) {
-            console.log("ERROR", error)
+            console.log('ERROR', error);
             return {
                 err: true,
                 data: {
