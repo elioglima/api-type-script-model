@@ -1,4 +1,4 @@
-import { payNowPix } from './../tegrusController/modules/gatewayPaynow/payNowPix';
+// import { payNowPix } from './../tegrusController/modules/gatewayPaynow/payNowPix';
 import debug from 'debug';
 import { Request, Response } from 'express';
 
@@ -250,7 +250,7 @@ export class PaymentController {
         return res.status(200).json(data);
     };
 
-    public makePix = async (req: Request, res: Response) =>{
+    public makePix = async (req: Request, res: Response) => {
         try {
             this.logger(`Creating payment`, req.body);
             const dataRequest = camelcaseKeys(req.body, { deep: true });
@@ -273,9 +273,9 @@ export class PaymentController {
             this.logger(`Creating payment`, error);
             return res.status(422).json(error);
         }
-    }
+    };
 
-    public getReceiptPix = async(req: Request, res: Response) => {
+    public getReceiptPix = async (req: Request, res: Response) => {
         try {
             this.logger(`Creating payment`, req.body);
             const dataRequest = req.params.merchantOrderId;
@@ -297,8 +297,6 @@ export class PaymentController {
             console.log(error);
             this.logger(`Creating payment`, error);
             return res.status(422).json(error);
-        } 
-
-    }
-
+        }
+    };
 }
