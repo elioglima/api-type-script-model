@@ -59,12 +59,16 @@ export class InvoiceEntity {
     @Column({
         name: 'value',
         type: 'decimal',
+        precision: 10,
+        scale: 2,
     })
     value: number | undefined;
 
     @Column({
         name: 'totalValue',
         type: 'decimal',
+        precision: 10,
+        scale: 2,
     })
     totalValue: number | undefined;
 
@@ -72,6 +76,8 @@ export class InvoiceEntity {
         name: 'condominium',
         type: 'decimal',
         nullable: true,
+        precision: 10,
+        scale: 2,
     })
     condominium: number | undefined;
 
@@ -79,6 +85,8 @@ export class InvoiceEntity {
         name: 'discount',
         type: 'decimal',
         nullable: true,
+        precision: 10,
+        scale: 2,
     })
     discount: number | undefined;
 
@@ -86,6 +94,8 @@ export class InvoiceEntity {
         name: 'tax',
         type: 'decimal',
         nullable: true,
+        precision: 10,
+        scale: 2,
     })
     tax: number | undefined;
 
@@ -93,6 +103,8 @@ export class InvoiceEntity {
         name: 'refund',
         type: 'decimal',
         nullable: true,
+        precision: 10,
+        scale: 2,
     })
     refund: number | undefined;
 
@@ -100,6 +112,8 @@ export class InvoiceEntity {
         name: 'expense',
         type: 'decimal',
         nullable: true,
+        precision: 10,
+        scale: 2,
     })
     expense: number | undefined;
 
@@ -107,6 +121,8 @@ export class InvoiceEntity {
         name: 'fine',
         type: 'decimal',
         nullable: true,
+        precision: 10,
+        scale: 2,
     })
     fine: number | undefined;
 
@@ -114,6 +130,8 @@ export class InvoiceEntity {
         name: 'fineTicket',
         type: 'decimal',
         nullable: true,
+        precision: 10,
+        scale: 2,
     })
     fineTicket: number | undefined;
 
