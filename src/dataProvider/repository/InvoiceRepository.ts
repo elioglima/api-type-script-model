@@ -3,7 +3,8 @@ import { getConnection } from 'typeorm';
 import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
 
 export class InvoiceRepository {
-    public persist = async (invoice: TInvoice) =>
+    public persist = async (invoice: TInvoice) => {
+        console.log({ invoice });
         await getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
@@ -22,6 +23,7 @@ export class InvoiceRepository {
                     return onRejected;
                 },
             );
+    };
 
     public getById = async (id: number) =>
         await getConnection()
@@ -94,7 +96,7 @@ export class InvoiceRepository {
                 statusInvoice: filter.statusInvoice,
             });
         }
-        
+
         return await db.getMany();
     };
 
