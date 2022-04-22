@@ -29,8 +29,11 @@ export const invoicesFilter = async (req: Request, res: Response) => {
             refund: m.refund,
             tax: m.tax,
             fine: m.fine,
-            fineTickets: m.fineTickets,
+            fineTicket: m.fineTicket,
             resident: m.residentIdenty,
+            startReferenceDate: m.startReferenceDate,
+            endReferenceDate: m.endReferenceDate,
+            totalValue: m.totalValue,
         }));
 
         return res.status(200).json({
