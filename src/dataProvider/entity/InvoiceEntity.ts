@@ -82,6 +82,24 @@ export class InvoiceEntity {
     condominium: number | undefined;
 
     @Column({
+        name: 'stepValue',
+        type: 'decimal',
+        nullable: true,
+        precision: 10,
+        scale: 2,
+    })
+    stepValue: number | undefined;
+
+    @Column({
+        name: 'commission',
+        type: 'decimal',
+        nullable: true,
+        precision: 10,
+        scale: 2,
+    })
+    commission: number | undefined;
+
+    @Column({
         name: 'discount',
         type: 'decimal',
         nullable: true,

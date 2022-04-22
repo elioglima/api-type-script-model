@@ -15,6 +15,8 @@ export type TInvoice = {
     condominium: number; // double,
     discount: number; // double,
     tax: number; // double,
+    stepValue: number; // double,
+    commission: number; // double,
     refund: number; // double,
     expense: number; // double,
     fine: number; // double,
