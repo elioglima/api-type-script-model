@@ -338,7 +338,7 @@ cielo.recurrent
 
 #### <a name="modifyRecurrenceReactivate"></a> Reabilitando um Pedido Recorrente
 
-```ts sss
+```ts sssss
 const reactivateRecurrencyParams: RecurrentModifyModel = {
     paymentId: firstRecurrency.payment.recurrentPayment.recurrenceId,
 };
