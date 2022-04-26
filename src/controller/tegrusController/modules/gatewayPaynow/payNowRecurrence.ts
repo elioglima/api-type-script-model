@@ -163,6 +163,7 @@ export const payNowRecurrence = async (
             },
         });
     } catch (error: any) {
+        console.log(777, error);
         return returnTopic(
             {
                 invoiceId: invoice.invoiceId,
