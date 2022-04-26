@@ -1,15 +1,21 @@
 {
     "type": "mariadb",
-    "host": "jflrealty.cqisbfzuue6q.us-east-2.rds.amazonaws.com",
+    "host": "jflrealty-prod.cqisbfzuue6q.us-east-2.rds.amazonaws.com",
     "port": 3306,
     "username": "jflmanager",
-    "password": "6Yj4yB70SwZe6MYe8Uwc",
+    "password": "93RHWxSkFcLvTrOSXs3e",
     "database": "jflrealty",
     "synchronize": true,
     "logging": false,
-    "entities": ["src/dataProvider/entity/*.ts"],
-    "migrations": ["src/dataProvider/migration/*.ts"],
-    "subscribers": ["src/dataProvider/subscriber/*.ts"],
+    "entities": [
+        "src/dataProvider/entity/*.ts"
+    ],
+    "migrations": [
+        "src/dataProvider/migration/*.ts"
+    ],
+    "subscribers": [
+        "src/dataProvider/subscriber/*.ts"
+    ],
     "cli": {
         "entitiesDir": "src/dataProvider/entity",
         "migrationsDir": "src/dataProvider/migration",
