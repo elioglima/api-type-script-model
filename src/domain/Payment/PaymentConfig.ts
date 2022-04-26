@@ -3,6 +3,9 @@ export interface PaymentConfig{
   enterpriseId: number;
   merchantId: string;
   merchantKey: string;
+  provider: string;
+  hostnameTransacao: string;
+  hostnameQuery: string;
   createdAt: Date;
   updatedAt: Date;
 }
