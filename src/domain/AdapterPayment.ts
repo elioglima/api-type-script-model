@@ -37,6 +37,8 @@ export class AdapterPayment implements IAdapter {
             const paymentConfig: any =
                 await this.FindPaymentConfigService.execute(enterpriseId);
 
+            console.log({ paymentConfig });
+
             if (paymentConfig instanceof Error) {
                 return rError({ message: paymentConfig.message });
             }
