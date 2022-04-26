@@ -1,5 +1,7 @@
 import { invoicesFilter } from "./invoicesFilter";
+import { findResidentRecurrence } from "./findResidentRecurrence";
 
 export {
-    invoicesFilter
+    invoicesFilter,
+    findResidentRecurrence
 }

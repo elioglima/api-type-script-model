@@ -13,6 +13,9 @@ export class PaymentConfigRepository {
                     enterpriseId: paymentConfig.enterpriseId,
                     merchantId: paymentConfig.merchantId,
                     merchantKey: paymentConfig.merchantKey,
+                    provider: paymentConfig.provider,
+                    hostnameTransacao: paymentConfig.hostnameTransacao,
+                    hostnameQuery: paymentConfig.hostnameQuery,
                 },
             ])
             .execute()
