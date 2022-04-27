@@ -2,6 +2,7 @@ import debug from 'debug';
 import { AdapterPayment } from '../../domain/AdapterPayment';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter, TResident } from '../../domain/Tegrus';
+import { EnumInvoiceStatus } from 'src/domain/Tegrus/EnumInvoiceStatus';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -128,11 +129,28 @@ export default class InvoiceService {
             }
 
             if (resInvoiceId) {
+                if (resInvoiceId.statusInvoice == EnumInvoiceStatus.paid) {
+                    return {
+                        err: true,
+                        data: {
+                            message:
+                                'Invoice is already processed and paid status.',
+                        },
+                    };
+                }
+
+                const resInvoiceUpdate: TInvoice =
+                    await this.invoiceRepository.update({
+                        ...invoice,
+                        invoiceId: invoice.invoiceId,
+                        active: false,
+                    });
+
                 return {
                     err: false,
                     data: {
                         message: 'Invoice is already processed',
-                        ...resInvoiceId,
+                        ...resInvoiceUpdate,
                     },
                 };
             }
