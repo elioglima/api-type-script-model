@@ -33,7 +33,7 @@ export default async (
             residentIdenty: payload.resident.id,
             resident,
         });
-
+        console.log(111, resultIN);
         if (resultIN?.err) return resultIN;
 
         const dataHash: reqCreateHash = {
