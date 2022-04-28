@@ -116,11 +116,11 @@ export class InvoiceRepository {
             paymentMethod: invoice?.paymentMethod,
             statusInvoice: invoice?.statusInvoice,
             apartmentId: invoice?.apartmentId,
-            invoiceId: invoice?.invoiceId,
             isExpired: invoice?.isExpired,
             startReferenceDate: invoice?.startReferenceDate,
             endReferenceDate: invoice?.endReferenceDate,
         };
+        console.log('dataUpdate', dataUpdate);
 
         return await getConnection()
             .getRepository(InvoiceEntity)
