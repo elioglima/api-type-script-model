@@ -21,6 +21,7 @@ const booking = async (payload: TInvoice) => {
 
         const linkInvoice: any = await firstPaymentCreateService(payload);
 
+        console.log('linkInvoice', linkInvoice);
         if (linkInvoice.err)
             return returnTopic(
                 payload,
@@ -28,7 +29,7 @@ const booking = async (payload: TInvoice) => {
                 true,
             );
 
-        if (!linkInvoice?.data?.hashCredit)
+        if (!linkInvoice?.hashCredit)
             return returnTopic(payload, { message: 'Unexpect Error' }, true);
 
         return returnTopic(
