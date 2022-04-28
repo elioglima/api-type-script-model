@@ -15,6 +15,7 @@ const updateInvoice = async (toReceive: any) => {
             fineTicket: toReceive?.updateInvoice?.fineTicket,
             dueDate: toReceive?.updateInvoice?.dueDate,
             description: toReceive?.updateInvoice?.description,
+            recurrenceDate: toReceive?.updateInvoice?.recurrenceDate,
             anticipation: toReceive?.updateInvoice?.anticipation,
             type: toReceive?.updateInvoice?.type,
             paymentMethod: toReceive?.updateInvoice?.paymentMethod,

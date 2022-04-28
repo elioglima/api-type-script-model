@@ -5,6 +5,7 @@ import firstPaymentCreateService from '../../../../../service/tegrus.services/fi
 import { returnTopic } from './returnTopic';
 
 const booking = async (payload: TInvoice) => {
+    console.log('invoice.booking', payload);
     try {
         // const invoiceService = new InvoiceService();
 

@@ -2,7 +2,7 @@ import debug from 'debug';
 import { AdapterPayment } from '../../domain/AdapterPayment';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter, TResident } from '../../domain/Tegrus';
-import { EnumInvoiceStatus } from 'src/domain/Tegrus/EnumInvoiceStatus';
+import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -115,6 +115,7 @@ export default class InvoiceService {
             const { resident: residentData, ...invoiceTwo }: any = invoiceData;
             const resident: TResident = residentData;
             const invoice: TInvoice = invoiceTwo;
+            console.log(777, invoice.invoiceId);
             const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
                 invoice.invoiceId,
             );
@@ -139,18 +140,17 @@ export default class InvoiceService {
                     };
                 }
 
-                const resInvoiceUpdate: TInvoice =
+                const resInvoiceUpdate: any =
                     await this.invoiceRepository.update({
                         ...invoice,
-                        invoiceId: invoice.invoiceId,
-                        active: false,
                     });
 
                 return {
                     err: false,
                     data: {
                         message: 'Invoice is already processed',
-                        ...resInvoiceUpdate,
+                        update: resInvoiceUpdate?.affected == 1,
+                        invoice: resInvoiceId,
                     },
                 };
             }

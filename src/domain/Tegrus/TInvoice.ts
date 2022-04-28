@@ -25,6 +25,7 @@ export type TInvoice = {
     description: string;
     anticipation: boolean;
     referenceDate: Date; //timestamp,
+    recurrenceDate: Date; //timestamp,
     active?: boolean;
     type: EnumInvoiceType;
     paymentMethod: EnumInvoicePaymentMethod;

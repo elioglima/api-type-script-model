@@ -5,6 +5,7 @@ import RecurrenceService from '../../../../../service/recurrenceService';
 import ResidentService from '../../../../../service/residentService';
 
 const invoicing = async (payload: TInvoice) => {
+    console.log('invoice.invoicing', payload);
     // const linkInvoice: TLinkInvoice = await createHash(
     //     Number(payload.invoiceId),
     // );

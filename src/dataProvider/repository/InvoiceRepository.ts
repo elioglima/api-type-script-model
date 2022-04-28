@@ -99,11 +99,34 @@ export class InvoiceRepository {
     };
 
     public update = async (invoice: TInvoice) => {
+        const dataUpdate = {
+            value: invoice?.value,
+            totalValue: invoice?.totalValue,
+            condominium: invoice?.condominium,
+            discount: invoice?.discount,
+            tax: invoice?.tax,
+            refund: invoice?.refund,
+            fine: invoice?.fine,
+            fineTicket: invoice?.fineTicket,
+            dueDate: invoice?.dueDate,
+            description: invoice?.description,
+            recurrenceDate: invoice?.recurrenceDate,
+            anticipation: invoice?.anticipation,
+            type: invoice?.type,
+            paymentMethod: invoice?.paymentMethod,
+            statusInvoice: invoice?.statusInvoice,
+            apartmentId: invoice?.apartmentId,
+            invoiceId: invoice?.invoiceId,
+            isExpired: invoice?.isExpired,
+            startReferenceDate: invoice?.startReferenceDate,
+            endReferenceDate: invoice?.endReferenceDate,
+        };
+
         return await getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .update()
-            .set({ ...invoice, atUpdate: true })
+            .set({ ...dataUpdate, atUpdate: true })
             .where('invoiceId = :invoiceId', { invoiceId: invoice.invoiceId })
             .execute()
             .then(
