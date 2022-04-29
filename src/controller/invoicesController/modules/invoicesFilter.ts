@@ -2,10 +2,8 @@ import { Request, Response } from 'express';
 import InvoiceService from '../../../service/invoiceService';
 import { TInvoiceFilter } from '../../../domain/Tegrus/TInvoice';
 
-
 export const invoicesFilter = async (req: Request, res: Response) => {
     try {
-
         const invoicesFilter: TInvoiceFilter = req?.body;
 
         const invoiceService = new InvoiceService();
@@ -27,6 +25,7 @@ export const invoicesFilter = async (req: Request, res: Response) => {
             condominium: m.condominium,
             discount: m.discount,
             refund: m.refund,
+            tid: m.tid,
             tax: m.tax,
             fine: m.fine,
             fineTicket: m.fineTicket,
@@ -36,6 +35,7 @@ export const invoicesFilter = async (req: Request, res: Response) => {
             totalValue: m.totalValue,
             stepValue: m.stepValue,
             commission: m.commission,
+            expense: m.expense,
         }));
 
         return res.status(200).json({
