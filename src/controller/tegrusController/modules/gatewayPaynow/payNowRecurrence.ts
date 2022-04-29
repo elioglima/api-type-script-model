@@ -141,12 +141,6 @@ export const payNowRecurrence = async (
                 paymentDate: resRecurrence.data.paymentDate,
                 tid: resRecurrence.data.tid,
                 dueDate: invoice.dueDate,
-                value: invoice.value,
-                totalValue: invoice.totalValue,
-                tax: invoice.tax,
-                refund: invoice.refund,
-                expense: invoice.expense,
-                fine: invoice.fine,
                 residentName: resident.name,
                 enterpriseId: invoice.enterpriseId,
                 apartmentId: invoice.apartmentId,
@@ -155,6 +149,19 @@ export const payNowRecurrence = async (
                 endReferenceDate: invoice.endReferenceDate,
                 referenceCode: resRecurrence.referenceCode,
                 message: resRecurrence.message,
+
+                value: invoice.value,
+                totalValue: invoice.totalValue,
+                tax: invoice.tax,
+                refund: invoice.refund,
+                expense: invoice.expense,
+                fine: invoice.fine,
+                discount: invoice.discount,
+                condominium: invoice.condominium,
+                fineTicket: invoice.fineTicket,
+                stepValue: invoice.stepValue,
+                commission: invoice.commission,
+
                 recurrence: {
                     ...(resRecurrence.data.recurrence
                         ? resRecurrence.data.recurrence

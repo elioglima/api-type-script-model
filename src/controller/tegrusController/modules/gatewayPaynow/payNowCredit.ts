@@ -79,6 +79,11 @@ export const payNowCredit = async (
                     refund: invoice.refund,
                     expense: invoice.expense,
                     fine: invoice.fine,
+                    discount: invoice.discount,
+                    condominium: invoice.condominium,
+                    fineTicket: invoice.fineTicket,
+                    stepValue: invoice.stepValue,
+                    commission: invoice.commission,
                 },
             });
         }
