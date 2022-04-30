@@ -29,8 +29,7 @@ const returnTopic = (
                     ...respData,
                     ...(err
                         ? {
-                              messageError:
-                                  response?.message || 'unexpected error',
+                              messageError: message || 'unexpected error',
                           }
                         : { message }),
                 },
@@ -99,6 +98,7 @@ export const payNowCredit = async (
             true,
         );
 
+        console.log(999, 'resPayAdapter', resPayAdapter);
         if (resPayAdapter?.err)
             return returnTopic(
                 {
@@ -108,6 +108,9 @@ export const payNowCredit = async (
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
                     message: resMessage.message,
+                    messagePrivate:
+                        resPayAdapter?.data?.message ||
+                        'no messages returned from cielo',
                     referenceCode: 7,
                 },
                 true,
@@ -117,7 +120,6 @@ export const payNowCredit = async (
             resPayAdapter?.payment?.receivedDate || new Date();
         const newStatusInvoice = EnumInvoiceStatus.paid;
 
-        console.log(111, resPayAdapter.data.payment);
         const returnCode = resPayAdapter.data.payment.returnCode;
 
         const { code, message }: any = defaultReturnMessage(returnCode);
@@ -126,31 +128,35 @@ export const payNowCredit = async (
             ? 1
             : 7;
 
-        const updateInvoice: TInvoice = {
-            ...invoice,
-            paymentDate,
-            statusInvoice: newStatusInvoice,
-            returnMessage: message,
-            paymentId: resPayAdapter?.data?.payment?.paymentId,
-            tid: resPayAdapter.data.payment.tid,
-            returnCode: code,
-            referenceCode,
-        };
+        let resUpdate: any = {};
 
-        const resUpdate: any = await invoiceService.Update(updateInvoice);
-        if (resUpdate.err)
-            return returnTopic(
-                {
-                    invoiceId: invoice.invoiceId,
-                    paymentDate: null,
-                    statusInvoice: invoice.statusInvoice,
-                    paymentMethod: invoice.paymentMethod,
-                    type: invoice.type,
-                    referenceCode,
-                    message: message,
-                },
-                true,
-            );
+        if (referenceCode == 1) {
+            const updateInvoice: TInvoice = {
+                ...invoice,
+                paymentDate,
+                statusInvoice: newStatusInvoice,
+                returnMessage: message,
+                paymentId: resPayAdapter?.data?.payment?.paymentId,
+                tid: resPayAdapter.data.payment.tid,
+                returnCode: code,
+                referenceCode,
+            };
+
+            resUpdate = await invoiceService.Update(updateInvoice);
+            if (resUpdate.err)
+                return returnTopic(
+                    {
+                        invoiceId: invoice.invoiceId,
+                        paymentDate: null,
+                        statusInvoice: invoice.statusInvoice,
+                        paymentMethod: invoice.paymentMethod,
+                        type: invoice.type,
+                        referenceCode,
+                        message: message,
+                    },
+                    true,
+                );
+        }
 
         return returnTopic(
             {
@@ -172,14 +178,20 @@ export const payNowCredit = async (
                     err: referenceCode == 7,
                     referenceCode,
                     invoiceId: invoice.invoiceId,
-                    statusInvoice: newStatusInvoice,
+                    statusInvoice:
+                        referenceCode == 1
+                            ? newStatusInvoice
+                            : invoice.statusInvoice,
                     residentName: resident.name,
                     enterpriseId: invoice.enterpriseId,
                     apartmentId: invoice.apartmentId,
                     paymentMethod: invoice.paymentMethod,
                     paymentDate,
                     message: message,
-                    tid: resPayAdapter.data.payment.tid,
+                    tid:
+                        referenceCode == 1
+                            ? resPayAdapter.data.payment.tid
+                            : null,
                     dueDate: invoice.dueDate,
                     value: invoice.value,
                     totalValue: invoice.totalValue,

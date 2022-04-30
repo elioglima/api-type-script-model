@@ -55,12 +55,18 @@ const servicePrivate = async (payload: TPayNowReq) => {
         if (payload?.hash) {
             const resHash: any = await hashServices.execute(hash);
             if (resHash.err) return resHash;
+            console.log(11133, resHash);
 
             if (
-                Object.keys(resHash?.data || {}).find(f => f == 'isValid') &&
-                !resHash?.data?.isValid
+                (Object.keys(resHash?.data || {}).find(f => f == 'isValid') &&
+                    !resHash?.data?.isValid) ||
+                [2].includes(resHash?.data?.code)
             )
-                return resHash;
+                return {
+                    err: true,
+                    status: 422,
+                    data: resHash?.data,
+                };
 
             resInvoice = await invoiceService.FindOne(
                 resHash?.invoice?.invoiceId,
@@ -77,7 +83,8 @@ const servicePrivate = async (payload: TPayNowReq) => {
 
         if (resInvoice?.data?.statusInvoice == 'paid') {
             return {
-                err: false,
+                err: true,
+                status: 422,
                 data: {
                     message: 'invoice is already paid',
                 },
@@ -133,11 +140,18 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 await recurrenceService.DisableIsExist(resident);
 
                 const checkedReturn = async (result: any) => {
-                    if (result?.err) return result;
+                    if (result?.err)
+                        return {
+                            ...result,
+                            status: 422,
+                        };
 
                     // desativa hash caso o pagamento seja efetuado
                     await hashServices.TerminateHashTTL(hash);
-                    return result;
+                    return {
+                        ...result,
+                        status: 200,
+                    };
                 };
 
                 if (invoice.isRecurrence && !invoice.atUpdate) {
@@ -182,7 +196,9 @@ const gatewayPaynow = async (req: Request, res: Response) => {
     try {
         const body: TPayNowReq = req?.body;
         const response = await servicePrivate(body);
-        return res.status(200).json(response);
+        return res
+            .status(response?.status || response?.err == true ? 422 : 500)
+            .json(response);
     } catch (error: any) {
         return res.status(422).json(error);
     }
