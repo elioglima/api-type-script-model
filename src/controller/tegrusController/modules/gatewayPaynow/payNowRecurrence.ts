@@ -125,6 +125,7 @@ export const payNowRecurrence = async (
         const { code, message }: any = defaultReturnMessage(returnCode);
         console.log(code, message);
         console.log(999, 'resRecurrence', resRecurrence?.data);
+        console.log(77777, resident);
 
         let referenceCode = code;
         if (referenceCode == 1) {
@@ -158,6 +159,10 @@ export const payNowRecurrence = async (
                 tid: resRecurrence?.data?.tid,
                 dueDate: invoice?.dueDate,
                 residentName: resident?.name,
+                residentEmail: resident.email,
+                residentDocumentType: resident.documentType,
+                residentDocument: resident.document,
+
                 enterpriseId: invoice?.enterpriseId,
                 apartmentId: invoice?.apartmentId,
                 paymentMethod: invoice?.paymentMethod,

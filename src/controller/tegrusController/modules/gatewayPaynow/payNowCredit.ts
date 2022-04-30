@@ -108,6 +108,7 @@ export const payNowCredit = async (
         const { code, message }: any = defaultReturnMessage(returnCode);
         console.log(code, message);
         console.log(999, 'resPayAdaptersss', resPayAdapter?.data?.data);
+        console.log(77777, resident);
 
         if (resPayAdapter?.err || resPayAdapter?.data?.data)
             return returnTopic(
@@ -185,6 +186,9 @@ export const payNowCredit = async (
                             ? newStatusInvoice
                             : invoice.statusInvoice,
                     residentName: resident.name,
+                    residentEmail: resident.email,
+                    residentDocumentType: resident.documentType,
+                    residentDocument: resident.document,
                     enterpriseId: invoice.enterpriseId,
                     apartmentId: invoice.apartmentId,
                     paymentMethod: invoice.paymentMethod,
