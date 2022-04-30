@@ -88,6 +88,7 @@ export const payNowCredit = async (
         }
 
         const invoiceService = new InvoiceService();
+        console.log(123);
         const resPayAdapter: any = await payAdatpter(
             resident,
             {
@@ -97,9 +98,18 @@ export const payNowCredit = async (
             invoice,
             true,
         );
+        console.log(124);
 
-        console.log(999, 'resPayAdapter', resPayAdapter);
-        if (resPayAdapter?.err)
+        const paymentDate: Date =
+            resPayAdapter?.payment?.receivedDate || new Date();
+        const newStatusInvoice = EnumInvoiceStatus.paid;
+        const returnCode = resPayAdapter?.data?.payment?.returnCode;
+
+        const { code, message }: any = defaultReturnMessage(returnCode);
+        console.log(code, message);
+        console.log(999, 'resPayAdaptersss', resPayAdapter?.data?.data);
+
+        if (resPayAdapter?.err || resPayAdapter?.data?.data)
             return returnTopic(
                 {
                     invoiceId: invoice.invoiceId,
@@ -109,24 +119,16 @@ export const payNowCredit = async (
                     type: invoice.type,
                     message: resMessage.message,
                     messagePrivate:
+                        resPayAdapter?.data?.data?.message ||
                         resPayAdapter?.data?.message ||
                         'no messages returned from cielo',
-                    referenceCode: 7,
+                    referenceCode: code,
+                    referenceDescription: message,
                 },
                 true,
             );
 
-        const paymentDate: Date =
-            resPayAdapter?.payment?.receivedDate || new Date();
-        const newStatusInvoice = EnumInvoiceStatus.paid;
-
-        const returnCode = resPayAdapter.data.payment.returnCode;
-
-        const { code, message }: any = defaultReturnMessage(returnCode);
-
-        let referenceCode = ['00', 0, '04', '4', 4].includes(returnCode)
-            ? 1
-            : 7;
+        let referenceCode = code;
 
         let resUpdate: any = {};
 
@@ -208,7 +210,7 @@ export const payNowCredit = async (
                     commission: invoice.commission,
                 },
             },
-            referenceCode == 7,
+            referenceCode != 1,
         );
     } catch (error: any) {
         return returnTopic(
