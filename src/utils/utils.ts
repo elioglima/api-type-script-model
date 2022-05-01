@@ -21,8 +21,8 @@ export class Utils {
             hostname,
             method,
             notContentType: notContentType || false,
-        });
-        
+        });        
+
         const response = await this.request<T>(options, {});        
 
         return response;

@@ -1,3 +1,4 @@
+import { recurrentePayment } from './../../domain/RecurrentPayment/recurrentCreate';
 import debug from 'debug';
 import {
     TRecurrence,
@@ -67,7 +68,6 @@ export default class RecurrenceService {
                 },
             );
 
-                        
             if (resRecurrence instanceof Error) return rError(resRecurrence);
 
             if (!resRecurrence?.recurrentPayment)
@@ -422,5 +422,52 @@ export default class RecurrenceService {
                 },
             };
         }
+    };
+
+    public RefoundRecurrence = async (invoiceId: number) => {
+        const resInvoice: any = await this.invoiceService.FindOne(invoiceId);
+
+        if (resInvoice.err)
+            return rError({
+                message: resInvoice?.data?.message,
+            });
+
+        const { data: dataInvoice } = resInvoice;
+
+        if (dataInvoice.statusInvoice != EnumInvoiceStatus.paid)
+            return rError({
+                message: 'This is recurrence was not paid yet.',
+            });
+
+        if (dataInvoice.paymentMethod == EnumInvoicePaymentMethod.credit)
+            return rError({
+                message: 'This is not bought by a credit card.',
+            });
+
+        if (!dataInvoice.isRecurrence)
+            return rError({
+                message: 'This is not a recurrence.',
+            });
+
+        const preUserId = dataInvoice?.residentIdenty?.id;
+
+        const recurrence = await this.repository.getByPreUserId(preUserId);
+
+        if (recurrence.length == 0)
+            return rError({
+                message: 'unexpected error',
+            });
+
+        if (recurrence instanceof Error)
+            return rError({
+                message: 'unexpected error',
+            });
+
+        const paymentAdapter = new AdapterPayment();
+
+        const resRecurrence = await paymentAdapter.recurrenceFind(recurrence?.recurrentePaymentId);
+
+        const resRefunded =  await paymentAdapter.refoundPayment(recurrence?.recurrentePaymentId);
+
     };
 }
