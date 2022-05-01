@@ -169,7 +169,7 @@ export class AdapterPayment implements IAdapter {
     public async find(payload: reqFindPayment) {
         if (!this.paymentProvider) throw new Error('Error provider not found.');
         try {
-            const response = await this.paymentProvider.find(payload);            
+            const response = await this.paymentProvider.find(payload);
             return response;
         } catch (error) {
             console.log('recurrenceFind', error);

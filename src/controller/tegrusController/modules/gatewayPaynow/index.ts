@@ -170,7 +170,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
             );
         }
     } catch (error: any) {
-        console.log(error);
+        console.log(777, error);
         return returnTopic(
             { message: 'resident not found in database, unexpected error' },
             true,

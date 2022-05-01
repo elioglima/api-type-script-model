@@ -163,6 +163,7 @@ export default class RecurrenceService {
             );
             if (checkExists?.err) return rError(resCreateAdapter.data);
 
+            console.log({ recurrence });
             const makeRecurrent: any = {
                 MerchantOrderId: invoice?.invoiceId
                     .toString()
@@ -176,7 +177,7 @@ export default class RecurrenceService {
                 },
                 payment: {
                     Type: 'CreditCard',
-                    Amount: invoice?.valueTotal,
+                    Amount: invoice?.totalValue.toString().replace('.', ''),
                     Installments: 1,
                     SoftDescriptor: 'Recorrencia JFL',
                     RecurrentPayment: {
@@ -196,6 +197,7 @@ export default class RecurrenceService {
                 },
             };
 
+            console.log(123, makeRecurrent);
             const resRecurrentCreate: any =
                 await this.paymentAdapter.recurrentCreate(makeRecurrent);
 

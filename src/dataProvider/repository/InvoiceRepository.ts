@@ -94,8 +94,8 @@ export class InvoiceRepository {
                 statusInvoice: filter.statusInvoice,
             });
         }
-        
-        return await db.getMany();
+
+        return await db.orderBy('invoice.id', 'DESC').getMany();
     };
 
     public update = async (invoice: TInvoice) => {

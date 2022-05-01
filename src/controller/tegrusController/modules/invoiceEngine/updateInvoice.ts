@@ -6,7 +6,7 @@ const updateInvoice = async (toReceive: any) => {
         // retorno do app >> bff >> tegrus
         const updataData: any = {
             value: toReceive?.updateInvoice?.value,
-            valueTotal: toReceive?.updateInvoice?.valueTotal,
+            totalValue: toReceive?.updateInvoice?.totalValue,
             condominium: toReceive?.updateInvoice?.condominium,
             discount: toReceive?.updateInvoice?.discount,
             tax: toReceive?.updateInvoice?.tax,

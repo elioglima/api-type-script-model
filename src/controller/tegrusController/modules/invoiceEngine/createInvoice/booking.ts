@@ -1,24 +1,23 @@
 import { TInvoice } from '../../../../../domain/Tegrus/TInvoice';
-import InvoiceService from '../../../../../service/invoiceService';
+// import InvoiceService from '../../../../../service/invoiceService';
 import firstPaymentCreateService from '../../../../../service/tegrus.services/firstPaymentCreateService';
 
 import { returnTopic } from './returnTopic';
 
 const booking = async (payload: TInvoice) => {
     try {
-        const invoiceService = new InvoiceService();
+        // const invoiceService = new InvoiceService();
 
-        const resFindOne = await invoiceService.FindOne(payload.invoiceId);
-        if (!resFindOne?.err && resFindOne?.data)
-            return returnTopic(
-                payload,
-                {
-                    message: 'invoice already exists in the database',
-                },
-                true,
-            );
+        // const resFindOne = await invoiceService.FindOne(payload.invoiceId);
+        // if (!resFindOne?.err && resFindOne?.data)
+        //     return returnTopic(
+        //         payload,
+        //         {
+        //             message: 'invoice already exists in the database',
+        //         },
+        //         true,
+        //     );
 
-        
         const linkInvoice: any = await firstPaymentCreateService(payload);
 
         if (linkInvoice.err)
@@ -32,7 +31,7 @@ const booking = async (payload: TInvoice) => {
             false,
             linkInvoice,
         );
-    } catch (error: any) {        
+    } catch (error: any) {
         return returnTopic(
             payload,
             { message: error?.message || 'Unexpect Error' },
