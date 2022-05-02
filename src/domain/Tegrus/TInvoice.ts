@@ -31,6 +31,7 @@ export type TInvoice = {
     statusInvoice: EnumInvoiceStatus;
     isRecurrence: boolean;
     residentIdenty?: any;
+    comments?:string;
     // recurrenceId?: number;
     paymentDate?: Date;
     returnMessage?: string;
@@ -38,6 +39,7 @@ export type TInvoice = {
     tid?: string;
     returnCode?: string;
     isExpired?: boolean;
+    isRefunded?: boolean;
     atUpdate?: boolean;
     referenceCode?: number;
     resident: TResident;

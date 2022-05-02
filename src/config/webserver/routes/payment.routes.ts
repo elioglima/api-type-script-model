@@ -19,5 +19,5 @@ payment
     .put('/inactivate-card/:userId', paymentController.inactivateUserCards)
     .post('/pix', paymentController.makePix)
     .get('/pix/getReceipt/:merchantOrderId', paymentController.getReceiptPix)
-    .put('/refound/recurrence/:id', paymentController.RefoundRecurrencePayment)
+    .post('/refund/recurrence', paymentController.RefoundRecurrencePayment)
     

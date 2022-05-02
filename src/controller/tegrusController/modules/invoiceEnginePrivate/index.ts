@@ -14,7 +14,6 @@ import { TResident } from '../../../../domain/Tegrus';
 
 const invoiceEnginePrivate = async (req: Request, res: Response) => {
     try {
-        console.log(req.body);
         const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();
 
@@ -32,7 +31,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
         };
 
         const invoicesFounded: any = await invoiceService.Find(invoiceSearch);
-
+        console.log('invoicesFounded', invoicesFounded);
         if (invoicesFounded.err) return invoicesFounded;
 
         if (!invoicesFounded.data.length) return;
@@ -74,6 +73,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                                 paymentId,
                                 enterpriseId,
                             );
+
                         if (
                             tryNumber >= 3 &&
                             ![1, 2].includes(

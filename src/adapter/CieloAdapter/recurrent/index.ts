@@ -47,6 +47,7 @@ export class RecurentMethods {
     public async Find(payload: reqRecurrentPaymentConsult) {
         if (!this.util) return this.error('this.util not started');
 
+        console.log("PAYLOAD", payload)
         if (!payload.recurrentPaymentId)
             return this.error('recurrenceId was not informed.');
 
