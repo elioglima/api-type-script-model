@@ -14,7 +14,6 @@ import { TResident } from '../../../../domain/Tegrus';
 
 const invoiceEnginePrivate = async (req: Request, res: Response) => {
     try {
-        console.log(req.body);
         const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();
 
@@ -31,8 +30,7 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
             statusInvoice: EnumInvoiceStatus.issued,
         };
 
-        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);
-
+        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);        
         if (invoicesFounded.err) return invoicesFounded;
 
         if (!invoicesFounded.data.length) return;
@@ -62,11 +60,12 @@ const invoiceEnginePrivate = async (req: Request, res: Response) => {
                                 data: recurrency.data.message,
                             };
 
+                        const recurrenceNumber: number = Number(invoice?.recurenceNumber) - 1;
                         const paymentId: string =
-                            recurrency?.data?.recurrentTransactions[0]
+                            recurrency?.data?.recurrentTransactions[recurrenceNumber]
                                 ?.paymentId;
                         const tryNumber: number =
-                            recurrency?.data?.recurrentTransactions[0]
+                            recurrency?.data?.recurrentTransactions[recurrenceNumber]
                                 ?.tryNumber;
                         const enterpriseId: number = resident.enterpriseId;
                         const receiptCielo: any =

@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { TegrusController } from '../../../controller/tegrusController';
-// import {invoiceEnginePrivate} from '../../../controller/tegrusController/modules/invoiceEnginePrivate/'
 
 const PaymentTegrusController = new TegrusController();
 export const tegrus: Router = Router();
