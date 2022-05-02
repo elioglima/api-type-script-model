@@ -305,14 +305,11 @@ export class PaymentController {
     public RefoundRecurrencePayment = async (req: Request, res: Response) => {
         try {
             this.logger(`Refound payment`, req.body);
-            const { invoiceId, paymentNumber, comments} = req.body
+            const { invoiceId, comments} = req.body
             const data: any = await this.recurrenceService.RefoundRecurrence(
-                invoiceId,
-                paymentNumber,
+                invoiceId,                
                 comments
-            );
-
-            console.log("DATA", data)
+            );            
 
             if (data instanceof Error) {
                 this.logger('Error', data?.message);

@@ -425,8 +425,7 @@ export default class RecurrenceService {
     };
 
     public RefoundRecurrence = async (
-        invoiceId: number,
-        paymentNumber: number,
+        invoiceId: number,        
         comments: string
     ) => {
         const resInvoice: any = await this.invoiceService.FindOne(invoiceId);
@@ -455,9 +454,7 @@ export default class RecurrenceService {
 
         const residentId = dataInvoice?.residentIdenty?.id;
 
-        const recurrence = await this.repository.getByPreUserId(residentId);
-
-        console.log("recurrence", recurrence)
+        const recurrence = await this.repository.getByPreUserId(residentId);        
 
         if (recurrence.length == 0)
             return rError({
@@ -475,28 +472,30 @@ export default class RecurrenceService {
         const resRecurrence: any = await paymentAdapter.recurrenceFind(
            {recurrentPaymentId: recurrence?.recurrentPaymentId}
         );
-
-        console.log("resRecurrence?.RecurrentTransactions", resRecurrence)
-        if (resRecurrence.recurrentTransactions.length < paymentNumber - 1)
+        
+        if (resRecurrence.recurrentPayment.recurrentTransactions.length < dataInvoice.recurrenceNumber - 1)
             return rError({
                 message: 'unexpected error',
             });
-
+        
         const stepPay =
-            resRecurrence.RecurrentTransactions[paymentNumber - 1].PaymentId;
+            resRecurrence.recurrentPayment.recurrentTransactions[dataInvoice.recurenceNumber - 1].paymentId;
                 
+        
         const resRefunded:any = await paymentAdapter.refoundPayment(
             {
                 paymentId: stepPay,
-                amount: dataInvoice.value
+                amount: dataInvoice.value * 100
             }            
         );
 
+        console.log("resRefunded", JSON.stringify(resRefunded))
+
         if(resRefunded instanceof Error) return rError({
-            message: 'Error to refund',
+            message: 'Unexpected Error',
         });
 
-        if(![0,6].includes(resRefunded.ReturnCode)) return rError({
+        if(![0,6].includes(Number(resRefunded.returnCode))) return rError({
             message: 'Error to refund',
         });
 
