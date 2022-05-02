@@ -3,6 +3,7 @@ import debug from 'debug';
 import { Request, Response } from 'express';
 
 import service from '../../service/index';
+import RecurrenceService from '../../service/recurrenceService';
 import { UpdateByGatewayIdService } from '../../service/UpdateByGatewayIdService';
 import { FindPaymentByIdService } from '../../service/FindPaymentByIdService';
 import { CreatePaymentConfigService } from '../../service/CreatePaymentConfigService';
@@ -21,6 +22,7 @@ export class PaymentController {
     private CardAddService = new service.CardAddService();
     private CardRemoveService = new service.CardRemoveService();
     private refoundPaymentService = new service.RefoundPaymentService();
+    private recurrenceService = new RecurrenceService();
 
     private updateByGatewayIdService = new UpdateByGatewayIdService();
     private findPaymentByIdService = new FindPaymentByIdService();
@@ -299,4 +301,31 @@ export class PaymentController {
             return res.status(422).json(error);
         }
     };
+
+    public RefoundRecurrencePayment = async (req: Request, res: Response) => {
+        try {
+            this.logger(`Refound payment`, req.body);
+            const { invoiceId, comments} = req.body
+            const data: any = await this.recurrenceService.RefoundRecurrence(
+                invoiceId,                
+                comments
+            );            
+
+            if (data instanceof Error) {
+                this.logger('Error', data?.message);
+                return res.status(422).json(data.message);
+            }
+
+            if (data.err) {
+                this.logger('Error', data?.message);
+                return res.status(422).json(data?.data?.message);
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            this.logger(`Error`, error);
+            return res.status(422).json(error);
+        }
+    };
+
 }

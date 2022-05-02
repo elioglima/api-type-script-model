@@ -3,16 +3,49 @@ import { getConnection } from 'typeorm';
 import { TInvoice, TInvoiceFilter } from '../../domain/Tegrus/TInvoice';
 
 export class InvoiceRepository {
-    public persist = async (invoice: TInvoice) =>
-        await getConnection()
+    public persist = async (invoice: TInvoice) => {
+        // startReferenceDate referenceDate
+        const dataInsert = {
+            date: new Date(),
+            invoiceId: invoice?.invoiceId,
+            apartmentId: invoice?.apartmentId,
+            enterpriseId: invoice?.enterpriseId,
+            stepValue: invoice?.stepValue,
+            firstPayment: invoice?.firstPayment,
+            residentIdenty: invoice?.residentIdenty,
+
+            value: invoice?.value,
+            totalValue: invoice?.totalValue,
+            commission: invoice?.commission,
+            expense: invoice?.expense,
+            condominium: invoice?.condominium,
+            discount: invoice?.discount,
+            tax: invoice?.tax,
+            refund: invoice?.refund,
+            fine: invoice?.fine,
+            fineTicket: invoice?.fineTicket,
+
+            dueDate: invoice?.dueDate,
+            description: invoice?.description,
+            anticipation: invoice?.anticipation,
+            type: invoice?.type,
+            paymentMethod: invoice?.paymentMethod,
+            statusInvoice: invoice?.statusInvoice,
+            isExpired: invoice?.isExpired,
+
+            isRecurrence: invoice?.isRecurrence,
+            recurrenceDate: invoice?.recurrenceDate,
+            startReferenceDate: invoice?.startReferenceDate,
+            endReferenceDate: invoice?.endReferenceDate,
+            recurenceNumber: invoice?.recurenceNumber,
+            recurenceTotalNumber: invoice?.recurenceTotalNumber,
+        };
+
+        return await getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .insert()
-            .values([
-                {
-                    ...invoice,
-                },
-            ])
+            .values([dataInsert])
             .execute()
             .then(
                 () => {
@@ -22,6 +55,7 @@ export class InvoiceRepository {
                     return onRejected;
                 },
             );
+    };
 
     public getById = async (id: number) =>
         await getConnection()
@@ -119,7 +153,14 @@ export class InvoiceRepository {
             isExpired: invoice?.isExpired,
             startReferenceDate: invoice?.startReferenceDate,
             endReferenceDate: invoice?.endReferenceDate,
+            commission: invoice?.commission,
+            expense: invoice?.expense,
+            recurenceNumber: invoice?.recurenceNumber,
+            recurenceTotalNumber: invoice?.recurenceTotalNumber,
+            comments: invoice?.comments,
+            isRefunded: invoice?.isRefunded
         };
+
         console.log('dataUpdate', dataUpdate);
 
         return await getConnection()

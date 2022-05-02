@@ -24,7 +24,6 @@ export type TInvoice = {
     dueDate: Date; //timestamp,
     description: string;
     anticipation: boolean;
-    referenceDate: Date; //timestamp,
     recurrenceDate: Date; //timestamp,
     active?: boolean;
     type: EnumInvoiceType;
@@ -32,6 +31,7 @@ export type TInvoice = {
     statusInvoice: EnumInvoiceStatus;
     isRecurrence: boolean;
     residentIdenty?: any;
+    comments?: string;
     // recurrenceId?: number;
     paymentDate?: Date;
     returnMessage?: string;
@@ -39,6 +39,7 @@ export type TInvoice = {
     tid?: string;
     returnCode?: string;
     isExpired?: boolean;
+    isRefunded?: boolean;
     atUpdate?: boolean;
     referenceCode?: number;
     resident: TResident;
@@ -46,6 +47,10 @@ export type TInvoice = {
     tryNumber?: number;
     startReferenceDate: Date;
     endReferenceDate: Date;
+    referenceDate: Date; //timestamp,
+    recurenceTotalNumber?: number; // total de parcelas de aluguel a pagar
+    recurenceNumber?: number; // aluguel atual
+    firstPayment?: boolean;
 };
 
 export type TInvoiceFilter = {
