@@ -202,6 +202,20 @@ export class InvoiceEntity {
     firstPayment: Boolean | undefined;
 
     @Column({
+        name: 'recurenceNumber',
+        type: 'int',
+        nullable: true,
+    })
+    recurenceNumber: Number | undefined;
+
+    @Column({
+        name: 'recurenceTotalNumber',
+        type: 'int',
+        nullable: true,
+    })
+    recurenceTotalNumber: Number | undefined;
+
+    @Column({
         name: 'recurrenceDate',
         type: 'timestamp',
         nullable: true,
