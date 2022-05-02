@@ -1,3 +1,4 @@
+import { recurrentePayment } from './../../domain/RecurrentPayment/recurrentCreate';
 import debug from 'debug';
 import {
     TRecurrence,
@@ -421,5 +422,89 @@ export default class RecurrenceService {
                 },
             };
         }
+    };
+
+    public RefoundRecurrence = async (
+        invoiceId: number,        
+        comments: string
+    ) => {
+        const resInvoice: any = await this.invoiceService.FindOne(invoiceId);
+                
+        if (resInvoice.err)
+            return rError({
+                message: resInvoice?.data?.message,
+            });
+
+        const { data: dataInvoice } = resInvoice;
+
+        if (dataInvoice.statusInvoice != EnumInvoiceStatus.paid)
+            return rError({
+                message: 'This recurrence was not paid yet.',
+            });
+        
+        if (dataInvoice.paymentMethod != EnumInvoicePaymentMethod.credit)
+            return rError({
+                message: 'This recurrence not bought by a credit card.',
+            });
+
+        if (!dataInvoice.isRecurrence)
+            return rError({
+                message: 'This is not a recurrence.',
+            });
+
+        const residentId = dataInvoice?.residentIdenty?.id;
+
+        const recurrence = await this.repository.getByPreUserId(residentId);        
+
+        if (recurrence.length == 0)
+            return rError({
+                message: 'unexpected error',
+            });
+
+        if (recurrence instanceof Error)
+            return rError({
+                message: 'unexpected error',
+            });
+
+        const paymentAdapter = new AdapterPayment();
+        await paymentAdapter.init(dataInvoice?.residentIdenty?.enterpriseId)
+                
+        const resRecurrence: any = await paymentAdapter.recurrenceFind(
+           {recurrentPaymentId: recurrence?.recurrentPaymentId}
+        );
+        
+        if (resRecurrence.recurrentPayment.recurrentTransactions.length < dataInvoice.recurrenceNumber - 1)
+            return rError({
+                message: 'unexpected error',
+            });
+        
+        const stepPay =
+            resRecurrence.recurrentPayment.recurrentTransactions[dataInvoice.recurenceNumber - 1].paymentId;
+                
+        
+        const resRefunded:any = await paymentAdapter.refoundPayment(
+            {
+                paymentId: stepPay,
+                amount: dataInvoice.value * 100
+            }            
+        );
+
+        console.log("resRefunded", JSON.stringify(resRefunded))
+
+        if(resRefunded instanceof Error) return rError({
+            message: 'Unexpected Error',
+        });
+
+        if(![0,6].includes(Number(resRefunded.returnCode))) return rError({
+            message: 'Error to refund',
+        });
+
+       const updateInvoice = await this.invoiceService.Update({...dataInvoice, comments, isRefunded: true})
+
+       if(updateInvoice.err) return rError({
+           message: updateInvoice.data.message
+       })
+
+       return rSuccess({message: "Payment refounded with success"});
     };
 }

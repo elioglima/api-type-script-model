@@ -167,6 +167,13 @@ export class InvoiceEntity {
     description: string | undefined;
 
     @Column({
+        name: 'comments',
+        type: 'varchar',
+        nullable: true,
+    })
+    comments: string | undefined;
+
+    @Column({
         name: 'anticipation',
         type: 'boolean',
         default: false,
@@ -179,6 +186,13 @@ export class InvoiceEntity {
         default: false,
     })
     isExpired: Boolean | undefined;
+
+    @Column({
+        name: 'isRefunded',
+        type: 'boolean',
+        default: false,
+    })
+    isRefunded: Boolean | undefined;
 
     @Column({
         name: 'atUpdate',
@@ -200,6 +214,20 @@ export class InvoiceEntity {
         nullable: true,
     })
     firstPayment: Boolean | undefined;
+
+    @Column({
+        name: 'recurenceNumber',
+        type: 'int',
+        nullable: true,
+    })
+    recurenceNumber: Number | undefined;
+
+    @Column({
+        name: 'recurenceTotalNumber',
+        type: 'int',
+        nullable: true,
+    })
+    recurenceTotalNumber: Number | undefined;
 
     @Column({
         name: 'recurrenceDate',
