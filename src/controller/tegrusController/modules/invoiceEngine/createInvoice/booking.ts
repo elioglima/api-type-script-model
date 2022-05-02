@@ -5,6 +5,7 @@ import firstPaymentCreateService from '../../../../../service/tegrus.services/fi
 import { returnTopic } from './returnTopic';
 
 const booking = async (payload: TInvoice) => {
+    console.log('invoice.booking', payload);
     try {
         // const invoiceService = new InvoiceService();
 
@@ -20,7 +21,15 @@ const booking = async (payload: TInvoice) => {
 
         const linkInvoice: any = await firstPaymentCreateService(payload);
 
+        console.log('linkInvoice', linkInvoice);
         if (linkInvoice.err)
+            return returnTopic(
+                payload,
+                { message: linkInvoice.data.message || 'Unexpect Error' },
+                true,
+            );
+
+        if (!linkInvoice?.hashCredit)
             return returnTopic(payload, { message: 'Unexpect Error' }, true);
 
         return returnTopic(

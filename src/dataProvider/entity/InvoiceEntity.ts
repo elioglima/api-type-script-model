@@ -204,18 +204,49 @@ export class InvoiceEntity {
     @Column({
         name: 'referenceDate',
         type: 'timestamp',
+        nullable: true,
     })
     referenceDate: Date | undefined;
 
     @Column({
+        name: 'firstPayment',
+        type: 'boolean',
+        nullable: true,
+    })
+    firstPayment: Boolean | undefined;
+
+    @Column({
+        name: 'recurenceNumber',
+        type: 'int',
+        nullable: true,
+    })
+    recurenceNumber: Number | undefined;
+
+    @Column({
+        name: 'recurenceTotalNumber',
+        type: 'int',
+        nullable: true,
+    })
+    recurenceTotalNumber: Number | undefined;
+
+    @Column({
+        name: 'recurrenceDate',
+        type: 'timestamp',
+        nullable: true,
+    })
+    recurrenceDate: Date | undefined;
+
+    @Column({
         name: 'startReferenceDate',
         type: 'timestamp',
+        nullable: true,
     })
     startReferenceDate: Date | undefined;
 
     @Column({
         name: 'endReferenceDate',
         type: 'timestamp',
+        nullable: true,
     })
     endReferenceDate: Date | undefined;
 

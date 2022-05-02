@@ -43,9 +43,8 @@ export const payAdatpter = async (
         };
 
         const resCard: any = await cardAddService.execute(requestCardAdd);
-
-        if (resCard?.error) return rError(resCard);
-        if (resCard?.abortProcess) return rError(resCard);
+        if (resCard?.err) return rError(resCard?.data || resCard);
+        if (resCard?.abortProcess) return rError(resCard?.data || resCard);
 
         if (isPayment) {
             const reqPayment: reqMakePayment = {

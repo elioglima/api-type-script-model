@@ -4,6 +4,7 @@ import createHash from '../createHash';
 import { returnTopic } from './returnTopic';
 
 const spotInvoiceFine = async (payload: TInvoice) => {
+    console.log('invoice.spotInvoiceFine', payload);
     const linkInvoice: TLinkInvoice = await createHash(
         Number(payload.invoiceId),
     );

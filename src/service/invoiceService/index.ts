@@ -2,6 +2,8 @@ import debug from 'debug';
 import { AdapterPayment } from '../../domain/AdapterPayment';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter, TResident } from '../../domain/Tegrus';
+import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
+import moment from 'moment';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
@@ -107,13 +109,41 @@ export default class InvoiceService {
         };
     };
 
-    public FindOneInclude = async (invoiceData: TInvoice) => {
+    private recurrenceCalculator = async (invoiceData: TInvoice) => {
+        let invoice = invoiceData;
+
+        if (invoiceData.statusInvoice == EnumInvoiceStatus.paid) return invoice;
+        if (!invoiceData.isRecurrence) return invoice;
+
+        const dateTemp =
+            invoice?.recurrenceDate || invoice?.endReferenceDate || undefined;
+        const dateStart = moment(invoice?.startReferenceDate);
+        const dateEnd = moment(invoice?.endReferenceDate);
+        const tempTotalRecurrence = moment.duration(dateEnd.diff(dateStart));
+
+        const recurenceTotalNumber = Number(
+            tempTotalRecurrence.asMonths().toFixed(),
+        );
+
+        const dateVerify = moment(dateTemp);
+        const duration = moment.duration(dateVerify.diff(dateStart));
+        const recurenceNumber = Number(duration.asMonths().toFixed());
+
+        invoice = { ...invoice, recurenceTotalNumber, recurenceNumber };
+        console.log({ invoice });
+        return invoice;
+    };
+
+    public FindOneInclude = async (invoiceInput: TInvoice) => {
         try {
             this.logger(`Find One Include`);
+            let invoiceData: TInvoice = invoiceInput;
+            invoiceData = await this.recurrenceCalculator(invoiceData);
 
             const { resident: residentData, ...invoiceTwo }: any = invoiceData;
             const resident: TResident = residentData;
             const invoice: TInvoice = invoiceTwo;
+
             const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
                 invoice.invoiceId,
             );
@@ -128,11 +158,29 @@ export default class InvoiceService {
             }
 
             if (resInvoiceId) {
+                if (resInvoiceId.statusInvoice == EnumInvoiceStatus.paid) {
+                    return {
+                        err: true,
+                        data: {
+                            message:
+                                'Invoice is already processed and paid status.',
+                        },
+                    };
+                }
+
+                const resInvoiceUpdate: any =
+                    await this.invoiceRepository.update({
+                        ...invoice,
+                    });
+
+                console.log(111, resInvoiceUpdate);
+
                 return {
                     err: false,
                     data: {
                         message: 'Invoice is already processed',
-                        ...resInvoiceId,
+                        update: resInvoiceUpdate?.affected == 1,
+                        invoice: resInvoiceId,
                     },
                 };
             }

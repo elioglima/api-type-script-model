@@ -33,10 +33,8 @@ export default async (
             residentIdenty: payload.resident.id,
             resident,
         });
-
-        if (resultIN?.err) {
-            return resultPR;
-        }
+        console.log(11122, resultIN);
+        if (resultIN?.err) return resultIN;
 
         const dataHash: reqCreateHash = {
             invoiceId: invoice.invoiceId,

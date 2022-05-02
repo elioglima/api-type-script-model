@@ -1,3 +1,4 @@
+import { defaultReturnMessage } from './../../../../utils/returns';
 import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import {
     TInvoice,
@@ -100,6 +101,8 @@ export const payNowRecurrence = async (
             payload.card,
         );
 
+        console.log(123, resRecurrence);
+
         if (resRecurrence?.err) {
             return await returnTopic(
                 {
@@ -117,15 +120,25 @@ export const payNowRecurrence = async (
             paymentDate: resRecurrence.data.paymentDate,
         };
 
-        const resUpdate = await invoiceService.Update(updateInvoiceData);
-        if (resUpdate.err)
-            return await returnTopic(
-                {
-                    invoiceId: invoice.invoiceId,
-                    ...resUpdate.data,
-                },
-                true,
-            );
+        const returnCode = resRecurrence?.data?.returnCode;
+
+        const { code, message }: any = defaultReturnMessage(returnCode);
+        console.log(code, message);
+        console.log(999, 'resRecurrence', resRecurrence?.data);
+        console.log(77777, resident);
+
+        let referenceCode = code;
+        if (referenceCode == 1) {
+            const resUpdate = await invoiceService.Update(updateInvoiceData);
+            if (resUpdate.err)
+                return await returnTopic(
+                    {
+                        invoiceId: invoice.invoiceId,
+                        ...resUpdate.data,
+                    },
+                    true,
+                );
+        }
 
         return await returnTopic({
             nextRecurrency: resRecurrence?.data?.nextRecurrency,
@@ -137,27 +150,42 @@ export const payNowRecurrence = async (
             message: 'recurrence started successfully',
             receipt: {
                 invoiceId: invoice.invoiceId,
-                statusInvoice: newStatusInvoice,
-                paymentDate: resRecurrence.data.paymentDate,
-                tid: resRecurrence.data.tid,
-                dueDate: invoice.dueDate,
-                value: invoice.value,
-                totalValue: invoice.totalValue,
-                tax: invoice.tax,
-                refund: invoice.refund,
-                expense: invoice.expense,
-                fine: invoice.fine,
-                residentName: resident.name,
-                enterpriseId: invoice.enterpriseId,
-                apartmentId: invoice.apartmentId,
-                paymentMethod: invoice.paymentMethod,
-                startReferenceDate: invoice.startReferenceDate,
-                endReferenceDate: invoice.endReferenceDate,
-                referenceCode: resRecurrence.referenceCode,
-                message: resRecurrence.message,
+                statusInvoice:
+                    referenceCode == 1
+                        ? newStatusInvoice
+                        : invoice.statusInvoice,
+
+                paymentDate: resRecurrence?.data?.paymentDate,
+                tid: resRecurrence?.data?.tid,
+                dueDate: invoice?.dueDate,
+                residentName: resident?.name,
+                residentEmail: resident.email,
+                residentDocumentType: resident.documentType,
+                residentDocument: resident.document,
+
+                enterpriseId: invoice?.enterpriseId,
+                apartmentId: invoice?.apartmentId,
+                paymentMethod: invoice?.paymentMethod,
+                startReferenceDate: invoice?.startReferenceDate,
+                endReferenceDate: invoice?.endReferenceDate,
+                referenceCode,
+                message,
+
+                value: invoice?.value,
+                totalValue: invoice?.totalValue,
+                tax: invoice?.tax,
+                refund: invoice?.refund,
+                expense: invoice?.expense,
+                fine: invoice?.fine,
+                discount: invoice?.discount,
+                condominium: invoice?.condominium,
+                fineTicket: invoice?.fineTicket,
+                stepValue: invoice?.stepValue,
+                commission: invoice?.commission,
+
                 recurrence: {
-                    ...(resRecurrence.data.recurrence
-                        ? resRecurrence.data.recurrence
+                    ...(resRecurrence?.data?.recurrence
+                        ? resRecurrence?.data?.recurrence
                         : {}),
                 },
             },

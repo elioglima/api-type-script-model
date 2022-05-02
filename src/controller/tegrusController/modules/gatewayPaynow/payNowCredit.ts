@@ -29,8 +29,7 @@ const returnTopic = (
                     ...respData,
                     ...(err
                         ? {
-                              messageError:
-                                  response?.message || 'unexpected error',
+                              messageError: message || 'unexpected error',
                           }
                         : { message }),
                 },
@@ -79,11 +78,17 @@ export const payNowCredit = async (
                     refund: invoice.refund,
                     expense: invoice.expense,
                     fine: invoice.fine,
+                    discount: invoice.discount,
+                    condominium: invoice.condominium,
+                    fineTicket: invoice.fineTicket,
+                    stepValue: invoice.stepValue,
+                    commission: invoice.commission,
                 },
             });
         }
 
         const invoiceService = new InvoiceService();
+        console.log(123);
         const resPayAdapter: any = await payAdatpter(
             resident,
             {
@@ -93,8 +98,19 @@ export const payNowCredit = async (
             invoice,
             true,
         );
+        console.log(124);
 
-        if (resPayAdapter?.err)
+        const paymentDate: Date =
+            resPayAdapter?.payment?.receivedDate || new Date();
+        const newStatusInvoice = EnumInvoiceStatus.paid;
+        const returnCode = resPayAdapter?.data?.payment?.returnCode;
+
+        const { code, message }: any = defaultReturnMessage(returnCode);
+        console.log(code, message);
+        console.log(999, 'resPayAdaptersss', resPayAdapter?.data?.data);
+        console.log(77777, resident);
+
+        if (resPayAdapter?.err || resPayAdapter?.data?.data)
             return returnTopic(
                 {
                     invoiceId: invoice.invoiceId,
@@ -103,49 +119,47 @@ export const payNowCredit = async (
                     paymentMethod: invoice.paymentMethod,
                     type: invoice.type,
                     message: resMessage.message,
-                    referenceCode: 7,
+                    messagePrivate:
+                        resPayAdapter?.data?.data?.message ||
+                        resPayAdapter?.data?.message ||
+                        'no messages returned from cielo',
+                    referenceCode: code,
+                    referenceDescription: message,
                 },
                 true,
             );
 
-        const paymentDate: Date =
-            resPayAdapter?.payment?.receivedDate || new Date();
-        const newStatusInvoice = EnumInvoiceStatus.paid;
+        let referenceCode = code;
 
-        console.log(111, resPayAdapter.data.payment);
-        const returnCode = resPayAdapter.data.payment.returnCode;
+        let resUpdate: any = {};
 
-        const { code, message }: any = defaultReturnMessage(returnCode);
+        if (referenceCode == 1) {
+            const updateInvoice: TInvoice = {
+                ...invoice,
+                paymentDate,
+                statusInvoice: newStatusInvoice,
+                returnMessage: message,
+                paymentId: resPayAdapter?.data?.payment?.paymentId,
+                tid: resPayAdapter.data.payment.tid,
+                returnCode: code,
+                referenceCode,
+            };
 
-        let referenceCode = ['00', 0, '04', '4', 4].includes(returnCode)
-            ? 1
-            : 7;
-
-        const updateInvoice: TInvoice = {
-            ...invoice,
-            paymentDate,
-            statusInvoice: newStatusInvoice,
-            returnMessage: message,
-            paymentId: resPayAdapter?.data?.payment?.paymentId,
-            tid: resPayAdapter.data.payment.tid,
-            returnCode: code,
-            referenceCode,
-        };
-
-        const resUpdate: any = await invoiceService.Update(updateInvoice);
-        if (resUpdate.err)
-            return returnTopic(
-                {
-                    invoiceId: invoice.invoiceId,
-                    paymentDate: null,
-                    statusInvoice: invoice.statusInvoice,
-                    paymentMethod: invoice.paymentMethod,
-                    type: invoice.type,
-                    referenceCode,
-                    message: message,
-                },
-                true,
-            );
+            resUpdate = await invoiceService.Update(updateInvoice);
+            if (resUpdate.err)
+                return returnTopic(
+                    {
+                        invoiceId: invoice.invoiceId,
+                        paymentDate: null,
+                        statusInvoice: invoice.statusInvoice,
+                        paymentMethod: invoice.paymentMethod,
+                        type: invoice.type,
+                        referenceCode,
+                        message: message,
+                    },
+                    true,
+                );
+        }
 
         return returnTopic(
             {
@@ -167,26 +181,40 @@ export const payNowCredit = async (
                     err: referenceCode == 7,
                     referenceCode,
                     invoiceId: invoice.invoiceId,
-                    statusInvoice: newStatusInvoice,
+                    statusInvoice:
+                        referenceCode == 1
+                            ? newStatusInvoice
+                            : invoice.statusInvoice,
                     residentName: resident.name,
+                    residentEmail: resident.email,
+                    residentDocumentType: resident.documentType,
+                    residentDocument: resident.document,
                     enterpriseId: invoice.enterpriseId,
                     apartmentId: invoice.apartmentId,
                     paymentMethod: invoice.paymentMethod,
                     paymentDate,
                     message: message,
-                    tid: resPayAdapter.data.payment.tid,
+                    tid:
+                        referenceCode == 1
+                            ? resPayAdapter.data.payment.tid
+                            : null,
                     dueDate: invoice.dueDate,
                     value: invoice.value,
                     totalValue: invoice.totalValue,
+                    startReferenceDate: invoice.startReferenceDate,
+                    endReferenceDate: invoice.endReferenceDate,
                     tax: invoice.tax,
                     refund: invoice.refund,
                     expense: invoice.expense,
                     fine: invoice.fine,
-                    startReferenceDate: invoice.startReferenceDate,
-                    endReferenceDate: invoice.endReferenceDate,
+                    discount: invoice.discount,
+                    condominium: invoice.condominium,
+                    fineTicket: invoice.fineTicket,
+                    stepValue: invoice.stepValue,
+                    commission: invoice.commission,
                 },
             },
-            referenceCode == 7,
+            referenceCode != 1,
         );
     } catch (error: any) {
         return returnTopic(
