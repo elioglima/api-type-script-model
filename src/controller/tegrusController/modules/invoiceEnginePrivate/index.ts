@@ -12,7 +12,7 @@ import { invoiceToTResident } from '../../../../utils/parse';
 import moment from 'moment';
 import { TResident } from '../../../../domain/Tegrus';
 
-const invoiceEnginePrivate = async (req: Request, res: Response) => {
+const invoiceEnginePrivate = async (_req: Request, res: Response) => {
     try {
         const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();

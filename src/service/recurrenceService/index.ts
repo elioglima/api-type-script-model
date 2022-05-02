@@ -1,4 +1,3 @@
-import { recurrentePayment } from './../../domain/RecurrentPayment/recurrentCreate';
 import debug from 'debug';
 import {
     TRecurrence,
