@@ -36,6 +36,7 @@ export const invoicesFilter = async (req: Request, res: Response) => {
             stepValue: m.stepValue,
             commission: m.commission,
             expense: m.expense,
+            isRecurrence: m.isRecurrence,
         }));
 
         return res.status(200).json({
