@@ -427,8 +427,8 @@ export default class RecurrenceService {
     public FindOneDisabled = async (invoiceId: number) => {
         this.logger(`Find One FindOneDisabled`);
 
-        const resInvoiceId: TInvoice =
-            await this.invoiceRepository.getByInvoiceId(invoiceId);
+        const resInvoiceId: any =
+            await this.invoiceService.FindOneDisabled(invoiceId)
 
         if (resInvoiceId instanceof Error) {
             return {
@@ -439,13 +439,7 @@ export default class RecurrenceService {
             };
         }
 
-        const resInvoiceUpdate: TInvoice = await this.invoiceRepository.update({
-            ...resInvoiceId,
-            invoiceId: invoiceId,
-            active: false,
-        });
-
-        if (resInvoiceUpdate instanceof Error) {
+        if (resInvoiceId.err) {
             return {
                 err: true,
                 data: {
@@ -454,9 +448,19 @@ export default class RecurrenceService {
             };
         }
 
+        if (!resInvoiceId.data) {
+            return {
+                err: true,
+                data: {
+                    message: 'Invoice not found',
+                },
+            };
+        }
+
+
         return {
             err: false,
-            data: resInvoiceId,
+            data: resInvoiceId.data,
         };
     };
 
