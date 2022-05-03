@@ -129,7 +129,7 @@ export const payNowRecurrence = async (
 
         let referenceCode = code;
         if (referenceCode == 1) {
-            const resUpdate = await invoiceService.Update(updateInvoiceData);
+            const resUpdate: any = await invoiceService.Update(updateInvoiceData);
             if (resUpdate.err)
                 return await returnTopic(
                     {
