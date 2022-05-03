@@ -20,3 +20,8 @@ export interface PaymentRecurrence {
     linkRecurrentPayment?: string;
     authorizeNow?: boolean;
 }
+
+export type refundRecurrencePayment = {
+    invoiceId: Number,
+    reason: string
+}
