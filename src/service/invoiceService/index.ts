@@ -112,9 +112,10 @@ export default class InvoiceService {
     private recurrenceCalculator = async (invoiceData: TInvoice) => {
         let invoice = invoiceData;
 
+        
         if (invoiceData.statusInvoice == EnumInvoiceStatus.paid) return invoice;
-        if (!invoiceData.isRecurrence) return invoice;
-
+        if (!invoiceData.isRecurrence) return invoice;       
+        
         const dateTemp =
             invoice?.recurrenceDate || invoice?.endReferenceDate || undefined;
         const dateStart = moment(invoice?.startReferenceDate);
@@ -127,7 +128,7 @@ export default class InvoiceService {
 
         const dateVerify = moment(dateTemp);
         const duration = moment.duration(dateVerify.diff(dateStart));
-        const recurenceNumber = Number(duration.asMonths().toFixed());
+        const recurenceNumber = Number(duration.asMonths().toFixed());        
 
         invoice = { ...invoice, recurenceTotalNumber, recurenceNumber };
         console.log({ invoice });
@@ -256,14 +257,16 @@ export default class InvoiceService {
                 return {
                     err: true,
                     data: {
-                        message: 'data updated successfully in database',
-                        row: invoice,
+                        message: 'Error to update in database'                        
                     },
                 };
 
             return {
                 err: false,
-                data: resInvoiceUpdate,
+                data: {
+                    message: 'data updated successfully in database',
+                    row: invoice,
+                }
             };
         } catch (error: any) {
             return {

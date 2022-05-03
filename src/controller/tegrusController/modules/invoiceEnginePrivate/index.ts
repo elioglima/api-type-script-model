@@ -5,14 +5,14 @@ import {
     TInvoice,
 } from './../../../../domain/Tegrus/TInvoice';
 import { EnumInvoiceStatus } from './../../../../domain/Tegrus/EnumInvoiceStatus';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import InvoiceService from '../../../../service/invoiceService/index';
 import RecurrenceService from '../../../../service/recurrenceService';
 import { invoiceToTResident } from '../../../../utils/parse';
 import moment from 'moment';
 import { TResident } from '../../../../domain/Tegrus';
 
-const invoiceEnginePrivate = async (_req: Request, res: Response) => {
+const invoiceEnginePrivate = async (res: Response) => {
     try {
         const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();
