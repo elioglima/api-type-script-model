@@ -492,6 +492,8 @@ export default class RecurrenceService {
             const resInvoice: any = await this.invoiceService.FindOne(
                 invoiceId,
             );
+            
+            console.log("resInvoice", resInvoice)
 
             if (!resInvoice.data)
                 return rError({
@@ -520,7 +522,7 @@ export default class RecurrenceService {
                     message: 'This recurrence not bought by a credit card.',
                 });
 
-            if (!dataInvoice.recurrenceNumber)
+            if (!dataInvoice.recurenceNumber)
                 dataInvoice = await this.recurrenceCalculator(dataInvoice);
 
             const residentId = dataInvoice?.residentIdenty?.id;
@@ -555,10 +557,13 @@ export default class RecurrenceService {
                         'RecurrenceNumber is higher than recurrence already paid',
                 });
 
+                       
             const stepPay =
                 resRecurrence.recurrentPayment.recurrentTransactions[
                     dataInvoice.recurenceNumber - 1
                 ].paymentId;
+            
+            
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
