@@ -169,7 +169,7 @@ export class InvoiceEntity {
     @Column({
         name: 'comments',
         type: 'varchar',
-        nullable: true,
+        nullable: true,        
     })
     comments: string | undefined;
 
@@ -191,6 +191,7 @@ export class InvoiceEntity {
         name: 'isRefunded',
         type: 'boolean',
         default: false,
+        nullable: true,
     })
     isRefunded: Boolean | undefined;
 
