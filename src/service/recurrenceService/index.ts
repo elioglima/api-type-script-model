@@ -563,7 +563,7 @@ export default class RecurrenceService {
                     dataInvoice.recurenceNumber - 1
                 ].paymentId;
             
-            
+    
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
