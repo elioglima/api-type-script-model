@@ -165,7 +165,10 @@ export const payNowCredit = async (
             {
                 invoiceId: invoice.invoiceId,
                 paymentDate,
-                statusInvoice: newStatusInvoice,
+                statusInvoice:
+                    referenceCode != 1
+                        ? invoice.statusInvoice
+                        : newStatusInvoice,
                 paymentMethod: invoice.paymentMethod,
                 type: invoice.type,
                 message:
@@ -173,18 +176,21 @@ export const payNowCredit = async (
                         ? 'successful payment'
                         : 'payment payment problems',
                 returnMessage: resPayAdapter?.data?.payment?.returnMessage,
-                paymentId: resPayAdapter?.data?.payment?.paymentId,
-                tid: resPayAdapter.data.payment.tid,
+                paymentId:
+                    referenceCode != 1
+                        ? null
+                        : resPayAdapter?.data?.payment?.paymentId,
+                tid: referenceCode != 1 ? null : resPayAdapter.data.payment.tid,
                 returnCode: resPayAdapter.data.payment.returnCode,
                 referenceCode,
                 receipt: {
-                    err: referenceCode == 7,
+                    err: referenceCode != 1,
                     referenceCode,
                     invoiceId: invoice.invoiceId,
                     statusInvoice:
-                        referenceCode == 1
-                            ? newStatusInvoice
-                            : invoice.statusInvoice,
+                        referenceCode != 1
+                            ? invoice.statusInvoice
+                            : newStatusInvoice,
                     residentName: resident.name,
                     residentEmail: resident.email,
                     residentDocumentType: resident.documentType,
@@ -195,9 +201,9 @@ export const payNowCredit = async (
                     paymentDate,
                     message: message,
                     tid:
-                        referenceCode == 1
-                            ? resPayAdapter.data.payment.tid
-                            : null,
+                        referenceCode != 1
+                            ? null
+                            : resPayAdapter.data.payment.tid,
                     dueDate: invoice.dueDate,
                     value: invoice.value,
                     totalValue: invoice.totalValue,
