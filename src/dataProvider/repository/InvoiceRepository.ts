@@ -158,7 +158,13 @@ export class InvoiceRepository {
             recurenceNumber: invoice?.recurenceNumber,
             recurenceTotalNumber: invoice?.recurenceTotalNumber,
             comments: invoice?.comments,
-            isRefunded: invoice?.isRefunded
+            isRefunded: invoice?.isRefunded,
+            paymentDate: invoice?.paymentDate,
+            returnMessage: invoice?.returnMessage,
+            paymentId: invoice?.paymentId,
+            tid: invoice?.tid,
+            returnCode: invoice?.returnCode,
+            referenceCode: invoice?.referenceCode,
         };
 
         console.log('dataUpdate', dataUpdate);
