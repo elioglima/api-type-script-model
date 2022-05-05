@@ -302,11 +302,11 @@ export class PaymentController {
         }
     };
 
-    public RefoundRecurrencePayment = async (req: Request, res: Response) => {
+    public RefundRecurrencePayment = async (req: Request, res: Response) => {
         try {
             this.logger(`Refound payment`, req.body);
             const { invoiceId, comments} = req.body
-            const data: any = await this.recurrenceService.RefoundRecurrence(
+            const data: any = await this.recurrenceService.RefundRecurrence(
                 invoiceId,                
                 comments
             );            
