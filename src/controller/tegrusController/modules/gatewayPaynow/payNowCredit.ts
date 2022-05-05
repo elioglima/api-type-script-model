@@ -45,7 +45,7 @@ export const payNowCredit = async (
 ) => {
     const resMessage: any = defaultReturnMessage(String(invoice?.returnCode));
     try {
-        if (['00', '4'].includes(String(invoice?.returnCode))) {
+        if (['00', '1', '4'].includes(String(invoice?.returnCode))) {
             // verificando se esta paga a fatura
             return returnTopic({
                 message: 'invoice payment has already been changed',
