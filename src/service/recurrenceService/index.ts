@@ -427,8 +427,9 @@ export default class RecurrenceService {
     public FindOneDisabled = async (invoiceId: number) => {
         this.logger(`Find One FindOneDisabled`);
 
-        const resInvoiceId: any =
-            await this.invoiceService.FindOneDisabled(invoiceId)
+        const resInvoiceId: any = await this.invoiceService.FindOneDisabled(
+            invoiceId,
+        );
 
         if (resInvoiceId instanceof Error) {
             return {
@@ -456,7 +457,6 @@ export default class RecurrenceService {
                 },
             };
         }
-
 
         return {
             err: false,
@@ -487,11 +487,13 @@ export default class RecurrenceService {
         return invoice;
     };
 
-    public RefoundRecurrence = async (invoiceId: number, comments: string) => {
+    public RefundRecurrence = async (invoiceId: number, comments: string) => {
         try {
             const resInvoice: any = await this.invoiceService.FindOne(
                 invoiceId,
             );
+
+            console.log('resInvoice', resInvoice);
 
             if (!resInvoice.data)
                 return rError({
@@ -510,17 +512,15 @@ export default class RecurrenceService {
                     message: 'This recurrence was not paid yet.',
                 });
 
-            if (!dataInvoice.isRecurrence)
-                return rError({
-                    message: 'This is not a recurrence.',
-                });
-
             if (dataInvoice.paymentMethod != EnumInvoicePaymentMethod.credit)
                 return rError({
                     message: 'This recurrence not bought by a credit card.',
                 });
 
-            if (!dataInvoice.recurrenceNumber)
+            if (!dataInvoice.isRecurrence)
+                return await this.RefundSpot(dataInvoice, comments)
+
+            if (!dataInvoice.recurenceNumber)
                 dataInvoice = await this.recurrenceCalculator(dataInvoice);
 
             const residentId = dataInvoice?.residentIdenty?.id;
@@ -562,6 +562,58 @@ export default class RecurrenceService {
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
+                amount: dataInvoice.value * 100,
+            });
+
+            if (resRefunded instanceof Error)
+                return rError({
+                    message: 'Unexpected Error',
+                });
+
+            if (![0, 6].includes(Number(resRefunded.returnCode)))
+                return rError({
+                    message: 'Error to refund',
+                });
+
+            const updateInvoice = await this.invoiceService.Update({
+                ...dataInvoice,
+                comments,
+                isRefunded: true,
+                statusInvoice: EnumInvoiceStatus.refunded,
+            });
+
+            if (updateInvoice.err)
+                return rError({
+                    message: updateInvoice.data.message,
+                });
+
+            const resRefund: refundRecurrencePayment = {
+                invoiceId: dataInvoice.invoiceId,
+                reason: comments,
+            };
+
+            return resRefund;
+        } catch (error: any) {
+            console.log('ERR', error);
+            return {
+                err: false,
+                data: {
+                    message: error?.message || 'unexpected error',
+                },
+            };
+        }
+    };
+
+    private RefundSpot = async (dataInvoice:TInvoice, comments:string ) => {
+        try {
+
+            const paymentAdapter = new AdapterPayment();
+            await paymentAdapter.init(
+                dataInvoice?.residentIdenty?.enterpriseId,
+            );
+
+            const resRefunded: any = await paymentAdapter.refoundPayment({
+                paymentId: String(dataInvoice?.paymentId),
                 amount: dataInvoice.value * 100,
             });
 
