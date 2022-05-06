@@ -2,6 +2,7 @@ import { EnumInvoiceStatus } from './EnumInvoiceStatus';
 import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from './EnumInvoiceType';
 import { TResident } from './TResident';
+import { TResponsiblePayment } from './TResponsiblePayment';
 
 export type TInvoice = {
     id?: number;
