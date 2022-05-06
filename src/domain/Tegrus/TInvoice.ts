@@ -51,6 +51,7 @@ export type TInvoice = {
     recurenceTotalNumber?: number; // total de parcelas de aluguel a pagar
     recurenceNumber?: number; // aluguel atual
     firstPayment?: boolean;
+    responsiblePayment?: TResponsiblePayment;
 };
 
 export type TInvoiceFilter = {
