@@ -7,7 +7,10 @@ import {
     TRecurrenceSchedule,
     TRecurrencePayment,
 } from '../../domain/Tegrus';
-import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
+import {
+    RecurrentModifyPaymentModel,
+    reqRecurrentDeactivate,
+} from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 import { rError, rSuccess } from '../../utils';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
@@ -655,7 +658,32 @@ export default class RecurrenceService {
         }
     };
 
-    public changeCardRecurrence = async () => {
-        
+    public changeCardRecurrence = async (
+        modifyPayment: RecurrentModifyPaymentModel,
+    ) => {
+        try {
+            const paymentAdapter = new AdapterPayment();
+
+            const invoice: any = await this.invoiceService.FindOne(
+                modifyPayment.invoiceId,
+            );
+            
+            if (invoice.err) return;
+            if (!invoice.data) return;
+
+            const { data } = invoice;
+            const recurrence: any = await this.repository.getByPreUserId(data.residentIdenty.id);
+
+            if(recurrence instanceof Error) return
+            if(!recurrence.length) return
+
+            paymentAdapter.init(data.residentIdenty.id)
+
+            
+
+
+
+
+        } catch (err: any) {}
     };
 }

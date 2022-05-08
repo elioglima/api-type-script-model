@@ -334,11 +334,8 @@ export class PaymentController {
             const invoiceId = req.params.invoiceId;
             const body = req.body;           
 
-            
-            const data: any = await this.recurrenceService.RefundRecurrence(
-                invoiceId,
-                comments
-            );
+
+            const data: any = await this.recurrenceService.changeCardRecurrence();
 
             if (data instanceof Error) {
                 this.logger('Error', data?.message);
