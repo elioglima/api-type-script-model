@@ -21,4 +21,5 @@ export interface TResident {
     endReferenceDate: Date;
     err?: boolean;
     data?: any;
+    responsiblePayment?: any;
 }

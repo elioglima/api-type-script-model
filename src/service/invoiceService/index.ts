@@ -3,11 +3,13 @@ import { AdapterPayment } from '../../domain/AdapterPayment';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
 import { TInvoice, TInvoiceFilter, TResident } from '../../domain/Tegrus';
 import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
+import ResponsiblePaymentService from '../../service/responsiblePaymentService';
 import moment from 'moment';
 
 export default class InvoiceService {
     private logger = debug('payment-api:InvoiceService');
     private invoiceRepository = new InvoiceRepository();
+    responsiblePaymentService = new ResponsiblePaymentService();
 
     public getAll = async () => {
         this.logger(`Find All invoices`);
@@ -112,10 +114,9 @@ export default class InvoiceService {
     private recurrenceCalculator = async (invoiceData: TInvoice) => {
         let invoice = invoiceData;
 
-        
         if (invoiceData.statusInvoice == EnumInvoiceStatus.paid) return invoice;
-        if (!invoiceData.isRecurrence) return invoice;       
-        
+        if (!invoiceData.isRecurrence) return invoice;
+
         const dateTemp =
             invoice?.recurrenceDate || invoice?.endReferenceDate || undefined;
         const dateStart = moment(invoice?.startReferenceDate);
@@ -128,7 +129,7 @@ export default class InvoiceService {
 
         const dateVerify = moment(dateTemp);
         const duration = moment.duration(dateVerify.diff(dateStart));
-        const recurenceNumber = Number(duration.asMonths().toFixed());        
+        const recurenceNumber = Number(duration.asMonths().toFixed());
 
         invoice = { ...invoice, recurenceTotalNumber, recurenceNumber };
         console.log({ invoice });
@@ -144,6 +145,25 @@ export default class InvoiceService {
             const { resident: residentData, ...invoiceTwo }: any = invoiceData;
             const resident: TResident = residentData;
             const invoice: TInvoice = invoiceTwo;
+
+            try {
+                console.log(999, 'resident', resident);
+                if (Array.isArray(resident?.responsiblePayment)) {
+                    resident?.responsiblePayment.forEach(
+                        async responsiblePayment => {
+                            await this.responsiblePaymentService.IncludeOrUpdate(
+                                {
+                                    apartmentId: resident.apartmentId,
+                                    enterpriseId: resident.enterpriseId,
+                                    ...responsiblePayment,
+                                },
+                            );
+                        },
+                    );
+                }
+            } catch (error) {
+                console.log(error);
+            }
 
             const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
                 invoice.invoiceId,
@@ -257,7 +277,7 @@ export default class InvoiceService {
                 return {
                     err: true,
                     data: {
-                        message: 'Error to update in database'                        
+                        message: 'Error to update in database',
                     },
                 };
 
@@ -266,7 +286,7 @@ export default class InvoiceService {
                 data: {
                     message: 'data updated successfully in database',
                     row: invoice,
-                }
+                },
             };
         } catch (error: any) {
             return {

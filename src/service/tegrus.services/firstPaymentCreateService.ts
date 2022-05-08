@@ -11,6 +11,7 @@ import createHash from './createHash';
 import moment from 'moment';
 import ResidentService from '../../service/residentService';
 import InvoiceService from '../../service/invoiceService';
+import ResponsiblePaymentService from '../../service/responsiblePaymentService';
 
 export default async (
     payload: TInvoice,
@@ -18,9 +19,27 @@ export default async (
     try {
         const residentService = new ResidentService();
         const invoiceService = new InvoiceService();
+        const responsiblePaymentService = new ResponsiblePaymentService();
+
         const HashRep = new HashDataRepository();
 
-        const { resident, ...invoice } = payload;
+        const { responsiblePayment, resident, ...invoice } = payload;
+
+        try {
+            if (Array.isArray(resident?.responsiblePayment)) {
+                resident?.responsiblePayment.forEach(
+                    async responsiblePayment => {
+                        await responsiblePaymentService.IncludeOrUpdate({
+                            apartmentId: resident.apartmentId,
+                            enterpriseId: resident.enterpriseId,
+                            ...responsiblePayment,
+                        });
+                    },
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
 
         const resultPR: any = await residentService.add(resident);
 
@@ -33,6 +52,7 @@ export default async (
             residentIdenty: payload.resident.id,
             resident,
         });
+
         console.log(11122, resultIN);
         if (resultIN?.err) return resultIN;
 
@@ -59,7 +79,7 @@ export default async (
 
         const hashD: hashData = {
             hash: String(resultHash.hash),
-            lifeTime: moment().add('days', 3).toDate(),
+            lifeTime: moment(invoice.dueDate).toDate(), //moment().add('days', 30).toDate(),
             invoiceId: Number(invoice.invoiceId),
         };
 

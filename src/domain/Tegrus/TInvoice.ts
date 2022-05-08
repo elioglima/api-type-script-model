@@ -2,6 +2,7 @@ import { EnumInvoiceStatus } from './EnumInvoiceStatus';
 import { EnumInvoicePaymentMethod } from './EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from './EnumInvoiceType';
 import { TResident } from './TResident';
+import { TResponsiblePayment } from './TResponsiblePayment';
 
 export type TInvoice = {
     id?: number;
@@ -51,6 +52,7 @@ export type TInvoice = {
     recurenceTotalNumber?: number; // total de parcelas de aluguel a pagar
     recurenceNumber?: number; // aluguel atual
     firstPayment?: boolean;
+    responsiblePayment?: TResponsiblePayment;
 };
 
 export type TInvoiceFilter = {
