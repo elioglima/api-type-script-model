@@ -305,11 +305,11 @@ export class PaymentController {
     public RefundRecurrencePayment = async (req: Request, res: Response) => {
         try {
             this.logger(`Refound payment`, req.body);
-            const { invoiceId, comments} = req.body
+            const { invoiceId, comments } = req.body;
             const data: any = await this.recurrenceService.RefundRecurrence(
-                invoiceId,                
-                comments
-            );            
+                invoiceId,
+                comments,
+            );
 
             if (data instanceof Error) {
                 this.logger('Error', data?.message);
@@ -328,4 +328,32 @@ export class PaymentController {
         }
     };
 
+    public changeCard = async (req: Request, res: Response) => {
+        try {
+            this.logger(`Change payment credit Card`, req.body);
+            const invoiceId = req.params.invoiceId;
+            const body = req.body;           
+
+            
+            const data: any = await this.recurrenceService.RefundRecurrence(
+                invoiceId,
+                comments
+            );
+
+            if (data instanceof Error) {
+                this.logger('Error', data?.message);
+                return res.status(422).json(data.message);
+            }
+
+            if (data.err) {
+                this.logger('Error', data?.message);
+                return res.status(422).json(data?.data?.message);
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            this.logger(`Error`, error);
+            return res.status(422).json(error);
+        }
+    };
 }
