@@ -7,6 +7,8 @@ import {
     resRecurrentDeactivate,
     reqRecurrentReactivate,
     resRecurrentReactivate,
+    resRecurrentModify,
+    reqRecurrenceModify,
 } from '../../../domain/RecurrentPayment';
 
 import {
@@ -45,7 +47,7 @@ export class RecurentMethods {
     }
 
     public async Find(payload: reqRecurrentPaymentConsult) {
-        if (!this.util) return this.error('this.util not started');        
+        if (!this.util) return this.error('this.util not started');
         if (!payload.recurrentPaymentId)
             return this.error('recurrenceId was not informed.');
 
@@ -84,5 +86,21 @@ export class RecurentMethods {
         return this.util.get<resRecurrentReactivate | TErrorGeneric>({
             path: `/1/RecurrentPayment/${payload.recurrenceId}/Reactivate`,
         });
+    }
+
+    public async Modify(
+        payload: reqRecurrenceModify,
+    ): Promise<resRecurrentModify | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started');
+
+        if (!payload.paymentId)
+            return this.error('paymentId was not informed.');
+
+        
+        const data:any = await this.util.put(
+            { path: `/1/RecurrentPayment/${payload.paymentId}/Payment` },
+            payload.modify,
+        );        
+        return data;
     }
 }

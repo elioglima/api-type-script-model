@@ -6,11 +6,11 @@ export interface CreditCardRecurrentModify {
 }
 
 export interface PaymentRecurrentModifyModel {
-    Type: string;
-    Amount: string;
-    Installments: number;
-    Country: string;
-    Currency: string;
-    SoftDescriptor: string;
-    CreditCard: CreditCardRecurrentModify;
+    Type?: string;
+    Amount?: string;
+    Installments?: number;
+    Country?: string;
+    Currency?: string;
+    SoftDescriptor?: string;
+    CreditCard?: CreditCardRecurrentModify;
 }

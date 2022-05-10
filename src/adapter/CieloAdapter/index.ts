@@ -29,6 +29,8 @@ import {
     resRecurrentDeactivate,
     reqRecurrentReactivate,
     resRecurrentReactivate,
+    reqRecurrenceModify,
+    resRecurrentModify,
 } from '../../domain/RecurrentPayment';
 
 import { reqFindPayment, resFindPayment } from '../../domain/Payment';
@@ -156,5 +158,13 @@ export class CieloAdapter implements ICardAdapter {
             { path: '/1/sales/' },
             payload,
         );
+    }
+
+    public async recurrenceModify(
+        payload: reqRecurrenceModify,
+    ): Promise<resRecurrentModify | TErrorGeneric> {
+        if (!this.util) return this.error('this.util not started');
+        const data = await this.recurentMethods.Modify(payload);        
+        return data;
     }
 }
