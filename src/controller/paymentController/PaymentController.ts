@@ -13,6 +13,7 @@ import { UpdatePaymentCardService } from '../../service/UpdatePaymentCardService
 import { InactivatePaymentCardService } from '../../service/InactivatePaymentCardService';
 import { FindCardByIdService } from '../../service/FindCardByIdService';
 import { PaymentCards } from '../../domain/Payment';
+import { RecurrentModifyPaymentModel } from '../../domain/RecurrentPayment/recurrentModify';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -310,6 +311,40 @@ export class PaymentController {
                 invoiceId,
                 comments,
             );
+
+            if (data instanceof Error) {
+                this.logger('Error', data?.message);
+                return res.status(422).json(data.message);
+            }
+
+            if (data.err) {
+                this.logger('Error', data?.message);
+                return res.status(422).json(data?.data?.message);
+            }
+
+            return res.status(200).json(data);
+        } catch (error) {
+            this.logger(`Error`, error);
+            return res.status(422).json(error);
+        }
+    };
+
+    public changeCard = async (req: Request, res: Response) => {
+        try {
+            this.logger(`Change payment credit Card`, req.body);
+            const invoiceId = req.params.invoiceId;
+            const body = req.body;           
+          
+
+            const reqModify: RecurrentModifyPaymentModel = {
+                invoiceId: Number(invoiceId),
+                payment: {
+                    Type: 'CreditCard',
+                    CreditCard: body
+                }                
+            }           
+
+            const data: any = await this.recurrenceService.changeCardRecurrence(reqModify);            
 
             if (data instanceof Error) {
                 this.logger('Error', data?.message);
