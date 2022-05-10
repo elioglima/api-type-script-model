@@ -173,7 +173,7 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .update()
-            .set({ ...dataUpdate, atUpdate: true })
+            .set({ ...dataUpdate, atUpdate: true, updateDate: new Date() })
             .where('invoiceId = :invoiceId', { invoiceId: invoice.invoiceId })
             .execute()
             .then(
