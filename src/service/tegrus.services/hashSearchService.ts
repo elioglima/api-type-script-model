@@ -59,6 +59,22 @@ export default class HashSearchService {
                 resp.invoiceId,
             );
 
+            const timeNow: Date = moment().toDate();
+
+            resInvoicePreUser.invoiceHasExpired = moment(
+                resInvoicePreUser.dueDate,
+            ).isBefore(timeNow);
+
+            if (resInvoicePreUser.invoiceHasExpired) {
+                return {
+                    err: true,
+                    data: {
+                        code: 4,
+                        message: 'dueDate has expired.',
+                    },
+                };
+            }
+
             if (!resInvoicePreUser)
                 return {
                     err: true,
