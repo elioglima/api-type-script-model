@@ -129,7 +129,7 @@ export class InvoiceRepository {
             });
         }
 
-        return await db.orderBy('invoice.atUpdate', 'DESC').getMany();
+        return await db.orderBy('invoice.updateDate', 'DESC').getMany();
     };
 
     public update = async (invoice: TInvoice) => {
@@ -173,7 +173,7 @@ export class InvoiceRepository {
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
             .update()
-            .set({ ...dataUpdate, atUpdate: true })
+            .set({ ...dataUpdate, atUpdate: true, updateDate: new Date() })
             .where('invoiceId = :invoiceId', { invoiceId: invoice.invoiceId })
             .execute()
             .then(

@@ -305,11 +305,11 @@ export class PaymentController {
     public RefundRecurrencePayment = async (req: Request, res: Response) => {
         try {
             this.logger(`Refound payment`, req.body);
-            const { invoiceId, comments} = req.body
+            const { invoiceId, comments } = req.body;
             const data: any = await this.recurrenceService.RefundRecurrence(
-                invoiceId,                
-                comments
-            );            
+                invoiceId,
+                comments,
+            );
 
             if (data instanceof Error) {
                 this.logger('Error', data?.message);
@@ -327,5 +327,4 @@ export class PaymentController {
             return res.status(422).json(error);
         }
     };
-
 }

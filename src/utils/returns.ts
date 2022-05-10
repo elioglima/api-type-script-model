@@ -11,6 +11,7 @@ export const rGeneric = (
     return {
         err,
         abortProcess,
+        status: err ? 422 : 200,
         data: {
             ...response,
             ...(err
