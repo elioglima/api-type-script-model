@@ -55,7 +55,6 @@ const servicePrivate = async (payload: TPayNowReq) => {
         if (payload?.hash) {
             const resHash: any = await hashServices.execute(hash);
             if (resHash.err) return resHash;
-            console.log(11133, resHash);
 
             if (
                 (Object.keys(resHash?.data || {}).find(f => f == 'isValid') &&

@@ -22,6 +22,7 @@ export interface PaymentRecurrence {
 }
 
 export type refundRecurrencePayment = {
-    invoiceId: Number,
-    reason: string
-}
+    invoiceId: Number;
+    reason: string;
+    invoice?: any;
+};
