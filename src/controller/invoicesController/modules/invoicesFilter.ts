@@ -24,6 +24,8 @@ export const invoicesFilter = async (req: Request, res: Response) => {
             value: m.value,
             condominium: m.condominium,
             discount: m.discount,
+            dueDate: m.dueDate,
+            paymentDate: m.paymentDate,
             refund: m.refund,
             tid: m.tid,
             tax: m.tax,

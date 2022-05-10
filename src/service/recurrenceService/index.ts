@@ -518,7 +518,7 @@ export default class RecurrenceService {
                 });
 
             if (!dataInvoice.isRecurrence)
-                return await this.RefundSpot(dataInvoice, comments)
+                return await this.RefundSpot(dataInvoice, comments);
 
             if (!dataInvoice.recurenceNumber)
                 dataInvoice = await this.recurrenceCalculator(dataInvoice);
@@ -590,6 +590,7 @@ export default class RecurrenceService {
             const resRefund: refundRecurrencePayment = {
                 invoiceId: dataInvoice.invoiceId,
                 reason: comments,
+                invoice: resInvoice,
             };
 
             return resRefund;
@@ -604,9 +605,8 @@ export default class RecurrenceService {
         }
     };
 
-    private RefundSpot = async (dataInvoice:TInvoice, comments:string ) => {
+    private RefundSpot = async (dataInvoice: TInvoice, comments: string) => {
         try {
-
             const paymentAdapter = new AdapterPayment();
             await paymentAdapter.init(
                 dataInvoice?.residentIdenty?.enterpriseId,
