@@ -129,7 +129,7 @@ export class InvoiceRepository {
             });
         }
 
-        return await db.orderBy('invoice.invoiceId', 'DESC').getMany();
+        return await db.orderBy('invoice.atUpdate', 'DESC').getMany();
     };
 
     public update = async (invoice: TInvoice) => {
