@@ -69,7 +69,7 @@ export default class HashSearchService {
                 return {
                     err: true,
                     data: {
-                        code: 4,
+                        code: 7,
                         message: 'dueDate has expired.',
                     },
                 };
