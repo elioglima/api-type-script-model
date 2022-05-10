@@ -53,6 +53,7 @@ export type TInvoice = {
     recurenceNumber?: number; // aluguel atual
     firstPayment?: boolean;
     responsiblePayment?: TResponsiblePayment;
+    updateDate: Date;
 };
 
 export type TInvoiceFilter = {
