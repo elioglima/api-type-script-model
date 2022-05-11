@@ -7,7 +7,11 @@ import {
     TRecurrenceSchedule,
     TRecurrencePayment,
 } from '../../domain/Tegrus';
-import { reqRecurrentDeactivate } from '../../domain/RecurrentPayment';
+import {
+    RecurrentModifyPaymentModel,
+    reqRecurrenceModify,
+    reqRecurrentDeactivate,
+} from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
 import { rError, rSuccess } from '../../utils';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
@@ -387,12 +391,7 @@ export default class RecurrenceService {
                     updatedAt: new Date(),
                     isDeactivateError: true,
                 });
-                return {
-                    err: true,
-                    data: {
-                        message: 'It was not possible deactivate recurrence',
-                    },
-                };
+                return 7
             }
 
             const updateRecu: PaymentRecurrence = {
@@ -653,6 +652,68 @@ export default class RecurrenceService {
                     message: error?.message || 'unexpected error',
                 },
             };
+        }
+    };
+
+    public changeCardRecurrence = async (
+        modifyPayment: RecurrentModifyPaymentModel,
+    ) => {
+        try {
+            const paymentAdapter = new AdapterPayment();
+
+            const invoice: any = await this.invoiceService.FindOne(
+                modifyPayment.invoiceId,
+            );
+
+            if (invoice.err) return  rError({
+                message: "Error to found invoice",
+            });
+            if (!invoice.data) return rError({
+                message: "Error to found invoice",
+            });
+
+            const { data } = invoice;
+            
+            const recurrence: any = await this.repository.getByPreUserId(
+                data.residentIdenty.id,
+            );
+            
+            if (recurrence instanceof Error) return rError({
+                message: "Unexpected Error",
+            });
+            if (!recurrence) return rError({
+                message: "Error to found recurrence",
+            });
+
+            await paymentAdapter.init(data.residentIdenty.enterpriseId);
+
+            const reqModify: reqRecurrenceModify = {
+                paymentId: recurrence.recurrentPaymentId,
+                modify: modifyPayment.payment,
+            };
+            
+            const resModify: any = await paymentAdapter.recurrenceModify(
+                reqModify,
+            );
+
+            if (resModify instanceof Error) return rError({
+                message: "Unexpected Error",
+            });
+            if (resModify.err) return rError({
+                message: "Error to modify recurrence",
+            });
+
+            return {
+                err: false,
+                data: {
+                    message: 'Credit card changed with success',
+                },
+            };
+        } catch (err: any) {
+            console.log("ERR", err)
+            return rError({
+                message: "Unexpected Error",
+            });
         }
     };
 }

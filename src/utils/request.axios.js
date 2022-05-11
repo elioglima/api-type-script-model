@@ -65,7 +65,7 @@ export default async (data = {}, options) => {
         };
 
         return dataReturn;
-    } catch (error) {
+    } catch (error) {        
         return {
             err: true,
             data: {
