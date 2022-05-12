@@ -322,6 +322,7 @@ export class PaymentController {
                 return res.status(422).json(data?.data?.message);
             }
 
+            console.log(444, data);
             return res.status(200).json(data);
         } catch (error) {
             this.logger(`Error`, error);

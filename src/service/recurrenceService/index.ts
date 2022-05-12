@@ -499,8 +499,6 @@ export default class RecurrenceService {
                 invoiceId,
             );
 
-            console.log('resInvoice', resInvoice);
-
             if (!resInvoice.data)
                 return rError({
                     message: 'Invoice not found',
@@ -511,7 +509,6 @@ export default class RecurrenceService {
                     message: resInvoice?.data?.message,
                 });
 
-            console.log(123, resInvoice?.data);
             let { data: dataInvoice } = resInvoice;
 
             if (dataInvoice.statusInvoice != EnumInvoiceStatus.paid)
@@ -544,8 +541,6 @@ export default class RecurrenceService {
                     message: 'unexpected error',
                 });
 
-            console.log(123, recurrence);
-
             const paymentAdapter = new AdapterPayment();
             await paymentAdapter.init(
                 dataInvoice?.residentIdenty?.enterpriseId,
@@ -554,8 +549,6 @@ export default class RecurrenceService {
             const resRecurrence: any = await paymentAdapter.recurrenceFind({
                 recurrentPaymentId: recurrence?.recurrentPaymentId,
             });
-
-            console.log(123, 'resRecurrence', resRecurrence);
 
             if (
                 resRecurrence.recurrentPayment.recurrentTransactions.length <
@@ -571,22 +564,11 @@ export default class RecurrenceService {
                     dataInvoice.recurenceNumber
                 ];
 
-            console.log(
-                123,
-                'stepPay',
-                recurrentTransactions,
-                resRecurrence.recurrentPayment.recurrentTransactions,
-            );
-
             const stepPay = recurrentTransactions?.paymentId;
-
-            console.log(123, 'stepPay', recurrentTransactions);
-
-            console.log(123, 'recurrentTransactions', recurrentTransactions);
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
-                amount: dataInvoice?.value * 100,
+                amount: dataInvoice?.totalValue * 100,
             });
 
             if (resRefunded instanceof Error)
@@ -594,7 +576,6 @@ export default class RecurrenceService {
                     message: 'Unexpected Error',
                 });
 
-            console.log(111, resRefunded.data);
             if (![0, 6].includes(Number(resRefunded.returnCode)))
                 return rError({
                     message: 'Error to refund',
@@ -658,12 +639,16 @@ export default class RecurrenceService {
                     message: 'Error to refund',
                 });
 
-            const updateInvoice = await this.invoiceService.Update({
+            const dataInvoiceUpdate = {
                 ...dataInvoice,
                 comments,
                 isRefunded: true,
                 statusInvoice: EnumInvoiceStatus.refunded,
-            });
+            };
+
+            const updateInvoice = await this.invoiceService.Update(
+                dataInvoiceUpdate,
+            );
 
             if (updateInvoice.err)
                 return rError({
@@ -673,6 +658,7 @@ export default class RecurrenceService {
             const resRefund: refundRecurrencePayment = {
                 invoiceId: dataInvoice.invoiceId,
                 reason: comments,
+                invoice: dataInvoiceUpdate,
             };
 
             return resRefund;

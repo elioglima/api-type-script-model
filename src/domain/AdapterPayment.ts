@@ -126,6 +126,7 @@ export class AdapterPayment implements IAdapter {
     ): Promise<resRefoundPayment | TErrorGeneric> {
         if (!this.paymentProvider) throw new Error('Error provider not found.');
 
+        console.log({ payload });
         try {
             return this.paymentProvider.refoundPayment(payload);
         } catch (error) {

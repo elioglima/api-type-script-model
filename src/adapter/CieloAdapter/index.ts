@@ -23,7 +23,6 @@ import {
 
 import {
     reqRecurrentCreate,
-    resRecurrentCreate,
     reqRecurrentPaymentConsult,
     reqRecurrentDeactivate,
     resRecurrentDeactivate,
