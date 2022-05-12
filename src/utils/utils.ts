@@ -86,7 +86,7 @@ export class Utils {
             hostname: this.cieloConstructor.hostnameTransacao,
         });
         const resp: any = await this.request<T>(options, data);
-
+        
         return resp;
     }
 

@@ -83,7 +83,7 @@ export const parseStatusCielo = (code: number) => {
         PaymentConfirmed = 'PaymentConfirmed',
         Denied = 'Denied',
         Voided = 'Voided',
-        Refunded = 'Refunded',
+        Refunded = 'chargeback',
         Pending = 'Pending',
         Aborted = 'Aborted',
         Scheduled = 'Scheduled',

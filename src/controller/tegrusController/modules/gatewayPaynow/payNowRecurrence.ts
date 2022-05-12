@@ -114,10 +114,11 @@ export const payNowRecurrence = async (
         }
 
         const newStatusInvoice = EnumInvoiceStatus.paid;
+        const paymentDate = resRecurrence?.data?.paymentDate || new Date();
         const updateInvoiceData: TInvoice = {
             ...invoice,
             statusInvoice: newStatusInvoice,
-            paymentDate: resRecurrence.data.paymentDate,
+            paymentDate,
         };
 
         const returnCode = resRecurrence?.data?.returnCode;
@@ -129,7 +130,9 @@ export const payNowRecurrence = async (
 
         let referenceCode = code;
         if (referenceCode == 1) {
-            const resUpdate: any = await invoiceService.Update(updateInvoiceData);
+            const resUpdate: any = await invoiceService.Update(
+                updateInvoiceData,
+            );
             if (resUpdate.err)
                 return await returnTopic(
                     {
@@ -143,7 +146,7 @@ export const payNowRecurrence = async (
         return await returnTopic({
             nextRecurrency: resRecurrence?.data?.nextRecurrency,
             invoiceId: invoice.invoiceId,
-            paymentDate: resRecurrence.data.paymentDate,
+            paymentDate,
             statusInvoice: newStatusInvoice,
             paymentMethod: invoice.paymentMethod,
             type: invoice.type,
@@ -155,7 +158,7 @@ export const payNowRecurrence = async (
                         ? newStatusInvoice
                         : invoice.statusInvoice,
 
-                paymentDate: resRecurrence?.data?.paymentDate,
+                paymentDate,
                 tid: resRecurrence?.data?.tid,
                 dueDate: invoice?.dueDate,
                 residentName: resident?.name,

@@ -3,7 +3,7 @@ import { CustomerModel } from '../Customer';
 import { PaymentRecurrentModifyModel } from '../Payment';
 
 export interface RecurrentModifyModel {
-    paymentId: string;
+    invoiceId: number;
 }
 
 export interface RecurrentModifyCustomerModel extends RecurrentModifyModel {

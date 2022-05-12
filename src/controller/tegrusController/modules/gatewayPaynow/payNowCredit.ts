@@ -88,7 +88,6 @@ export const payNowCredit = async (
         }
 
         const invoiceService = new InvoiceService();
-        console.log(123);
         const resPayAdapter: any = await payAdatpter(
             resident,
             {
@@ -98,7 +97,6 @@ export const payNowCredit = async (
             invoice,
             true,
         );
-        console.log(124);
 
         const paymentDate: Date =
             resPayAdapter?.payment?.receivedDate || new Date();
@@ -107,8 +105,6 @@ export const payNowCredit = async (
 
         const { code, message }: any = defaultReturnMessage(returnCode);
         console.log(code, message);
-        console.log(999, 'resPayAdaptersss', resPayAdapter?.data?.data);
-        console.log(77777, resident);
 
         if (resPayAdapter?.err || resPayAdapter?.data?.data)
             return returnTopic(
