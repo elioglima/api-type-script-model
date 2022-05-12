@@ -391,7 +391,7 @@ export default class RecurrenceService {
                     updatedAt: new Date(),
                     isDeactivateError: true,
                 });
-                return 7
+                return 7;
             }
 
             const updateRecu: PaymentRecurrence = {
@@ -583,7 +583,9 @@ export default class RecurrenceService {
 
             if (updateInvoice.err)
                 return rError({
+                    invoiceId: dataInvoice.invoiceId,
                     message: updateInvoice.data.message,
+                    invoice: resInvoice,
                 });
 
             const resRefund: refundRecurrencePayment = {
@@ -665,25 +667,29 @@ export default class RecurrenceService {
                 modifyPayment.invoiceId,
             );
 
-            if (invoice.err) return  rError({
-                message: "Error to found invoice",
-            });
-            if (!invoice.data) return rError({
-                message: "Error to found invoice",
-            });
+            if (invoice.err)
+                return rError({
+                    message: 'Error to found invoice',
+                });
+            if (!invoice.data)
+                return rError({
+                    message: 'Error to found invoice',
+                });
 
             const { data } = invoice;
-            
+
             const recurrence: any = await this.repository.getByPreUserId(
                 data.residentIdenty.id,
             );
-            
-            if (recurrence instanceof Error) return rError({
-                message: "Unexpected Error",
-            });
-            if (!recurrence) return rError({
-                message: "Error to found recurrence",
-            });
+
+            if (recurrence instanceof Error)
+                return rError({
+                    message: 'Unexpected Error',
+                });
+            if (!recurrence)
+                return rError({
+                    message: 'Error to found recurrence',
+                });
 
             await paymentAdapter.init(data.residentIdenty.enterpriseId);
 
@@ -691,17 +697,19 @@ export default class RecurrenceService {
                 paymentId: recurrence.recurrentPaymentId,
                 modify: modifyPayment.payment,
             };
-            
+
             const resModify: any = await paymentAdapter.recurrenceModify(
                 reqModify,
             );
 
-            if (resModify instanceof Error) return rError({
-                message: "Unexpected Error",
-            });
-            if (resModify.err) return rError({
-                message: "Error to modify recurrence",
-            });
+            if (resModify instanceof Error)
+                return rError({
+                    message: 'Unexpected Error',
+                });
+            if (resModify.err)
+                return rError({
+                    message: 'Error to modify recurrence',
+                });
 
             return {
                 err: false,
@@ -710,9 +718,9 @@ export default class RecurrenceService {
                 },
             };
         } catch (err: any) {
-            console.log("ERR", err)
+            console.log('ERR', err);
             return rError({
-                message: "Unexpected Error",
+                message: 'Unexpected Error',
             });
         }
     };
