@@ -26,7 +26,7 @@ export default class HashSearchService {
 
             if (!resp?.valid) {
                 return {
-                    err: false,
+                    err: true,
                     data: {
                         code: 2,
                         message: 'hash already used.',
