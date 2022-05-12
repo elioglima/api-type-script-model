@@ -132,39 +132,66 @@ export class InvoiceRepository {
         return await db.orderBy('invoice.updateDate', 'DESC').getMany();
     };
 
-    public update = async (invoice: TInvoice) => {
+    public update = async (invoice: any) => {
         const dataUpdate = {
-            value: invoice?.value,
-            totalValue: invoice?.totalValue,
-            condominium: invoice?.condominium,
-            discount: invoice?.discount,
-            tax: invoice?.tax,
-            refund: invoice?.refund,
-            fine: invoice?.fine,
-            fineTicket: invoice?.fineTicket,
-            dueDate: invoice?.dueDate,
-            description: invoice?.description,
-            recurrenceDate: invoice?.recurrenceDate,
-            anticipation: invoice?.anticipation,
-            type: invoice?.type,
-            paymentMethod: invoice?.paymentMethod,
-            statusInvoice: invoice?.statusInvoice,
-            apartmentId: invoice?.apartmentId,
-            isExpired: invoice?.isExpired,
-            startReferenceDate: invoice?.startReferenceDate,
-            endReferenceDate: invoice?.endReferenceDate,
-            commission: invoice?.commission,
-            expense: invoice?.expense,
-            recurenceNumber: invoice?.recurenceNumber,
-            recurenceTotalNumber: invoice?.recurenceTotalNumber,
-            comments: invoice?.comments,
-            isRefunded: invoice?.isRefunded,
-            paymentDate: invoice?.paymentDate,
-            returnMessage: invoice?.returnMessage,
-            paymentId: invoice?.paymentId,
-            tid: invoice?.tid,
-            returnCode: invoice?.returnCode,
-            referenceCode: invoice?.referenceCode,
+            ...(invoice?.value ? { value: invoice?.value } : {}),
+            ...(invoice?.totalValue ? { totalValue: invoice?.totalValue } : {}),
+            ...(invoice?.condominium
+                ? { condominium: invoice?.condominium }
+                : {}),
+            ...(invoice?.discount ? { discount: invoice?.discount } : {}),
+            ...(invoice?.tax ? { tax: invoice?.tax } : {}),
+            ...(invoice?.refund ? { refund: invoice?.refund } : {}),
+            ...(invoice?.fine ? { fine: invoice?.fine } : {}),
+            ...(invoice?.fineTicket ? { fineTicket: invoice?.fineTicket } : {}),
+            ...(invoice?.dueDate ? { dueDate: invoice?.dueDate } : {}),
+            ...(invoice?.description
+                ? { description: invoice?.description }
+                : {}),
+            ...(invoice?.recurrenceDate
+                ? { recurrenceDate: invoice?.recurrenceDate }
+                : {}),
+            ...(invoice?.anticipation
+                ? { anticipation: invoice?.anticipation }
+                : {}),
+            ...(invoice?.type ? { type: invoice?.type } : {}),
+            ...(invoice?.paymentMethod
+                ? { paymentMethod: invoice?.paymentMethod }
+                : {}),
+            ...(invoice?.statusInvoice
+                ? { statusInvoice: invoice?.statusInvoice }
+                : {}),
+            ...(invoice?.apartmentId
+                ? { apartmentId: invoice?.apartmentId }
+                : {}),
+            ...(invoice?.startReferenceDate
+                ? { startReferenceDate: invoice?.startReferenceDate }
+                : {}),
+            ...(invoice?.endReferenceDate
+                ? { endReferenceDate: invoice?.endReferenceDate }
+                : {}),
+            ...(invoice?.commission ? { commission: invoice?.commission } : {}),
+            ...(invoice?.expense ? { expense: invoice?.expense } : {}),
+            ...(invoice?.recurenceNumber
+                ? { recurenceNumber: invoice?.recurenceNumber }
+                : {}),
+            ...(invoice?.recurenceTotalNumber
+                ? { recurenceTotalNumber: invoice?.recurenceTotalNumber }
+                : {}),
+            ...(invoice?.comments ? { comments: invoice?.comments } : {}),
+            ...(invoice?.isRefunded ? { isRefunded: invoice?.isRefunded } : {}),
+            ...(invoice?.paymentDate
+                ? { paymentDate: invoice?.paymentDate }
+                : {}),
+            ...(invoice?.returnMessage
+                ? { returnMessage: invoice?.returnMessage }
+                : {}),
+            ...(invoice?.paymentId ? { paymentId: invoice?.paymentId } : {}),
+            ...(invoice?.tid ? { tid: invoice?.tid } : {}),
+            ...(invoice?.returnCode ? { returnCode: invoice?.returnCode } : {}),
+            ...(invoice?.referenceCode
+                ? { referenceCode: invoice?.referenceCode }
+                : {}),
         };
 
         console.log('dataUpdate', dataUpdate);

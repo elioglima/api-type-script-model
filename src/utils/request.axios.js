@@ -13,8 +13,15 @@ export default async (data = {}, options) => {
             if (options && options.headers)
                 options.headers['Content-Length'] = Buffer.byteLength(dataPost);
 
-            response = await axios.put(
+            console.log(
+                9998,
                 `${options.hostname}/${options.path}`,
+                dataPost,
+                options.headers,
+            );
+
+            response = await axios.put(
+                `${options.hostname}${options.path}`,
                 dataPost,
                 {
                     timeout: 5000,
@@ -52,28 +59,26 @@ export default async (data = {}, options) => {
             response.statusCode &&
             [200, 201].indexOf(response.statusCode) === -1
         )
-            return reject({
+            return {
                 err: true,
                 data: {
                     message: response.data,
-                    status: response.status,
+                    status: response.statusCode,
                 },
-            });
+            };
 
         const dataReturn = {
             ...camelcaseKeys(response.data, { deep: true }),
         };
 
         return dataReturn;
-    } catch (error) {        
+    } catch (error) {
+        console.log(11111111, 'dataReturn.error', error.response.statusText);
         return {
             err: true,
             data: {
-                message:
-                    error?.response?.statusText ||
-                    typeof error?.response?.data == 'string'
-                        ? error?.response?.data
-                        : error?.message || 'unexpected error',
+                status: error?.response?.status,
+                message: error?.response?.statusText || 'unexpected error',
             },
         };
     }

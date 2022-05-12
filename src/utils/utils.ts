@@ -14,42 +14,54 @@ export class Utils {
     public async get<T>(params: { path: string; notContentType?: boolean }) {
         const hostname: String | any = this.cieloConstructor.hostnameQuery;
         const { path, notContentType } = params;
-        const method = HttpRequestMethodEnum.GET;        
+        const method = HttpRequestMethodEnum.GET;
 
         const options: IHttpRequestOptions = this.getHttpRequestOptions({
             path,
             hostname,
             method,
             notContentType: notContentType || false,
-        });        
+        });
 
-        const response = await this.request<T>(options, {});        
+        const response = await this.request<T>(options, {});
 
         return response;
     }
 
     public postToSales<T, U>(data: U): Promise<T | TErrorGeneric> {
-        return this.post<T, U>({ path: '/1/sales/' }, data).then(
-            (onSuccess: any) => {
-                const valueURL: any =
-                    onSuccess?.payment?.paymentId ||
-                    onSuccess?.RecurrentPayment?.RecurrentPaymentId;
+        return new Promise((resolve, reject) => {
+            this.post<T, U>({ path: '/1/sales/' }, data)
+                .then((onSuccess: any) => {
+                    if (!onSuccess?.payment?.paymentId)
+                        return reject({
+                            err: true,
+                            data: {
+                                message: 'Error paymentId not found in cielo',
+                            },
+                        });
 
-                if (!valueURL) return onSuccess;
-
-                return this.put<T, U>(
-                    { path: `/1/sales/${valueURL}/capture` },
-                    data,
-                )
-                    .then(capture => {
-                        return { ...onSuccess, capture };
-                    })
-                    .catch(error => {
-                        console.log('postToSales :: error');
-                        return error;
-                    });
-            },
-        );
+                    const uri = `/1/sales/${onSuccess?.payment?.paymentId}/capture`;
+                    return this.put<T, U>({ path: uri }).then(
+                        (capture: any) => {
+                            if (capture?.err) {
+                                return reject({
+                                    err: true,
+                                    data: {
+                                        capture: capture?.data,
+                                        message:
+                                            'Error when making payment capture in cielo',
+                                    },
+                                });
+                            }
+                            return resolve({ ...onSuccess, capture });
+                        },
+                    );
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    return reject(error);
+                });
+        });
     }
 
     /** 33
@@ -66,7 +78,7 @@ export class Utils {
             method: HttpRequestMethodEnum.POST,
             path,
             hostname: this.cieloConstructor.hostnameTransacao,
-        });        
+        });
         return this.request<T>(options, data);
     }
 
@@ -85,9 +97,8 @@ export class Utils {
             path,
             hostname: this.cieloConstructor.hostnameTransacao,
         });
-        const resp: any = await this.request<T>(options, data);
-        
-        return resp;
+
+        return await this.request<T>(options, data);
     }
 
     public getHttpRequestOptions(params: {
@@ -115,9 +126,12 @@ export class Utils {
     }
 
     public request<T>(options: IHttpRequestOptions, data: any): Promise<T> {
-        return new Promise(async resolve =>
-            resolve(requestAxios(data, options)),
-        );
+        return requestAxios(data, options);
+        // new Promise(async (resolve, reject) =>
+        //     requestAxios(data, options)
+        //         .then(res => resolve(res))
+        //         .catch(err => reject(err)),
+        // );
     }
 
     public validateJSON(text: string): boolean {

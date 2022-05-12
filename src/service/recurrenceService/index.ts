@@ -167,7 +167,7 @@ export default class RecurrenceService {
             );
             if (checkExists?.err) return rError(resCreateAdapter.data);
 
-            console.log({ recurrence });
+            console.log({ recurrence }, checkExists);
             const makeRecurrent: any = {
                 MerchantOrderId: invoice?.invoiceId
                     .toString()
@@ -186,7 +186,7 @@ export default class RecurrenceService {
                     SoftDescriptor: 'Recorrencia JFL',
                     RecurrentPayment: {
                         AuthorizeNow: true,
-                        EndDate: recurrence.endDateContract,
+                        EndDate: invoice?.endReferenceDate,
                         Interval: 'Monthly',
                     },
                     CreditCard: {
@@ -201,9 +201,15 @@ export default class RecurrenceService {
                 },
             };
 
-            console.log(123, makeRecurrent);
+            console.log(123, 'recurrentCreate', makeRecurrent);
             const resRecurrentCreate: any =
                 await this.paymentAdapter.recurrentCreate(makeRecurrent);
+
+            console.log(99999999, 'resRecurrentCreate', resRecurrentCreate);
+
+            if (resRecurrentCreate?.err) {
+                return resRecurrentCreate;
+            }
 
             if (resRecurrentCreate?.err) return resRecurrentCreate;
 
@@ -352,6 +358,7 @@ export default class RecurrenceService {
             console.log(99, error);
             return rError({
                 message: error?.message,
+                ...error,
             });
         }
     };
@@ -492,8 +499,6 @@ export default class RecurrenceService {
                 invoiceId,
             );
 
-            console.log('resInvoice', resInvoice);
-
             if (!resInvoice.data)
                 return rError({
                     message: 'Invoice not found',
@@ -554,14 +559,16 @@ export default class RecurrenceService {
                         'RecurrenceNumber is higher than recurrence already paid',
                 });
 
-            const stepPay =
+            const recurrentTransactions =
                 resRecurrence.recurrentPayment.recurrentTransactions[
-                    dataInvoice.recurenceNumber - 1
-                ].paymentId;
+                    dataInvoice.recurenceNumber
+                ];
+
+            const stepPay = recurrentTransactions?.paymentId;
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
-                amount: dataInvoice.value * 100,
+                amount: dataInvoice?.totalValue * 100,
             });
 
             if (resRefunded instanceof Error)
@@ -574,24 +581,28 @@ export default class RecurrenceService {
                     message: 'Error to refund',
                 });
 
-            const updateInvoice = await this.invoiceService.Update({
+            const dataInvoiceUpdate = {
                 ...dataInvoice,
                 comments,
                 isRefunded: true,
                 statusInvoice: EnumInvoiceStatus.refunded,
-            });
+            };
+
+            const updateInvoice = await this.invoiceService.Update(
+                dataInvoiceUpdate,
+            );
 
             if (updateInvoice.err)
                 return rError({
                     invoiceId: dataInvoice.invoiceId,
                     message: updateInvoice.data.message,
-                    invoice: resInvoice,
+                    invoice: dataInvoiceUpdate,
                 });
 
             const resRefund: refundRecurrencePayment = {
                 invoiceId: dataInvoice.invoiceId,
                 reason: comments,
-                invoice: resInvoice,
+                invoice: dataInvoiceUpdate,
             };
 
             return resRefund;
@@ -628,12 +639,16 @@ export default class RecurrenceService {
                     message: 'Error to refund',
                 });
 
-            const updateInvoice = await this.invoiceService.Update({
+            const dataInvoiceUpdate = {
                 ...dataInvoice,
                 comments,
                 isRefunded: true,
                 statusInvoice: EnumInvoiceStatus.refunded,
-            });
+            };
+
+            const updateInvoice = await this.invoiceService.Update(
+                dataInvoiceUpdate,
+            );
 
             if (updateInvoice.err)
                 return rError({
@@ -643,6 +658,7 @@ export default class RecurrenceService {
             const resRefund: refundRecurrencePayment = {
                 invoiceId: dataInvoice.invoiceId,
                 reason: comments,
+                invoice: dataInvoiceUpdate,
             };
 
             return resRefund;

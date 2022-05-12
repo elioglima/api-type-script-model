@@ -9,12 +9,10 @@ export default class ResponsiblePaymentService {
     public IncludeOrUpdate = async (
         responsiblePayment: TResponsiblePayment,
     ) => {
-        console.log(777, 'IncludeOrUpdate', responsiblePayment);
         if (responsiblePayment?.id) {
             const resFindOne: any = await this.FindOne(
                 Number(responsiblePayment.id),
             );
-            console.log(777, 'IncludeOrUpdate', resFindOne);
             if (!resFindOne?.err) return resFindOne;
             if (resFindOne?.data?.id)
                 return await this.update(responsiblePayment);
@@ -36,7 +34,6 @@ export default class ResponsiblePaymentService {
 
             this.logger('Starting method to create responsiblePayment');
             const resp: any = await this.repository.persist(responsiblePayment);
-            console.log(777, resp);
             if (resp?.error == true) {
                 return {
                     err: true,
