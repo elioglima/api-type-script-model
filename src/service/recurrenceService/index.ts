@@ -167,7 +167,7 @@ export default class RecurrenceService {
             );
             if (checkExists?.err) return rError(resCreateAdapter.data);
 
-            console.log({ recurrence });
+            console.log({ recurrence }, checkExists);
             const makeRecurrent: any = {
                 MerchantOrderId: invoice?.invoiceId
                     .toString()
@@ -186,7 +186,7 @@ export default class RecurrenceService {
                     SoftDescriptor: 'Recorrencia JFL',
                     RecurrentPayment: {
                         AuthorizeNow: true,
-                        EndDate: recurrence.endDateContract,
+                        EndDate: invoice?.endReferenceDate,
                         Interval: 'Monthly',
                     },
                     CreditCard: {
@@ -201,7 +201,7 @@ export default class RecurrenceService {
                 },
             };
 
-            console.log(123, makeRecurrent);
+            console.log(123, 'recurrentCreate', makeRecurrent);
             const resRecurrentCreate: any =
                 await this.paymentAdapter.recurrentCreate(makeRecurrent);
 
@@ -504,6 +504,7 @@ export default class RecurrenceService {
                     message: resInvoice?.data?.message,
                 });
 
+            console.log(123, resInvoice?.data);
             let { data: dataInvoice } = resInvoice;
 
             if (dataInvoice.statusInvoice != EnumInvoiceStatus.paid)
@@ -536,6 +537,8 @@ export default class RecurrenceService {
                     message: 'unexpected error',
                 });
 
+            console.log(123, recurrence);
+
             const paymentAdapter = new AdapterPayment();
             await paymentAdapter.init(
                 dataInvoice?.residentIdenty?.enterpriseId,
@@ -544,6 +547,8 @@ export default class RecurrenceService {
             const resRecurrence: any = await paymentAdapter.recurrenceFind({
                 recurrentPaymentId: recurrence?.recurrentPaymentId,
             });
+
+            console.log(123, 'resRecurrence', resRecurrence);
 
             if (
                 resRecurrence.recurrentPayment.recurrentTransactions.length <
@@ -554,14 +559,27 @@ export default class RecurrenceService {
                         'RecurrenceNumber is higher than recurrence already paid',
                 });
 
-            const stepPay =
+            const recurrentTransactions =
                 resRecurrence.recurrentPayment.recurrentTransactions[
-                    dataInvoice.recurenceNumber - 1
-                ].paymentId;
+                    dataInvoice.recurenceNumber
+                ];
+
+            console.log(
+                123,
+                'stepPay',
+                recurrentTransactions,
+                resRecurrence.recurrentPayment.recurrentTransactions,
+            );
+
+            const stepPay = recurrentTransactions?.paymentId;
+
+            console.log(123, 'stepPay', recurrentTransactions);
+
+            console.log(123, 'recurrentTransactions', recurrentTransactions);
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
-                amount: dataInvoice.value * 100,
+                amount: dataInvoice?.value * 100,
             });
 
             if (resRefunded instanceof Error)
@@ -569,6 +587,7 @@ export default class RecurrenceService {
                     message: 'Unexpected Error',
                 });
 
+            console.log(111, resRefunded.data);
             if (![0, 6].includes(Number(resRefunded.returnCode)))
                 return rError({
                     message: 'Error to refund',
