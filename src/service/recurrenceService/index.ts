@@ -579,7 +579,7 @@ export default class RecurrenceService {
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
-                amount: dataInvoice?.value * 100,
+                amount: dataInvoice?.totalValue * 100,
             });
 
             if (resRefunded instanceof Error)
@@ -593,24 +593,28 @@ export default class RecurrenceService {
                     message: 'Error to refund',
                 });
 
-            const updateInvoice = await this.invoiceService.Update({
+            const dataInvoiceUpdate = {
                 ...dataInvoice,
                 comments,
                 isRefunded: true,
                 statusInvoice: EnumInvoiceStatus.refunded,
-            });
+            };
+
+            const updateInvoice = await this.invoiceService.Update(
+                dataInvoiceUpdate,
+            );
 
             if (updateInvoice.err)
                 return rError({
                     invoiceId: dataInvoice.invoiceId,
                     message: updateInvoice.data.message,
-                    invoice: resInvoice,
+                    invoice: dataInvoiceUpdate,
                 });
 
             const resRefund: refundRecurrencePayment = {
                 invoiceId: dataInvoice.invoiceId,
                 reason: comments,
-                invoice: resInvoice,
+                invoice: dataInvoiceUpdate,
             };
 
             return resRefund;
