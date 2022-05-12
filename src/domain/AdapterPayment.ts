@@ -18,7 +18,6 @@ import { FindPaymentConfigService } from '../service/FindPaymentConfigService';
 import {
     reqRecurrentCreate,
     reqRecurrentDeactivate,
-    resRecurrentCreate,
     resRecurrentDeactivate,
     reqRecurrentPaymentConsult,
     reqRecurrenceModify,
