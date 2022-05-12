@@ -25,20 +25,21 @@ const returnTopic = (
     },
     err: boolean = false,
 ) => {
+    const { message, ...resp } = response;
     return {
         err,
         status: err ? 422 : 200,
         statusInvoice: {
             invoices: [
                 {
-                    ...response,
+                    ...resp,
                     ...(err
                         ? {
                               messageError: err
-                                  ? response?.message || 'unexpected error'
+                                  ? message || 'unexpected error'
                                   : undefined,
                           }
-                        : { message: response.message }),
+                        : { message }),
                 },
             ],
         },
@@ -101,13 +102,11 @@ export const payNowRecurrence = async (
             payload.card,
         );
 
-        console.log(123, resRecurrence);
-
         if (resRecurrence?.err) {
             return await returnTopic(
                 {
                     invoiceId: invoice.invoiceId,
-                    ...resRecurrence?.data,
+                    ...resRecurrence?.data?.data,
                 },
                 true,
             );
@@ -124,9 +123,6 @@ export const payNowRecurrence = async (
         const returnCode = resRecurrence?.data?.returnCode;
 
         const { code, message }: any = defaultReturnMessage(returnCode);
-        console.log(code, message);
-        console.log(999, 'resRecurrence', resRecurrence?.data);
-        console.log(77777, resident);
 
         let referenceCode = code;
         if (referenceCode == 1) {

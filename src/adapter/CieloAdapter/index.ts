@@ -23,7 +23,6 @@ import {
 
 import {
     reqRecurrentCreate,
-    resRecurrentCreate,
     reqRecurrentPaymentConsult,
     reqRecurrentDeactivate,
     resRecurrentDeactivate,
@@ -119,11 +118,9 @@ export class CieloAdapter implements ICardAdapter {
     }
 
     // manipulando e efetuando pagamentos recorrentes
-    public recurrentCreate(
-        payload: reqRecurrentCreate,
-    ): Promise<resRecurrentCreate | TErrorGeneric> {
+    public async recurrentCreate(payload: reqRecurrentCreate) {
         if (!this.util) return this.error('this.util not started');
-        return this.recurentMethods.Create(payload);
+        return await this.recurentMethods.Create(payload);
     }
 
     public async recurrentFind(payload: reqRecurrentPaymentConsult) {
@@ -164,7 +161,7 @@ export class CieloAdapter implements ICardAdapter {
         payload: reqRecurrenceModify,
     ): Promise<resRecurrentModify | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
-        const data = await this.recurentMethods.Modify(payload);        
+        const data = await this.recurentMethods.Modify(payload);
         return data;
     }
 }

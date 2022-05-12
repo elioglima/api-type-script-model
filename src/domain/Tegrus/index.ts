@@ -8,3 +8,4 @@ export * from './TStatusInvoice';
 export * from './TFirstPaymentExecute';
 export * from './TPayNow';
 export * from './TRecurrence';
+export * from './EnumInvoiceStatus';
