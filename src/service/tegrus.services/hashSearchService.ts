@@ -59,11 +59,13 @@ export default class HashSearchService {
                 resp.invoiceId,
             );
 
-            const timeNow: Date = moment().add('days', 1).toDate();
+            const timeNow: Date = moment().toDate();
 
             resInvoicePreUser.invoiceHasExpired = moment(
                 resInvoicePreUser.dueDate,
-            ).isBefore(timeNow);
+            )
+                .add('days', 1)
+                .isBefore(timeNow);
 
             if (resInvoicePreUser.invoiceHasExpired) {
                 return {
