@@ -205,6 +205,12 @@ export default class RecurrenceService {
             const resRecurrentCreate: any =
                 await this.paymentAdapter.recurrentCreate(makeRecurrent);
 
+            console.log(99999999, 'resRecurrentCreate', resRecurrentCreate);
+
+            if (resRecurrentCreate?.err) {
+                return resRecurrentCreate;
+            }
+
             if (resRecurrentCreate?.err) return resRecurrentCreate;
 
             const payCardNumber =
@@ -352,6 +358,7 @@ export default class RecurrenceService {
             console.log(99, error);
             return rError({
                 message: error?.message,
+                ...error,
             });
         }
     };
@@ -579,7 +586,7 @@ export default class RecurrenceService {
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
-                amount: dataInvoice?.totalValue * 100,
+                amount: dataInvoice?.value * 100,
             });
 
             if (resRefunded instanceof Error)
