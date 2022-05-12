@@ -134,6 +134,7 @@ export class InvoiceRepository {
 
     public update = async (invoice: any) => {
         const dataUpdate = {
+            invoiceId: invoice?.invoiceId,
             ...(invoice?.value ? { value: invoice?.value } : {}),
             ...(invoice?.totalValue ? { totalValue: invoice?.totalValue } : {}),
             ...(invoice?.condominium

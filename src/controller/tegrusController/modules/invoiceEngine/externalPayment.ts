@@ -35,7 +35,7 @@ const externalPayment = async (req: any) => {
 
     try {
         const invoiceService = new InvoiceService();
-        const resFindOne: any = await invoiceService.FindOne(payload.invoiceId);
+        let resFindOne: any = await invoiceService.FindOne(payload.invoiceId);
         if (resFindOne.err)
             return returnTopic(
                 {
@@ -44,11 +44,11 @@ const externalPayment = async (req: any) => {
                 true,
             );
 
-        const invoice: TInvoice = resFindOne.data;
-        if (invoice.statusInvoice === EnumInvoiceStatus.issued) {
+        let invoice: TInvoice = resFindOne.data;
+        if (invoice.statusInvoice == EnumInvoiceStatus.issued) {
             const updataData: any = {
-                invoiceId: invoice.id,
-                paymentDate: payload?.paiAt,
+                invoiceId: invoice?.invoiceId,
+                paymentDate: payload?.paidAt,
                 paymentMethod: payload?.paymentMethod,
                 statusInvoice: payload?.statusInvoice,
             };
@@ -62,6 +62,11 @@ const externalPayment = async (req: any) => {
             }
 
             const resUpdateIvoice = await invoiceService.Update(updataData);
+            const resFindOne2: any = await invoiceService.FindOne(
+                payload.invoiceId,
+            );
+            invoice = resFindOne2?.data;
+
             if (resUpdateIvoice.err)
                 return returnTopic(
                     {
