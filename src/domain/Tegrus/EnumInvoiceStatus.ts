@@ -2,7 +2,6 @@ export enum EnumInvoiceStatus {
     canceled = 'canceled',
     issued = 'issued',
     paid = 'paid',
-    refunded = 'refunded',
+    refunded = 'chargeback',
     paymentError = 'paymentError',
-
 }

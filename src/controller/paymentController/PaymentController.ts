@@ -333,18 +333,27 @@ export class PaymentController {
         try {
             this.logger(`Change payment credit Card`, req.body);
             const invoiceId = req.params.invoiceId;
-            const body = req.body;           
-          
+            const body = req.body;
 
+            /*
+                {
+                    Brand: string;
+                    Holder: string;
+                    CardNumber: string;
+                    ExpirationDate: string;
+                }
+            */
             const reqModify: RecurrentModifyPaymentModel = {
                 invoiceId: Number(invoiceId),
                 payment: {
                     Type: 'CreditCard',
-                    CreditCard: body
-                }                
-            }           
+                    CreditCard: body,
+                },
+            };
 
-            const data: any = await this.recurrenceService.changeCardRecurrence(reqModify);            
+            const data: any = await this.recurrenceService.changeCardRecurrence(
+                reqModify,
+            );
 
             if (data instanceof Error) {
                 this.logger('Error', data?.message);
