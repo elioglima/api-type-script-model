@@ -24,15 +24,15 @@ export default class HashSearchService {
                 };
             }
 
-            if (!resp?.valid) {
-                return {
-                    err: true,
-                    data: {
-                        code: 2,
-                        message: 'hash already used.',
-                    },
-                };
-            }
+            // if (!resp?.valid) {
+            //     return {
+            //         err: true,
+            //         data: {
+            //             code: 2,
+            //             message: 'hash already used.',
+            //         },
+            //     };
+            // }
 
             const resValidate = await this.validateHashTTL(resp);
             if (resValidate.err) {
@@ -119,7 +119,7 @@ export default class HashSearchService {
     private async validateHashTTL(hashData: resHashData) {
         try {
             const timeNow: Date = moment().toDate();
-            if (moment(hashData.lifeTime).isBefore(timeNow)) {
+            if (moment(hashData.lifeTime).add('days', 1).isBefore(timeNow)) {
                 await this.terminateHashTTL(String(hashData.hash));
                 return {
                     err: false,
