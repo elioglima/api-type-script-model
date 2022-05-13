@@ -92,4 +92,60 @@ export class ResponsiblePaymentRepository {
                     return onRejected;
                 },
             );
+
+    public FindOneAE = async ({
+        apartmentId,
+        enterpriseId,
+    }: {
+        apartmentId: number;
+        enterpriseId: number;
+    }) => {
+        const db = getConnection()
+            .getRepository(ResponsiblePaymentEntity)
+            .createQueryBuilder('responsiblePayment');
+
+        db.andWhere('responsiblePayment.apartmentId = :apartmentId', {
+            apartmentId,
+        });
+
+        db.andWhere('responsiblePayment.enterpriseId = :enterpriseId', {
+            enterpriseId,
+        });
+
+        return await db.getOne().then(
+            data => {
+                return data;
+            },
+            onRejected => {
+                return onRejected;
+            },
+        );
+    };
+
+    public deleteAll = async ({
+        apartmentId,
+        enterpriseId,
+    }: {
+        apartmentId: number;
+        enterpriseId: number;
+    }) =>
+        await getConnection()
+            .getRepository(ResponsiblePaymentEntity)
+            .createQueryBuilder('paymentRecurrence')
+            .delete()
+            .where('responsiblePayment.apartmentId = :apartmentId', {
+                apartmentId,
+            })
+            .where('responsiblePayment.enterpriseId = :enterpriseId', {
+                enterpriseId,
+            })
+            .execute()
+            .then(
+                res => res,
+                onRejected => {
+                    this.logger('Error ', onRejected);
+                    return onRejected;
+                },
+            )
+            .catch(error => error);
 }

@@ -4,6 +4,7 @@ import {
     TInvoice,
     TResident,
     TRecurrenceSchedule,
+    TResponsiblePayment,
 } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
@@ -50,6 +51,7 @@ export const payNowRecurrence = async (
     payload: TPayNowReq,
     invoice: TInvoice,
     resident: TResident,
+    responsiblePayment: TResponsiblePayment,
 ) => {
     try {
         const invoiceService = new InvoiceService();
@@ -182,6 +184,7 @@ export const payNowRecurrence = async (
                 stepValue: invoice?.stepValue,
                 commission: invoice?.commission,
 
+                responsiblePayment,
                 recurrence: {
                     ...(resRecurrence?.data?.recurrence
                         ? resRecurrence?.data?.recurrence
