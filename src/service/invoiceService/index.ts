@@ -142,24 +142,30 @@ export default class InvoiceService {
             let invoiceData: TInvoice = invoiceInput;
             invoiceData = await this.recurrenceCalculator(invoiceData);
 
-            const { resident: residentData, ...invoiceTwo }: any = invoiceData;
+            const {
+                responsiblePayment,
+                resident: residentData,
+                ...invoiceTwo
+            }: any = invoiceData;
             const resident: TResident = residentData;
             const invoice: TInvoice = invoiceTwo;
 
             try {
-                console.log(999, 'resident', resident);
-                if (Array.isArray(resident?.responsiblePayment)) {
-                    resident?.responsiblePayment.forEach(
-                        async responsiblePayment => {
-                            await this.responsiblePaymentService.IncludeOrUpdate(
-                                {
-                                    apartmentId: resident.apartmentId,
-                                    enterpriseId: resident.enterpriseId,
-                                    ...responsiblePayment,
-                                },
-                            );
-                        },
-                    );
+                console.log(999, 'responsiblePayment', responsiblePayment);
+                if (Array.isArray(responsiblePayment)) {
+                    responsiblePayment.forEach(async (resp: any) => {
+                        const dataInclude = {
+                            name: resp.name,
+                            typeDocument: resp.typeDocument,
+                            document: resp.document,
+                            mail: resp.email || resp.mail,
+                        };
+                        await this.responsiblePaymentService.IncludeOrUpdate({
+                            apartmentId: invoice.apartmentId,
+                            enterpriseId: invoice.enterpriseId,
+                            ...dataInclude,
+                        });
+                    });
                 }
             } catch (error) {
                 console.log(error);

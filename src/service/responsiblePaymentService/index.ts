@@ -34,6 +34,7 @@ export default class ResponsiblePaymentService {
 
             this.logger('Starting method to create responsiblePayment');
             const resp: any = await this.repository.persist(responsiblePayment);
+            console.log(77777, resp);
             if (resp?.error == true) {
                 return {
                     err: true,
@@ -97,4 +98,41 @@ export default class ResponsiblePaymentService {
             };
         }
     };
+
+    public FindOneAE = async (apartmentId: number, enterpriseId: number) => {
+        this.logger(`Find One`);
+        try {
+            const responsiblePayment: TResponsiblePayment =
+                await this.repository.FindOneAE({ apartmentId, enterpriseId });
+
+            console.log(77555, {
+                apartmentId,
+                enterpriseId,
+                responsiblePayment,
+            });
+            if (responsiblePayment instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: 'No responsiblePayment found',
+                    },
+                };
+            }
+
+            return {
+                err: false,
+                data: responsiblePayment,
+            };
+        } catch (error: any) {
+            return {
+                err: true,
+                data: {
+                    message: error?.message || 'unexpected error',
+                },
+            };
+        }
+    };
+
+    public deleteAll = async (apartmentId: number, enterpriseId: number) =>
+        await this.repository.deleteAll({ apartmentId, enterpriseId });
 }
