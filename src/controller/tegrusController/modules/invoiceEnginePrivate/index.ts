@@ -30,7 +30,7 @@ const invoiceEnginePrivate = async (res: Response) => {
             statusInvoice: EnumInvoiceStatus.issued,
         };
 
-        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);        
+        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);
         if (invoicesFounded.err) return invoicesFounded;
 
         if (!invoicesFounded.data.length) return;
@@ -60,13 +60,16 @@ const invoiceEnginePrivate = async (res: Response) => {
                                 data: recurrency.data.message,
                             };
 
-                        const recurrenceNumber: number = Number(invoice?.recurenceNumber) - 1;
+                        const recurrenceNumber: number =
+                            Number(invoice?.recurenceNumber) - 1;
                         const paymentId: string =
-                            recurrency?.data?.recurrentTransactions[recurrenceNumber]
-                                ?.paymentId;
+                            recurrency?.data?.recurrentTransactions[
+                                recurrenceNumber
+                            ]?.paymentId;
                         const tryNumber: number =
-                            recurrency?.data?.recurrentTransactions[recurrenceNumber]
-                                ?.tryNumber;
+                            recurrency?.data?.recurrentTransactions[
+                                recurrenceNumber
+                            ]?.tryNumber;
                         const enterpriseId: number = resident.enterpriseId;
                         const receiptCielo: any =
                             await invoiceService.GetInvoiceCielo(
@@ -86,6 +89,7 @@ const invoiceEnginePrivate = async (res: Response) => {
                                 statusInvoice: EnumInvoiceStatus.paymentError,
                                 tryNumber,
                             });
+
                             return {
                                 statusInvoice: {
                                     invoiceId: invoice.invoiceId,
@@ -116,6 +120,7 @@ const invoiceEnginePrivate = async (res: Response) => {
                                 paymentDate: new Date(),
                                 tryNumber,
                             });
+
                             return {
                                 err: false,
                                 invoiceId: invoice.invoiceId,
@@ -146,11 +151,11 @@ const invoiceEnginePrivate = async (res: Response) => {
                             err: true,
                             invoiceId: invoice.invoiceId,
                             recurrentPaymentId:
-                                recurrency.data.recurrentPaymentId,
+                                recurrency?.data?.recurrentPaymentId,
                             statusInvoice: cieloStatusConverter(
                                 Number(recurrency?.data?.status),
                             ),
-                            paymentMethod: 'credit',
+                            paymentMethod: invoice.paymentMethod,
                             paymentDate: new Date(),
                             recurence: {
                                 ...recurrency.data,
