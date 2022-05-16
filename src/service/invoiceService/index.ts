@@ -229,7 +229,10 @@ export default class InvoiceService {
 
             return {
                 err: false,
-                data: resPersist,
+                data: {
+                    ...resPersist,
+                    responsiblePayment,
+                },
             };
         } catch (error) {
             console.log(333, error);
