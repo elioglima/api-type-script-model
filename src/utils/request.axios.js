@@ -16,9 +16,11 @@ export default async (data = {}, options) => {
             console.log(
                 9998,
                 `${options.hostname}/${options.path}`,
-                dataPost,
-                options.headers,
+                JSON.stringify(dataPost, null, 4),
+                JSON.stringify(options.headers, null, 4),
             );
+
+            console.log(`url:${options.hostname}/${options.path}`);
 
             response = await axios.put(
                 `${options.hostname}${options.path}`,
