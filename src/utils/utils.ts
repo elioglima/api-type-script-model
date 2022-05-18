@@ -44,14 +44,19 @@ export class Utils {
                             err: true,
                             data: {
                                 message:
+                                    onSuccess?.payment?.returnMessage ||
                                     'Error recurrentPaymentId not found in cielo',
+                                returnCode: onSuccess?.payment?.returnCode,
                             },
                         });
                     } else if (!onSuccess?.payment?.paymentId)
                         return reject({
                             err: true,
                             data: {
-                                message: 'Error paymentId not found in cielo',
+                                message:
+                                    onSuccess?.payment?.returnMessage ||
+                                    'Error recurrentPaymentId not found in cielo',
+                                returnCode: onSuccess?.payment?.returnCode,
                             },
                         });
 
