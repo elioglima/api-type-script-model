@@ -207,6 +207,12 @@ export default class RecurrenceService {
 
             console.log(99999999, 'resRecurrentCreate', resRecurrentCreate);
 
+            const recurrenceFind: any = await this.repository.getByResidentId(
+                resident.id,
+            );
+
+            // console.log(11, recurrenceFind);
+            // caso tenha recorrencia desativar
             if (resRecurrentCreate?.err) {
                 return resRecurrentCreate;
             }
@@ -296,6 +302,7 @@ export default class RecurrenceService {
             }
 
             console.log('atuolizou o pagamento');
+
             const resInvoice: any = await this.invoiceService.Update({
                 ...invoice,
             });
@@ -338,6 +345,31 @@ export default class RecurrenceService {
 
             // TO-DO-BETO
             // caso ja exista update
+
+            console.log(99999999, 'persisRecurrency', persisRecurrency);
+            console.log(99999999, 'recurrenceFind', recurrenceFind);
+
+            if (!recurrenceFind.err && recurrenceFind?.data?.row) {
+                const dataUpdate = {
+                    id: recurrenceFind.data.row.id,
+                    ...persisRecurrency,
+                };
+
+                console.log(3333333, dataUpdate);
+                const resUpdate: any = await this.repository.update(dataUpdate);
+                if (resUpdate.err) return rError(resUpdate.data);
+
+                const response: any = {
+                    recurrence: {
+                        err: false,
+                        ...resRecurrentCreate?.payment?.recurrentPayment,
+                    },
+                    ...paymentSccess,
+                    message: 'successful recurrence scheduling',
+                };
+
+                return rSuccess(response);
+            }
 
             const resPersist: any = await this.repository.persist(
                 persisRecurrency,
@@ -546,9 +578,15 @@ export default class RecurrenceService {
                 dataInvoice?.residentIdenty?.enterpriseId,
             );
 
+            console.log(7777, recurrence?.recurrentPaymentId);
             const resRecurrence: any = await paymentAdapter.recurrenceFind({
                 recurrentPaymentId: recurrence?.recurrentPaymentId,
             });
+
+            console.log(
+                123,
+                resRecurrence.recurrentPayment.recurrentTransactions,
+            );
 
             if (
                 resRecurrence.recurrentPayment.recurrentTransactions.length <

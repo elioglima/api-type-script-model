@@ -32,15 +32,36 @@ export class Utils {
         return new Promise((resolve, reject) => {
             this.post<T, U>({ path: '/1/sales/' }, data)
                 .then((onSuccess: any) => {
-                    if (!onSuccess?.payment?.paymentId)
+                    console.log(999, onSuccess);
+
+                    const paymentId = onSuccess?.payment?.paymentId;
+                    if (
+                        onSuccess?.payment?.recurrentPayment &&
+                        !onSuccess?.payment?.recurrentPayment
+                            ?.recurrentPaymentId
+                    ) {
                         return reject({
                             err: true,
                             data: {
-                                message: 'Error paymentId not found in cielo',
+                                message:
+                                    onSuccess?.payment?.returnMessage ||
+                                    'Error recurrentPaymentId not found in cielo',
+                                returnCode: onSuccess?.payment?.returnCode,
+                            },
+                        });
+                    } else if (!onSuccess?.payment?.paymentId)
+                        return reject({
+                            err: true,
+                            data: {
+                                message:
+                                    onSuccess?.payment?.returnMessage ||
+                                    'Error recurrentPaymentId not found in cielo',
+                                returnCode: onSuccess?.payment?.returnCode,
                             },
                         });
 
-                    const uri = `/1/sales/${onSuccess?.payment?.paymentId}/capture`;
+                    console.log(777, 123);
+                    const uri = `/1/sales/${paymentId}/capture`;
                     return this.put<T, U>({ path: uri }).then(
                         (capture: any) => {
                             if (capture?.err) {
