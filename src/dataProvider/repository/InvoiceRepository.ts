@@ -246,4 +246,19 @@ export class InvoiceRepository {
                     return onRejected;
                 },
             );
+
+    public getByPaymentId = async (id: number) =>
+        await getConnection()
+            .getRepository(InvoiceEntity)
+            .createQueryBuilder('invoice')
+            .where('invoice.invoiceId = :id', { id })
+            .getOne()
+            .then(
+                data => {
+                    return data;
+                },
+                onRejected => {
+                    return onRejected;
+                },
+            );
 }
