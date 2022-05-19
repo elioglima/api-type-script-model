@@ -14,6 +14,8 @@ import { InactivatePaymentCardService } from '../../service/InactivatePaymentCar
 import { FindCardByIdService } from '../../service/FindCardByIdService';
 import { PaymentCards } from '../../domain/Payment';
 import { RecurrentModifyPaymentModel } from '../../domain/RecurrentPayment/recurrentModify';
+import { FindReceiptByPaymentIdService } from '../../service/FindReceiptByPaymentIdService';
+import PreRegisterService from '../../service/tegrus.services/PreRegisterService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -32,6 +34,8 @@ export class PaymentController {
     private updatePaymentCardService = new UpdatePaymentCardService();
     private inactivatePaymentCardService = new InactivatePaymentCardService();
     private findCardByIdService = new FindCardByIdService();
+    private findReceiptByPaymentIdService = new FindReceiptByPaymentIdService();
+    private preRegisterService = new PreRegisterService();
 
     public MakePayment = async (req: Request, res: Response) => {
         try {
@@ -371,5 +375,35 @@ export class PaymentController {
             this.logger(`Error`, error);
             return res.status(422).json(error);
         }
+    };
+
+    public getReceiptByPaymentId = async (req: Request, res: Response) => {
+        this.logger(`getReceiptByPaymentId ${req.params.id}`);
+
+        const data = await this.findReceiptByPaymentIdService.execute(
+            Number(req.params.id),
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public getPreRegisterUserData = async (req: Request, res: Response) => {
+        this.logger(`getReceiptByPaymentId ${req.params.id}`);
+
+        const data = await this.preRegisterService.getById(
+            Number(req.params.id),
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
     };
 }
