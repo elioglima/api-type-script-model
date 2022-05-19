@@ -5,7 +5,7 @@
     "username": "jflmanager",
     "password": "93RHWxSkFcLvTrOSXs3e",
     "database": "jflrealty",
-    "synchronize": true,
+    "synchronize": false,
     "logging": false,
     "entities": [
         "src/dataProvider/entity/*.ts"
