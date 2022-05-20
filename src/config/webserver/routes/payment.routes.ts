@@ -21,7 +21,6 @@ payment
     .get('/pix/getReceipt/:merchantOrderId', paymentController.getReceiptPix)
     .post('/refund/recurrence', paymentController.RefundRecurrencePayment)
     .put('/card/recurrence/change/:invoiceId', paymentController.changeCard)
-<<<<<<< HEAD
     .get(
         '/card/recurrence/:userId/:residentId',
         paymentController.cardRecurrence,
@@ -29,8 +28,6 @@ payment
     .put(
         '/card/recurrence/:userId/:residentId',
         paymentController.changeCardRecurrence,
-    );
-=======
+    )
     .get('/receipt/:id', paymentController.getReceiptByPaymentId)
     .get('/preRegister/:id', paymentController.getPreRegisterUserData);
->>>>>>> 0cb15dd205e89ce2cf84d1efc1986ca51f88dadb
