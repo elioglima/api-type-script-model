@@ -91,7 +91,7 @@ export class PaymentCardsRepository {
     };
 
     public findExists = async (filter: TFindExistsFilter) => {
-        try {            
+        try {
             const db = getConnection()
                 .getRepository(PaymentCardsEntity)
                 .createQueryBuilder('paymentCards')
@@ -222,4 +222,13 @@ export class PaymentCardsRepository {
                 },
             );
     };
+
+    public getByUserId = async (userId: number) =>
+        await getConnection()
+            .getRepository(PaymentCardsEntity)
+            .createQueryBuilder('paymentCards')
+            .where('paymentCards.userId = :userId', { userId })
+            .andWhere('paymentCards.deletedAt IS NULL')
+            .andWhere('paymentCards.active = true')
+            .getMany();
 }
