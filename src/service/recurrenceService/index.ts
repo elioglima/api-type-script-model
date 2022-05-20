@@ -63,8 +63,8 @@ export default class RecurrenceService {
             );
             if (resAdapter?.err) return rError(resAdapter.data);
 
-            const recurrentPaymentId: string =
-                checkExists?.data?.row?.recurrentPaymentId;
+            // const recurrentPaymentId: string =
+            //     checkExists?.data?.row?.recurrentPaymentId;
 
             // const resRecurrence: any = await this.paymentAdapter.recurrenceFind(
             //     {
