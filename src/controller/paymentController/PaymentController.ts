@@ -18,8 +18,10 @@ import { PaymentCardsRepository } from '../../dataProvider/repository/PaymentCar
 import { PreRegistrationRepository } from '../../dataProvider/repository/PreRegisterRepository';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
 import AdapterPayment from '../../domain/AdapterPayment';
-import { reqRecurrenceModify } from 'src/domain/RecurrentPayment';
-import { rError } from 'src/utils';
+import { reqRecurrenceModify } from '../../domain/RecurrentPayment';
+import { rError } from '../../utils';
+import { FindReceiptByPaymentIdService } from '../../service/FindReceiptByPaymentIdService';
+import PreRegisterService from '../../service/tegrus.services/PreRegisterService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -41,6 +43,8 @@ export class PaymentController {
     private paymentCardsRepository = new PaymentCardsRepository();
     private preRegistrationRepository = new PreRegistrationRepository();
     private paymentRecurrenceRepository = new PaymentRecurrenceRepository();
+    private findReceiptByPaymentIdService = new FindReceiptByPaymentIdService();
+    private preRegisterService = new PreRegisterService();
 
     public MakePayment = async (req: Request, res: Response) => {
         try {
@@ -508,5 +512,35 @@ export class PaymentController {
             this.logger(`Error`, error);
             return res.status(422).json(error);
         }
+    };
+
+    public getReceiptByPaymentId = async (req: Request, res: Response) => {
+        this.logger(`getReceiptByPaymentId ${req.params.id}`);
+
+        const data = await this.findReceiptByPaymentIdService.execute(
+            Number(req.params.id),
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public getPreRegisterUserData = async (req: Request, res: Response) => {
+        this.logger(`getReceiptByPaymentId ${req.params.id}`);
+
+        const data = await this.preRegisterService.getById(
+            Number(req.params.id),
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
     };
 }
