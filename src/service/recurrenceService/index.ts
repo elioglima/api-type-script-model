@@ -66,11 +66,47 @@ export default class RecurrenceService {
             const recurrentPaymentId: string =
                 checkExists?.data?.row?.recurrentPaymentId;
 
-            const resRecurrence: any = await this.paymentAdapter.recurrenceFind(
-                {
-                    recurrentPaymentId,
+            // const resRecurrence: any = await this.paymentAdapter.recurrenceFind(
+            //     {
+            //         recurrentPaymentId,
+            //     },
+            // );
+
+            const resRecurrence: any = {
+                Customer: {
+                    Name: 'Fulano da Silva',
                 },
-            );
+                RecurrentPayment: {
+                    RecurrentPaymentId: 'c30f5c78-fca2-459c-9f3c-9c4b41b09048',
+                    NextRecurrency: '2017-06-07',
+                    StartDate: '2017-04-07',
+                    EndDate: '2017-02-27',
+                    Interval: 'Bimonthly',
+                    Amount: 15000,
+                    Country: 'BRA',
+                    CreateDate: '2017-04-07T00:00:00',
+                    Currency: 'BRL',
+                    CurrentRecurrencyTry: 1,
+                    Provider: 'Simulado',
+                    RecurrencyDay: 7,
+                    SuccessfulRecurrences: 0,
+                    Links: [
+                        {
+                            Method: 'GET',
+                            Rel: 'self',
+                            Href: 'https://apiquerysandbox.cieloecommerce.cielo.com.br/1/RecurrentPayment/c30f5c78-fca2-459c-9f3c-9c4b41b09048',
+                        },
+                    ],
+                    RecurrentTransactions: [
+                        {
+                            PaymentId: 'f70948a8-f1dd-4b93-a4ad-90428bcbdb84',
+                            PaymentNumber: 0,
+                            TryNumber: 1,
+                        },
+                    ],
+                    Status: 1,
+                },
+            };
 
             if (resRecurrence instanceof Error) return rError(resRecurrence);
 
@@ -779,3 +815,42 @@ export default class RecurrenceService {
         }
     };
 }
+/* 
+                
+            {
+                "Customer": {
+                    "Name": "Fulano da Silva"
+                },
+                "RecurrentPayment": {
+                    "RecurrentPaymentId": "c30f5c78-fca2-459c-9f3c-9c4b41b09048",
+                    "NextRecurrency": "2017-06-07",
+                    "StartDate": "2017-04-07",
+                    "EndDate": "2017-02-27",
+                    "Interval": "Bimonthly",
+                    "Amount": 15000,
+                    "Country": "BRA",
+                    "CreateDate": "2017-04-07T00:00:00",
+                    "Currency": "BRL",
+                    "CurrentRecurrencyTry": 1,
+                    "Provider": "Simulado",
+                    "RecurrencyDay": 7,
+                    "SuccessfulRecurrences": 0,
+                    "Links": [
+                        {
+                            "Method": "GET",
+                            "Rel": "self",
+                            "Href": "https://apiquerysandbox.cieloecommerce.cielo.com.br/1/RecurrentPayment/c30f5c78-fca2-459c-9f3c-9c4b41b09048"
+                        }
+                    ],
+                    "RecurrentTransactions": [
+                        {
+                            "PaymentId": "f70948a8-f1dd-4b93-a4ad-90428bcbdb84",
+                            "PaymentNumber": 0,
+                            "TryNumber": 1
+                        }
+                    ],
+                    "Status": 1
+                }
+            }
+
+*/
