@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { cieloStatusConverter } from '../../../../utils/cieloStatus';
 import {
     TInvoiceFilter,
@@ -5,7 +6,6 @@ import {
     TInvoice,
 } from './../../../../domain/Tegrus/TInvoice';
 import { EnumInvoiceStatus } from './../../../../domain/Tegrus/EnumInvoiceStatus';
-import { Response } from 'express';
 import InvoiceService from '../../../../service/invoiceService/index';
 import RecurrenceService from '../../../../service/recurrenceService';
 import { invoiceToTResident } from '../../../../utils/parse';
@@ -14,12 +14,15 @@ import { TResident } from '../../../../domain/Tegrus';
 
 const invoiceEnginePrivate = async (res: Response) => {
     try {
+        console.log('invoiceEnginePrivate');
         const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();
 
-        const todayDate: string = moment().format('YYYY-MM-DD 23:59:59');
+        const todayDate: string = moment()
+            .add(10, 'days')
+            .format('YYYY-MM-DD 23:59:59');
         const backwardDate: string = moment(todayDate)
-            .subtract(30, 'days')
+            .subtract(20, 'days')
             .format('YYYY-MM-DD 00:00:00');
 
         const invoiceSearch: TInvoiceFilter = {
@@ -30,22 +33,40 @@ const invoiceEnginePrivate = async (res: Response) => {
             statusInvoice: EnumInvoiceStatus.issued,
         };
 
+        console.log('invoiceEnginePrivate.invoiceSearch');
+
         const invoicesFounded: any = await invoiceService.Find(invoiceSearch);
         if (invoicesFounded.err) return invoicesFounded;
+        console.log('invoiceEnginePrivate.invoicesFounded');
 
-        if (!invoicesFounded.data.length) return;
+        if (!invoicesFounded.data.length)
+            return res.status(200).json({
+                statusInvoice: {
+                    invoices: [],
+                },
+            });
+
+        console.log('invoiceEnginePrivate.result');
 
         const result: Array<Object> = await Promise.all(
             invoicesFounded.data
                 .map(async (invoice: TInvoice) => {
+                    console.log('invoiceEnginePrivate.invoice', invoice);
+
                     try {
                         const resident: TResident | any = invoiceToTResident(
                             invoice?.residentIdenty,
                         );
+
                         const recurrency: any =
                             await recurrenceService.FindOneResidentId(
                                 resident.id,
                             );
+
+                        console.log(
+                            'invoiceEnginePrivate.recurrency',
+                            recurrency,
+                        );
 
                         if (recurrency?.err) return;
 
@@ -54,11 +75,21 @@ const invoiceEnginePrivate = async (res: Response) => {
                                 ?.toString()
                                 .toLocaleLowerCase()
                                 .trim() == 'recurrence not found'
-                        )
+                        ) {
+                            await invoiceService.Update({
+                                ...invoice,
+                                statusInvoice: EnumInvoiceStatus.paymentError,
+                                returnMessage: recurrency?.data?.message,
+                            });
+
                             return {
-                                err: true,
-                                data: recurrency.data.message,
+                                invoiceId: invoice.invoiceId,
+                                statusInvoice: 'payment_error',
+                                paymentMethod: 'credit',
+                                paymentDate: new Date(),
+                                message: recurrency?.data?.message,
                             };
+                        }
 
                         const recurrenceNumber: number =
                             Number(invoice?.recurenceNumber) - 1;
@@ -91,18 +122,16 @@ const invoiceEnginePrivate = async (res: Response) => {
                             });
 
                             return {
-                                statusInvoice: {
-                                    invoiceId: invoice.invoiceId,
-                                    recurrentPaymentId:
-                                        recurrency.data.recurrentPaymentId,
-                                    statusInvoice: cieloStatusConverter(10),
-                                    paymentMethod: 'credit',
-                                    paymentDate: new Date(),
-                                    recurence: {
-                                        ...recurrency.data,
-                                    },
-                                    message: 'recurrence off',
+                                invoiceId: invoice.invoiceId,
+                                recurrentPaymentId:
+                                    recurrency.data.recurrentPaymentId,
+                                statusInvoice: cieloStatusConverter(10),
+                                paymentMethod: 'credit',
+                                paymentDate: new Date(),
+                                recurence: {
+                                    ...recurrency.data,
                                 },
+                                message: 'recurrence off',
                             };
                         }
 
@@ -171,9 +200,9 @@ const invoiceEnginePrivate = async (res: Response) => {
                 .filter((f: any) => !f?.err),
         );
 
-        res.status(200).json({
+        return res.status(200).json({
             statusInvoice: {
-                invoices: [...result],
+                invoices: [...result.filter((f: any) => !f?.err)],
             },
         });
     } catch (error: any) {
