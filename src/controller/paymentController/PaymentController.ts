@@ -14,6 +14,14 @@ import { InactivatePaymentCardService } from '../../service/InactivatePaymentCar
 import { FindCardByIdService } from '../../service/FindCardByIdService';
 import { PaymentCards } from '../../domain/Payment';
 import { RecurrentModifyPaymentModel } from '../../domain/RecurrentPayment/recurrentModify';
+import { PaymentCardsRepository } from '../../dataProvider/repository/PaymentCardsRepository';
+import { PreRegistrationRepository } from '../../dataProvider/repository/PreRegisterRepository';
+import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
+import AdapterPayment from '../../domain/AdapterPayment';
+import { reqRecurrenceModify } from '../../domain/RecurrentPayment';
+import { rError } from '../../utils';
+import { FindReceiptByPaymentIdService } from '../../service/FindReceiptByPaymentIdService';
+import PreRegisterService from '../../service/tegrus.services/PreRegisterService';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -32,6 +40,11 @@ export class PaymentController {
     private updatePaymentCardService = new UpdatePaymentCardService();
     private inactivatePaymentCardService = new InactivatePaymentCardService();
     private findCardByIdService = new FindCardByIdService();
+    private paymentCardsRepository = new PaymentCardsRepository();
+    private preRegistrationRepository = new PreRegistrationRepository();
+    private paymentRecurrenceRepository = new PaymentRecurrenceRepository();
+    private findReceiptByPaymentIdService = new FindReceiptByPaymentIdService();
+    private preRegisterService = new PreRegisterService();
 
     public MakePayment = async (req: Request, res: Response) => {
         try {
@@ -371,5 +384,163 @@ export class PaymentController {
             this.logger(`Error`, error);
             return res.status(422).json(error);
         }
+    };
+
+    public cardRecurrence = async (req: Request, res: Response) => {
+        try {
+            this.logger(`payment cardRecurrence`, req.body);
+
+            const userId: number = Number(req.params.userId);
+            const residentId: number = Number(req.params.residentId);
+
+            const resident: any = await this.preRegistrationRepository.getById(
+                residentId,
+            );
+
+            console.log(444, resident);
+
+            const resRrecurrence: any =
+                await this.paymentRecurrenceRepository.getByResidentId(
+                    residentId,
+                );
+
+            const recurrence: any = resRrecurrence?.data?.row
+                ? {
+                      recurrence: {
+                          id: resRrecurrence?.data?.row?.id,
+                          payCardNumber:
+                              resRrecurrence?.data?.row?.payCardNumber,
+                          payCardHolder:
+                              resRrecurrence?.data?.row?.payCardHolder,
+                          payCardExpirationDate:
+                              resRrecurrence?.data?.row?.payCardExpirationDate,
+                      },
+                  }
+                : {};
+
+            const list = await this.paymentCardsRepository.getByUserId(userId);
+
+            return res.status(200).json({
+                ...recurrence,
+                cards: list
+                    ? list.map(m => ({
+                          id: m.id,
+                          firstFourNumbers: m.firstFourNumbers,
+                          lastFourNumbers: m.lastFourNumbers,
+                          brand: m.brand,
+                          holder: m.holder,
+                          expirationDate: m.expirationDate,
+                          active: m.active,
+                      }))
+                    : {},
+            });
+        } catch (error) {
+            this.logger(`Error`, error);
+            return res.status(422).json(error);
+        }
+    };
+
+    public changeCardRecurrence = async (req: Request, res: Response) => {
+        try {
+            this.logger(`payment cardRecurrence`, req.body);
+
+            const userId: number = Number(req.params.userId);
+            const residentId: number = Number(req.params.residentId);
+
+            const resident: any = await this.preRegistrationRepository.getById(
+                residentId,
+            );
+
+            if (!resident)
+                return res.status(422).json({
+                    err: true,
+                    data: {
+                        message: 'preRegister not found',
+                    },
+                });
+
+            const resRrecurrence: any =
+                await this.paymentRecurrenceRepository.getByResidentId(
+                    residentId,
+                );
+
+            if (resRrecurrence?.data?.row) {
+                // caso tenha recorrencia
+                const recurrence: any = resRrecurrence?.data?.row;
+                const paymentAdapter = new AdapterPayment();
+
+                await paymentAdapter.init(resident.enterpriseId);
+
+                const reqModify: reqRecurrenceModify = {
+                    paymentId: recurrence?.recurrentPaymentId,
+                    modify: {
+                        Type: 'CreditCard',
+                        CreditCard: req.body,
+                    },
+                };
+
+                const resModify: any = await paymentAdapter.recurrenceModify(
+                    reqModify,
+                );
+
+                if (resModify instanceof Error)
+                    return rError({
+                        message: 'Unexpected Error',
+                    });
+                if (resModify.err)
+                    return rError({
+                        message: 'Error to modify recurrence',
+                    });
+            }
+
+            const response = await this.CardAddService.execute({
+                userId,
+                residentId,
+                enterpriseId: resident?.enterpriseId,
+                cardNumber: req.body?.cardNumber,
+                customerName: req.body?.customerName,
+                expirationDate: req.body?.expirationDate,
+                securityCode: req.body?.securityCode,
+                brand: req.body?.brand,
+                holder: req.body?.holder,
+            });
+
+            if (response?.err) return res.status(422).json(response?.data);
+
+            return res.status(200).json(response?.data);
+        } catch (error) {
+            this.logger(`Error`, error);
+            return res.status(422).json(error);
+        }
+    };
+
+    public getReceiptByPaymentId = async (req: Request, res: Response) => {
+        this.logger(`getReceiptByPaymentId ${req.params.id}`);
+
+        const data = await this.findReceiptByPaymentIdService.execute(
+            Number(req.params.id),
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
+    };
+
+    public getPreRegisterUserData = async (req: Request, res: Response) => {
+        this.logger(`getReceiptByPaymentId ${req.params.id}`);
+
+        const data = await this.preRegisterService.getById(
+            Number(req.params.id),
+        );
+
+        if (data instanceof Error) {
+            this.logger('Error', data.message);
+            return res.status(422).json({ ['Error']: data.message });
+        }
+
+        return res.status(200).json(data);
     };
 }
