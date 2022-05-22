@@ -85,7 +85,8 @@ export default class InvoiceService {
             return {
                 err: true,
                 data: {
-                    message: 'Error writing invoice',
+                    invoiceId,
+                    message: 'Error find invoice',
                 },
             };
         }
@@ -100,6 +101,7 @@ export default class InvoiceService {
             return {
                 err: true,
                 data: {
+                    invoiceId,
                     message: 'Error writing invoice',
                 },
             };
