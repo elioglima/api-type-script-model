@@ -15,6 +15,30 @@ import { TResident } from '../../../../domain/Tegrus';
 const invoiceEnginePrivate = async (res: Response) => {
     try {
         console.log('invoiceEnginePrivate');
+        return res.status(200).json({
+            statusInvoice: {
+                invoices: [
+                    {
+                        invoiceId: 2057,
+                        statusInvoice: 'payment_error',
+                        tryNumber: 4,
+                    },
+                    {
+                        invoiceId: 2056,
+                        statusInvoice: 'payment_error',
+                        tryNumber: 2,
+                    },
+                    {
+                        invoiceId: 2055,
+                        recurrentPaymentId:
+                            'd2ca3af5-506e-488a-bb81-7d58e0b3210e',
+                        statusInvoice: 'paid',
+                        paymentDate: new Date(),
+                    },
+                ],
+            },
+        });
+
         const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();
 
