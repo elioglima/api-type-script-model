@@ -39,7 +39,6 @@ const invoiceEnginePrivate = async (res: Response) => {
                         statusInvoice: 'paid',
                         paymentMethod: 'credit',
                         paymentDate: new Date(),
-                        message: 'Pagamento efetuando com sucesso',
                     },
                 ],
             },

@@ -14,6 +14,8 @@ export default class HashSearchService {
             this.logger('Starting method HashSearchService');
             const resp: any = await this.HashRep.getByHash(hash);
 
+            console.log(777, resp);
+
             if (!resp) {
                 return {
                     err: true,
@@ -58,11 +60,12 @@ export default class HashSearchService {
             const resInvoicePreUser: any = await this.InvRep.getByInvoiceId(
                 resp.invoiceId,
             );
+            console.log(1111, resInvoicePreUser);
 
             const timeNow: Date = moment().toDate();
 
             resInvoicePreUser.invoiceHasExpired = moment(
-                resInvoicePreUser.dueDate,
+                resInvoicePreUser?.dueDate || moment(),
             )
                 .add('days', 1)
                 .isBefore(timeNow);
