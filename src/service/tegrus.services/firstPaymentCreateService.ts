@@ -27,28 +27,38 @@ export default async (
 
         try {
             console.log(456789, responsiblePayment);
-            if (Array.isArray(responsiblePayment)) {
-                responsiblePayment.forEach(async responsiblePayment => {
-                    await responsiblePaymentService.IncludeOrUpdate({
-                        apartmentId: resident.apartmentId,
-                        enterpriseId: resident.enterpriseId,
-                        ...responsiblePayment,
-                    });
-                });
-            }
+            // if (Array.isArray(responsiblePayment)) {
+            //     responsiblePayment.forEach(async responsiblePayment => {
+            //         await responsiblePaymentService.IncludeOrUpdate({
+            //             apartmentId: resident.apartmentId,
+            //             enterpriseId: resident.enterpriseId,
+            //             ...responsiblePayment,
+            //         });
+            //     });
+            // }
         } catch (error) {
             console.log(error);
         }
 
-        const resultPR: any = await residentService.add(resident);
+        const residentFindOne = await residentService.FindOne(resident.id);
+        console.log(33333, residentFindOne);
 
-        if (resultPR?.err) {
-            return resultPR;
+        if (!residentFindOne?.data) {
+            const resultPR: any = await residentService.add(resident);
+
+            if (resultPR?.err) {
+                return resultPR;
+            }
         }
 
+        console.log(123, {
+            ...payload,
+            residentIdenty: resident.id,
+            resident,
+        });
         const resultIN: any = await invoiceService.FindOneInclude({
             ...payload,
-            residentIdenty: payload.resident.id,
+            residentIdenty: resident.id,
             resident,
         });
 
