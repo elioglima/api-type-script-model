@@ -26,15 +26,15 @@ export default class HashSearchService {
                 };
             }
 
-            // if (!resp?.valid) {
-            //     return {
-            //         err: true,
-            //         data: {
-            //             code: 2,
-            //             message: 'hash already used.',
-            //         },
-            //     };
-            // }
+            if (!resp?.valid) {
+                return {
+                    err: true,
+                    data: {
+                        code: 2,
+                        message: 'hash already used.',
+                    },
+                };
+            }
 
             const resValidate = await this.validateHashTTL(resp);
             if (resValidate.err) {
