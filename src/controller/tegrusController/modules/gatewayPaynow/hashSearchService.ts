@@ -99,7 +99,7 @@ export default class HashSearchService {
     private async validateHashTTL(hashData: resHashData) {
         try {
             const timeNow: Date = moment().toDate();
-            if (moment(hashData.lifeTime).isBefore(timeNow)) {
+            if (moment(hashData.lifeTime).add('days', 1).isBefore(timeNow)) {
                 await this.TerminateHashTTL(String(hashData.hash));
                 return {
                     err: false,
