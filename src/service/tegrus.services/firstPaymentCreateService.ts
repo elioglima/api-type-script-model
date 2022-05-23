@@ -88,7 +88,7 @@ export default async (
 
         const hashD: hashData = {
             hash: String(resultHash.hash),
-            lifeTime: moment(invoice.dueDate).toDate(), //moment().add('days', 30).toDate(),
+            lifeTime: moment(invoice.dueDate).add('days', 1).toDate(), //moment().add('days', 30).toDate(),
             invoiceId: Number(invoice.invoiceId),
         };
 
