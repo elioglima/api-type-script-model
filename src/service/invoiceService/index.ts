@@ -152,26 +152,26 @@ export default class InvoiceService {
             const resident: TResident = residentData;
             const invoice: TInvoice = invoiceTwo;
 
-            // try {
-            //     console.log(999, 'responsiblePayment', responsiblePayment);
-            //     if (Array.isArray(responsiblePayment)) {
-            //         responsiblePayment.forEach(async (resp: any) => {
-            //             const dataInclude = {
-            //                 name: resp.name,
-            //                 typeDocument: resp.typeDocument,
-            //                 document: resp.document,
-            //                 mail: resp.email || resp.mail,
-            //             };
-            //             await this.responsiblePaymentService.IncludeOrUpdate({
-            //                 apartmentId: invoice.apartmentId,
-            //                 enterpriseId: invoice.enterpriseId,
-            //                 ...dataInclude,
-            //             });
-            //         });
-            //     }
-            // } catch (error) {
-            //     console.log(error);
-            // }
+            try {
+                console.log(999, 'responsiblePayment', responsiblePayment);
+                if (Array.isArray(responsiblePayment)) {
+                    responsiblePayment.forEach(async (resp: any) => {
+                        const dataInclude = {
+                            name: resp.name,
+                            typeDocument: resp.typeDocument,
+                            document: resp.document,
+                            mail: resp.email || resp.mail,
+                        };
+                        await this.responsiblePaymentService.IncludeOrUpdate({
+                            apartmentId: invoice.apartmentId,
+                            enterpriseId: invoice.enterpriseId,
+                            ...dataInclude,
+                        });
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+            }
 
             const resInvoiceId = await this.invoiceRepository.getByInvoiceId(
                 invoice.invoiceId,
