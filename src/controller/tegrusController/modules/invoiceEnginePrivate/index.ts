@@ -21,11 +21,13 @@ const invoiceEnginePrivate = async (res: Response) => {
                     {
                         invoiceId: 390,
                         statusInvoice: 'payment_error',
+                        paymentMethod: 'credit',
                         tryNumber: 4,
                     },
                     {
                         invoiceId: 387,
                         statusInvoice: 'payment_error',
+                        paymentMethod: 'credit',
                         tryNumber: 2,
                     },
                     {
@@ -33,6 +35,7 @@ const invoiceEnginePrivate = async (res: Response) => {
                         recurrentPaymentId:
                             'd2ca3af5-506e-488a-bb81-7d58e0b3210e',
                         statusInvoice: 'paid',
+                        paymentMethod: 'credit',
                         paymentDate: new Date(),
                     },
                 ],
