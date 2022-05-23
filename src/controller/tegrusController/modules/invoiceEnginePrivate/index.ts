@@ -23,12 +23,14 @@ const invoiceEnginePrivate = async (res: Response) => {
                         statusInvoice: 'payment_error',
                         paymentMethod: 'credit',
                         tryNumber: 4,
+                        messageError: 'Cartão com limite insuficiente',
                     },
                     {
                         invoiceId: 387,
                         statusInvoice: 'payment_error',
                         paymentMethod: 'credit',
                         tryNumber: 2,
+                        messageError: 'Problemas com Cartão',
                     },
                     {
                         invoiceId: 420,
@@ -37,6 +39,7 @@ const invoiceEnginePrivate = async (res: Response) => {
                         statusInvoice: 'paid',
                         paymentMethod: 'credit',
                         paymentDate: new Date(),
+                        message: 'Pagamento efetuando com sucesso',
                     },
                 ],
             },
