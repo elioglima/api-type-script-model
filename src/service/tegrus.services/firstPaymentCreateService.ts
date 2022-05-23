@@ -27,15 +27,15 @@ export default async (
 
         try {
             console.log(456789, responsiblePayment);
-            // if (Array.isArray(responsiblePayment)) {
-            //     responsiblePayment.forEach(async responsiblePayment => {
-            //         await responsiblePaymentService.IncludeOrUpdate({
-            //             apartmentId: resident.apartmentId,
-            //             enterpriseId: resident.enterpriseId,
-            //             ...responsiblePayment,
-            //         });
-            //     });
-            // }
+            if (Array.isArray(responsiblePayment)) {
+                responsiblePayment.forEach(async responsiblePayment => {
+                    await responsiblePaymentService.IncludeOrUpdate({
+                        apartmentId: resident.apartmentId,
+                        enterpriseId: resident.enterpriseId,
+                        ...responsiblePayment,
+                    });
+                });
+            }
         } catch (error) {
             console.log(error);
         }
