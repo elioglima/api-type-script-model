@@ -1,10 +1,12 @@
 import InvoiceService from '../../../../service/invoiceService';
 import createHash from './createHash';
+import firstPaymentCreateService from '../../../../service/tegrus.services/firstPaymentCreateService';
 
 const updateInvoice = async (toReceive: any) => {
     try {
         // retorno do app >> bff >> tegrus
         const updataData: any = {
+            invoiceId: toReceive?.updateInvoice?.invoiceId,
             value: toReceive?.updateInvoice?.value,
             totalValue: toReceive?.updateInvoice?.totalValue,
             condominium: toReceive?.updateInvoice?.condominium,
@@ -21,7 +23,6 @@ const updateInvoice = async (toReceive: any) => {
             paymentMethod: toReceive?.updateInvoice?.paymentMethod,
             statusInvoice: toReceive?.updateInvoice?.statusInvoice,
             apartmentId: toReceive?.updateInvoice?.apartmentId,
-            invoiceId: toReceive?.updateInvoice?.invoiceId,
             isExpired: toReceive?.updateInvoice?.isExpired,
             startReferenceDate: toReceive?.updateInvoice?.startReferenceDate,
             endReferenceDate: toReceive?.updateInvoice?.endReferenceDate,
@@ -29,6 +30,15 @@ const updateInvoice = async (toReceive: any) => {
 
         const invoiceService = new InvoiceService();
 
+        console.log(toReceive?.updateInvoice);
+        const invoice = await invoiceService.FindOne(
+            toReceive?.updateInvoice.invoiceId,
+        );
+        if (!invoice?.data) {
+            await firstPaymentCreateService(toReceive?.updateInvoice);
+        }
+
+        console.log(777, invoice);
         await invoiceService.Update(updataData);
         if (updataData.isExpired) {
             // TO-DO-NOW

@@ -41,6 +41,8 @@ export class InvoiceRepository {
             recurenceTotalNumber: invoice?.recurenceTotalNumber,
         };
 
+        console.log(777, 'dataInsert', dataInsert);
+
         return await getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
