@@ -48,19 +48,19 @@ const contractCancel = async (req: any) => {
         const ResultDisableRecurrence: any[] = await Promise.all(
             invoices.map(async invoice => {
                 try {
-                    const resUpdate = await invoiceService.Update({
-                        ...invoice,
-                        statusInvoice: 'canceled',
-                        active: false,
-                    });
+                    // const resUpdate = await invoiceService.Update({
+                    //     ...invoice,
+                    //     statusInvoice: 'canceled',
+                    //     active: false,
+                    // });
 
-                    if (resUpdate?.err)
-                        return {
-                            err: true,
-                            data: {
-                                message: `failed to update billing : invoiceId=${invoice.invoiceId}`,
-                            },
-                        };
+                    // if (resUpdate?.err)
+                    //     return {
+                    //         err: true,
+                    //         data: {
+                    //             message: `failed to update billing : invoiceId=${invoice.invoiceId}`,
+                    //         },
+                    //     };
 
                     await deactivateRecurrence(residentId);
 
