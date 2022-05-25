@@ -1,6 +1,8 @@
 import deactivateRecurrence from '../../../../service/tegrus.services/disableRecurrence';
 import ResidentService from '../../../../service/residentService';
 import InvoiceService from '../../../../service/invoiceService';
+import CancelContractService from '../../../../service/CancelContractService';
+import moment from 'moment';
 
 type TContractCancel = {
     contractCancel: {
@@ -16,13 +18,14 @@ const contractCancel = async (req: any) => {
     const payload: TContractCancel = req;
 
     const returnTopic = (response: any, err: boolean = false) => {
+        const { message, ...res } = response;
         return {
             status: err ? 422 : 200,
             err,
             contractCancel: {
                 ...(payload?.contractCancel ? payload?.contractCancel : {}),
                 returnOpah: {
-                    ...(response ? response : {}),
+                    ...(res ? res : {}),
                     ...(err ? { messageError: response.message } : {}),
                 },
             },
@@ -38,6 +41,18 @@ const contractCancel = async (req: any) => {
         if (resResident?.err)
             return returnTopic({ message: 'resident not located' }, true);
 
+        const cancelContractService = new CancelContractService();
+        const resUserCancel = await cancelContractService.execute(
+            payload.contractCancel.residentId,
+            moment(payload.contractCancel.finishDate).toDate(),
+        );
+
+        if (resUserCancel?.err) {
+            return returnTopic({ message: 'resident not located' }, true);
+        }
+
+        console.log(123, resUserCancel);
+
         const invoiceService = new InvoiceService();
         const resInvoice = await invoiceService.FindOneResidentId(residentId);
 
@@ -46,26 +61,9 @@ const contractCancel = async (req: any) => {
 
         const invoices: any[] = resInvoice.data;
         const ResultDisableRecurrence: any[] = await Promise.all(
-            invoices.map(async invoice => {
+            invoices.map(async () => {
                 try {
-                    // const resUpdate = await invoiceService.Update({
-                    //     ...invoice,
-                    //     statusInvoice: 'canceled',
-                    //     active: false,
-                    // });
-
-                    // if (resUpdate?.err)
-                    //     return {
-                    //         err: true,
-                    //         data: {
-                    //             message: `failed to update billing : invoiceId=${invoice.invoiceId}`,
-                    //         },
-                    //     };
-
                     await deactivateRecurrence(residentId);
-
-                    // if (resDisableRecurrence?.err) return resDisableRecurrence;
-
                     return {
                         err: false,
                         data: {
