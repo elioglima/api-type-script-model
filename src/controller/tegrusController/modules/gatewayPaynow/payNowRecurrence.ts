@@ -60,6 +60,7 @@ export const payNowRecurrence = async (
             resident.id,
         );
 
+        console.log(resRecurrenceService);
         if (resRecurrenceService?.err)
             return await returnTopic(
                 {
