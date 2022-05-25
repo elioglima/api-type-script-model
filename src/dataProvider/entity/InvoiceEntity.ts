@@ -342,7 +342,10 @@ export class InvoiceEntity {
     // })
     // residentIdentyNumber: number | undefined;
 
-    @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
+    @Column()
+    @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id, {
+        eager: true,
+    })
     @JoinColumn({ name: 'residentIdenty' })
     residentIdenty: number | undefined;
 }
