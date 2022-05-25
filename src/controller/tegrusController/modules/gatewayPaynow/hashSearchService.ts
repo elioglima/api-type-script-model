@@ -55,6 +55,16 @@ export default class HashSearchService {
                 };
             }
 
+            if (resValidate?.data?.isExpired) {
+                return {
+                    err: true,
+                    data: {
+                        code: 3,
+                        ...resValidate.data,
+                    },
+                };
+            }
+
             const resInvoicePreUser: any = await this.InvRep.getByInvoiceId(
                 resp.invoiceId,
             );
@@ -106,6 +116,7 @@ export default class HashSearchService {
                     data: {
                         message: 'hash expired or is invalid.',
                         isValid: false,
+                        isExpired: true,
                     },
                 };
             }
@@ -114,6 +125,7 @@ export default class HashSearchService {
                 err: false,
                 data: {
                     isValid: true,
+                    isExpired: false,
                 },
             };
         } catch (error: any) {
