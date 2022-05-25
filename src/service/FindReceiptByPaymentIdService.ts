@@ -7,12 +7,12 @@ export class FindReceiptByPaymentIdService {
 
     private invoiceRepository = new InvoiceRepository();
 
-    public execute = async (paymentId: number) => {
-        this.logger(`Find payment by id`);
-        return this.invoiceRepository.getByPaymentId(paymentId).then(
+    public execute = async (invoiceId: number) => {
+        this.logger(`Find invoice by id`);
+        return this.invoiceRepository.getByInvoiceId(invoiceId).then(
             data => {
                 if (data === undefined) {
-                    this.logger(`Payment ${paymentId} not found`);
+                    this.logger(`Payment ${invoiceId} not found`);
                     return {};
                 }
 
