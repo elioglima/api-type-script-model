@@ -335,13 +335,6 @@ export class InvoiceEntity {
     })
     tryNumber: number | undefined;
 
-    // @Column({
-    //     name: 'residentIdenty',
-    //     type: 'int',
-    //     default: 0,
-    // })
-    // residentIdentyNumber: number | undefined;
-
     @ManyToOne(() => PreRegisterResidentEntity, preUser => preUser.id)
     @JoinColumn({ name: 'residentIdenty' })
     residentIdenty: number | undefined;

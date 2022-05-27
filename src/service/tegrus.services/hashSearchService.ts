@@ -36,7 +36,7 @@ export default class HashSearchService {
                 };
             }
 
-            const resValidate = await this.validateHashTTL(resp);
+            const resValidate: any = await this.validateHashTTL(resp);
             if (resValidate.err) {
                 return {
                     err: true,
@@ -50,6 +50,16 @@ export default class HashSearchService {
             if (!resValidate?.data?.isValid) {
                 return {
                     err: false,
+                    data: {
+                        code: 4,
+                        ...resValidate.data,
+                    },
+                };
+            }
+
+            if (resValidate?.data?.isExpired) {
+                return {
+                    err: true,
                     data: {
                         code: 4,
                         ...resValidate.data,
@@ -127,11 +137,9 @@ export default class HashSearchService {
                 return {
                     err: false,
                     data: {
-                        err: false,
-                        data: {
-                            message: 'hash expired or is invalid.',
-                            isValid: false,
-                        },
+                        message: 'hash expired or is invalid.',
+                        isValid: false,
+                        isExpired: true,
                     },
                 };
             }
@@ -140,6 +148,7 @@ export default class HashSearchService {
                 err: false,
                 data: {
                     isValid: true,
+                    isExpired: false,
                 },
             };
         } catch (error: any) {
