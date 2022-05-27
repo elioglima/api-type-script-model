@@ -13,6 +13,8 @@ export default class ResidentService {
 
             this.logger('Starting method to create Payment');
             const resp: any = await this.repository.persist(resident);
+            console.log(555, resp);
+
             if (resp?.error == true) {
                 return {
                     err: true,
