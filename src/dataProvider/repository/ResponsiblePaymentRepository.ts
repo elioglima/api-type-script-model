@@ -14,7 +14,7 @@ export class ResponsiblePaymentRepository {
             name: data?.name,
             typeDocument: data?.typeDocument,
             document: data?.document,
-            mail: data?.mail,
+            mail: data?.mail || data?.email,
         };
 
         return await getConnection()
