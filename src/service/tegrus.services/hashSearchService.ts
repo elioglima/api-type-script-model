@@ -61,7 +61,7 @@ export default class HashSearchService {
                 return {
                     err: true,
                     data: {
-                        code: 3,
+                        code: 4,
                         ...resValidate.data,
                     },
                 };
