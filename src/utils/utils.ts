@@ -32,8 +32,6 @@ export class Utils {
         return new Promise((resolve, reject) => {
             this.post<T, U>({ path: '/1/sales/' }, data)
                 .then((onSuccess: any) => {
-                    console.log(999, onSuccess);
-
                     const paymentId = onSuccess?.payment?.paymentId;
                     if (
                         onSuccess?.payment?.recurrentPayment &&
@@ -60,7 +58,6 @@ export class Utils {
                             },
                         });
 
-                    console.log(777, 123);
                     const uri = `/1/sales/${paymentId}/capture`;
                     return this.put<T, U>({ path: uri }).then(
                         (capture: any) => {

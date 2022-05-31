@@ -49,19 +49,22 @@ export default class RecurrenceService {
                     message: 'recurrence not found',
                 });
 
+            if (checkExists?.data?.row && !checkExists?.data?.row?.active)
+                return rError({
+                    desactived: true,
+                    message: 'recurrence desactived',
+                });
+
             const resResident: any = await this.residentService.FindOne(
                 residenteId,
             );
             if (resResident?.err) return rError(resResident.data);
 
             const resident: TResident = resResident.data;
-
-            // consultar recorrencia pelo id
-
-            const resAdapter = await this.paymentAdapter.init(
+            const resAdapter: any = await this.paymentAdapter.init(
                 Number(resident.enterpriseId),
             );
-            if (resAdapter?.err) return rError(resAdapter.data);
+            if (resAdapter?.err) return rError(resAdapter?.data || resAdapter);
 
             const recurrentPaymentId: string =
                 checkExists?.data?.row?.recurrentPaymentId;
@@ -104,10 +107,11 @@ export default class RecurrenceService {
                         'error when querying the recurrence in the database',
                 });
 
-            const resCreateAdapter = await this.paymentAdapter.init(
+            const resCreateAdapter: any = await this.paymentAdapter.init(
                 resident.enterpriseId,
             );
-            if (checkExists?.err) return rError(resCreateAdapter.data);
+            if (checkExists?.err)
+                return rError(resCreateAdapter?.data || resCreateAdapter);
 
             const recurrenceId = checkExists.data.recurrenceId;
 
@@ -162,10 +166,11 @@ export default class RecurrenceService {
                     message: 'recurrence found in the database',
                 });
 
-            const resCreateAdapter = await this.paymentAdapter.init(
+            const resCreateAdapter: any = await this.paymentAdapter.init(
                 resident.enterpriseId,
             );
-            if (checkExists?.err) return rError(resCreateAdapter.data);
+            if (checkExists?.err)
+                return rError(resCreateAdapter?.data || resCreateAdapter);
 
             console.log({ recurrence }, checkExists);
             const makeRecurrent: any = {
@@ -201,11 +206,8 @@ export default class RecurrenceService {
                 },
             };
 
-            console.log(123, 'recurrentCreate', makeRecurrent);
             const resRecurrentCreate: any =
                 await this.paymentAdapter.recurrentCreate(makeRecurrent);
-
-            console.log(99999999, 'resRecurrentCreate', resRecurrentCreate);
 
             const recurrenceFind: any = await this.repository.getByResidentId(
                 resident.id,
@@ -345,9 +347,6 @@ export default class RecurrenceService {
 
             // TO-DO-BETO
             // caso ja exista update
-
-            console.log(99999999, 'persisRecurrency', persisRecurrency);
-            console.log(99999999, 'recurrenceFind', recurrenceFind);
 
             if (!recurrenceFind.err && recurrenceFind?.data?.row) {
                 const dataUpdate = {

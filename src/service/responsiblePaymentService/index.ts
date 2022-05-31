@@ -28,13 +28,10 @@ export default class ResponsiblePaymentService {
                     Number(responsiblePayment?.id),
                 );
 
-                console.log(111, resFindOne);
                 if (!resFindOne?.err && resFindOne?.data) return resFindOne;
             }
 
-            this.logger('Starting method to create responsiblePayment');
             const resp: any = await this.repository.persist(responsiblePayment);
-            console.log(77777, resp);
             if (resp?.error == true) {
                 return {
                     err: true,
@@ -55,7 +52,6 @@ export default class ResponsiblePaymentService {
             );
             if (!resFindOne?.err && !resFindOne?.data) return resFindOne;
 
-            this.logger('Starting method to create responsiblePayment');
             const resp: any = await this.repository.update(responsiblePayment);
             if (resp?.error == true) {
                 return {

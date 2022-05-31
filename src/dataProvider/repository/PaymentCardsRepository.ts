@@ -97,6 +97,10 @@ export class PaymentCardsRepository {
                 .createQueryBuilder('paymentCards')
                 .where('paymentCards.deletedAt IS NULL');
 
+            db.andWhere('paymentCards.enterpriseId = :enterpriseId', {
+                enterpriseId: filter.enterpriseId,
+            });
+
             if (filter.userId) {
                 db.andWhere('paymentCards.userId = :userId', {
                     userId: filter.userId,
@@ -106,10 +110,6 @@ export class PaymentCardsRepository {
                     residentId: filter.residentId,
                 });
             } else return rError({ message: 'invalid parameters' });
-
-            db.andWhere('paymentCards.enterpriseId = :enterpriseId', {
-                enterpriseId: filter.enterpriseId,
-            });
 
             if (filter.firstFourNumbers) {
                 db.andWhere(
@@ -133,6 +133,7 @@ export class PaymentCardsRepository {
             }
 
             const data = await db.getOne();
+
             if (!data)
                 return rSuccess({ message: 'processed data', row: undefined });
 
