@@ -7,6 +7,7 @@ const returnTopic = async (
     err: boolean = false,
     linkInvoice?: TLinkInvoice | any,
 ) => {
+    const { message, ...resp } = response;
     return {
         status: err ? 422 : 200,
         err,
@@ -15,10 +16,10 @@ const returnTopic = async (
                 ...(request ? { ...request } : {}),
                 returnOpah: {
                     err,
-                    ...(response ? { ...response } : {}),
+                    ...(resp ? { ...resp } : {}),
                     ...(err
-                        ? { messageError: response?.message || undefined }
-                        : { message: response.message }),
+                        ? { messageError: message || undefined }
+                        : { message }),
                     ...(EnumInvoicePaymentMethod.credit == request.paymentMethod
                         ? linkInvoice
                             ? { linkInvoice }

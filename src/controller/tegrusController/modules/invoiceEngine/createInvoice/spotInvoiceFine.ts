@@ -2,12 +2,19 @@ import { TInvoice, TLinkInvoice } from '../../../../../domain/Tegrus/TInvoice';
 import InvoiceService from '../../../../../service/invoiceService';
 import createHash from '../createHash';
 import { returnTopic } from './returnTopic';
+import RecurrenceService from '../../../../../service/recurrenceService';
 
 const spotInvoiceFine = async (payload: TInvoice) => {
     console.log('invoice.spotInvoiceFine', payload);
     const linkInvoice: TLinkInvoice = await createHash(
         Number(payload.invoiceId),
     );
+
+    const recurrenceService = new RecurrenceService();
+    const resRecurrenceService = await recurrenceService.DisableRecurrence(
+        payload.resident,
+    );
+    console.log(789789789, resRecurrenceService);
 
     if (linkInvoice.err)
         return returnTopic(

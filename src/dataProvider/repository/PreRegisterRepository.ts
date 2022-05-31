@@ -28,7 +28,6 @@ export class PreRegistrationRepository {
             endReferenceDate: preReg.endReferenceDate,
             responsiblePayment: preReg.responsiblePayment,
         };
-        console.log(99999, data);
         return await getConnection()
             .getRepository(PreRegisterResidentEntity)
             .createQueryBuilder('preRegisterResident')

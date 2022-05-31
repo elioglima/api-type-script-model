@@ -134,7 +134,6 @@ export default class InvoiceService {
         const recurenceNumber = Number(duration.asMonths().toFixed());
 
         invoice = { ...invoice, recurenceTotalNumber, recurenceNumber };
-        console.log({ invoice });
         return invoice;
     };
 
@@ -153,7 +152,6 @@ export default class InvoiceService {
             const invoice: TInvoice = invoiceTwo;
 
             try {
-                console.log(999, 'responsiblePayment', responsiblePayment);
                 if (Array.isArray(responsiblePayment)) {
                     responsiblePayment.forEach(async (resp: any) => {
                         const dataInclude = {
