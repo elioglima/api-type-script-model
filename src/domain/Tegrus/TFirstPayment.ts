@@ -1,5 +1,4 @@
 import { PreRegisterResidentEntity } from './../../dataProvider/entity/PreRegisterResidentEntity';
-import { InvoiceEntity } from '../../dataProvider/entity/InvoiceEntity';
 import { TResident } from './TResident';
 import { TInvoice } from './TInvoice';
 
@@ -54,7 +53,7 @@ export interface hashData {
 export interface resHashData {
     hash?: string;
     lifeTime?: Date;
-    invoice: InvoiceEntity;
+    invoice: TInvoice;
     resident: PreRegisterResidentEntity;
 }
 

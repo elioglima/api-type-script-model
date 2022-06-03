@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { HashDataRepository } from '../../dataProvider/repository/HashDataRepository';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
-import { resHashData } from '../../domain/Tegrus';
+import { resHashData, EnumInvoiceStatus } from '../../domain/Tegrus';
 import moment from 'moment';
 
 export default class HashSearchService {
@@ -107,9 +107,17 @@ export default class HashSearchService {
                 invoice: delete resInvoicePreUser.resident && resInvoicePreUser,
             };
 
-            if (res.invoice.statusInvoice == 'paid') {
-                const teste = await this.terminateHashTTL(hash);
-                console.log(teste, hash);
+            if (res.invoice.statusInvoice == EnumInvoiceStatus.canceled) {
+                await this.terminateHashTTL(hash);
+                return {
+                    err: true,
+                    data: {
+                        code: 6,
+                        message: 'invoice invoiced',
+                    },
+                };
+            } else if (res.invoice.statusInvoice == EnumInvoiceStatus.paid) {
+                await this.terminateHashTTL(hash);
                 return {
                     err: true,
                     data: {
