@@ -112,7 +112,7 @@ export default class HashSearchService {
                 return {
                     err: true,
                     data: {
-                        code: 6,
+                        code: 7,
                         message: 'invoice invoiced',
                     },
                 };
