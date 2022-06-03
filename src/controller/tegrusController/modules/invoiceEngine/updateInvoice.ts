@@ -1,5 +1,5 @@
 import InvoiceService from '../../../../service/invoiceService';
-import createHash from './createHash';
+// import createHash from './createHash';
 import firstPaymentCreateService from '../../../../service/tegrus.services/firstPaymentCreateService';
 
 const updateInvoice = async (toReceive: any) => {
@@ -38,30 +38,26 @@ const updateInvoice = async (toReceive: any) => {
             await firstPaymentCreateService(toReceive?.updateInvoice);
         }
 
-        console.log(777, invoice);
         await invoiceService.Update(updataData);
         if (updataData.isExpired) {
-            // TO-DO-NOW
-            // verificar a recorrencia
-            // desativar a recorrencia do mes atual da fatura alterada
+            // retirado a pedido da fernanda
+            // const linkInvoice: any = await createHash(
+            //     toReceive?.updateInvoice?.invoiceId,
+            // );
 
-            const linkInvoice: any = await createHash(
-                toReceive?.updateInvoice?.invoiceId,
-            );
-
-            if (linkInvoice.err) {
-                return {
-                    err: true,
-                    data: {
-                        updateInvoice: {
-                            ...toReceive?.updateInvoice,
-                            returnOpah: {
-                                messageMessage: 'Error generating link',
-                            },
-                        },
-                    },
-                };
-            }
+            // if (linkInvoice.err) {
+            //     return {
+            //         err: true,
+            //         data: {
+            //             updateInvoice: {
+            //                 ...toReceive?.updateInvoice,
+            //                 returnOpah: {
+            //                     messageMessage: 'Error generating link',
+            //                 },
+            //             },
+            //         },
+            //     };
+            // }
 
             return {
                 err: false,
@@ -70,7 +66,7 @@ const updateInvoice = async (toReceive: any) => {
                         ...toReceive?.updateInvoice,
                         returnOpah: {
                             message: 'success',
-                            linkInvoice,
+                            // linkInvoice,
                         },
                     },
                 },
