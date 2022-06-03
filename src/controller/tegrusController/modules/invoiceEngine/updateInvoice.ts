@@ -1,5 +1,5 @@
 import InvoiceService from '../../../../service/invoiceService';
-import createHash from './createHash';
+// import createHash from './createHash';
 import firstPaymentCreateService from '../../../../service/tegrus.services/firstPaymentCreateService';
 
 const updateInvoice = async (toReceive: any) => {

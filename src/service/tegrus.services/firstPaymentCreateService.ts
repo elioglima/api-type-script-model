@@ -1,6 +1,6 @@
 import { HashDataRepository } from './../../dataProvider/repository/HashDataRepository';
 import { hashData } from './../../domain/Tegrus/TFirstPayment';
-import { TErrorGeneric, PromiseExec } from '../../domain/Generics';
+import { PromiseExec } from '../../domain/Generics';
 import { resFirstPaymentCreate } from '../../domain/Tegrus/TFirstPayment';
 import { TInvoice, TRecurrenceSchedule, TResident } from '../../domain/Tegrus';
 import {
