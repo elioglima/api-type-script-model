@@ -172,7 +172,6 @@ export default class RecurrenceService {
             if (checkExists?.err)
                 return rError(resCreateAdapter?.data || resCreateAdapter);
 
-            console.log({ recurrence }, checkExists);
             const makeRecurrent: any = {
                 MerchantOrderId: invoice?.invoiceId
                     .toString()
@@ -191,7 +190,7 @@ export default class RecurrenceService {
                     SoftDescriptor: 'Recorrencia JFL',
                     RecurrentPayment: {
                         AuthorizeNow: true,
-                        EndDate: invoice?.endReferenceDate,
+                        EndDate: resident?.exitDate,
                         Interval: 'Monthly',
                     },
                     CreditCard: {
