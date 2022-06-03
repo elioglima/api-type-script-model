@@ -22,7 +22,6 @@ const invoiceEnginePrivate = async (res: Response) => {
                         invoiceId: 390,
                         statusInvoice: 'payment_error',
                         paymentMethod: 'credit',
-                        tryNumber: 4,
                         messageError: 'Cartão com limite insuficiente',
                     },
                     {

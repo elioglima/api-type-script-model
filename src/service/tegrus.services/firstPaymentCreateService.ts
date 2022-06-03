@@ -17,9 +17,7 @@ import InvoiceService from '../../service/invoiceService';
 import CardService from '../../service/CardService';
 import ResponsiblePaymentService from '../../service/responsiblePaymentService';
 
-export default async (
-    payload: TInvoice,
-): Promise<TErrorGeneric | resFirstPaymentCreate> => {
+export default async (payload: TInvoice) => {
     try {
         const recurrenceService = new RecurrenceService();
         const residentService = new ResidentService();
@@ -58,7 +56,6 @@ export default async (
                     securityCode: resCardService?.data?.securityCode,
                 };
 
-                console.log(79797979, card);
                 const payloadRecurrence: TRecurrenceSchedule = {
                     startDateContract: residentFindOne?.data?.startDateContract,
                     endDateContract: residentFindOne?.data?.endDateContract,
@@ -74,11 +71,13 @@ export default async (
 
                 if (resRecurrence?.err) {
                     return {
-                        err: true,
+                        err: false,
+                        abort: true,
                         data: {
                             invoiceId: invoice.invoiceId,
                             ...resRecurrence?.data?.data,
-                            message: 'Feature automatically reactivated',
+                            message:
+                                'Reactivation of recurrence and initial payment made.',
                         },
                     };
                 }

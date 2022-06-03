@@ -7,21 +7,12 @@ import { returnTopic } from './returnTopic';
 const booking = async (payload: TInvoice) => {
     console.log('invoice.booking', payload);
     try {
-        // const invoiceService = new InvoiceService();
-
-        // const resFindOne = await invoiceService.FindOne(payload.invoiceId);
-        // if (!resFindOne?.err && resFindOne?.data)
-        //     return returnTopic(
-        //         payload,
-        //         {
-        //             message: 'invoice already exists in the database',
-        //         },
-        //         true,
-        //     );
-
         const linkInvoice: any = await firstPaymentCreateService(payload);
 
-        console.log('linkInvoice', linkInvoice);
+        if (linkInvoice.abort) {
+            return returnTopic(payload, linkInvoice, true);
+        }
+
         if (linkInvoice.err)
             return returnTopic(
                 payload,
