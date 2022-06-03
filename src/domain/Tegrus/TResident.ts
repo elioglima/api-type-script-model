@@ -19,7 +19,7 @@ export interface TResident {
     recurrenceId?: string;
     startReferenceDate: Date;
     endReferenceDate: Date;
-    exitDate: Date;
+    exitDate?: Date;
     err?: boolean;
     data?: any;
     responsiblePayment?: any;
