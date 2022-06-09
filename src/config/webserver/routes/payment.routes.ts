@@ -20,4 +20,14 @@ payment
     .post('/pix', paymentController.makePix)
     .get('/pix/getReceipt/:merchantOrderId', paymentController.getReceiptPix)
     .post('/refund/recurrence', paymentController.RefundRecurrencePayment)
-    .put('/card/recurrence/change/:invoiceId', paymentController.changeCard);
+    .put('/card/recurrence/change/:invoiceId', paymentController.changeCard)
+    .get(
+        '/card/recurrence/:userId/:residentId',
+        paymentController.cardRecurrence,
+    )
+    .put(
+        '/card/recurrence/:userId/:residentId',
+        paymentController.changeCardRecurrence,
+    )
+    .get('/receipt/:id', paymentController.getReceiptByPaymentId)
+    .get('/preRegister/:id', paymentController.getPreRegisterUserData);

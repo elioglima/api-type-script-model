@@ -1,7 +1,12 @@
 import { defaultReturnMessage } from './../../../../utils/returns';
 import InvoiceService from '../../../../service/invoiceService';
+
 import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
-import { TInvoice, TResident } from '../../../../domain/Tegrus';
+import {
+    TInvoice,
+    TResident,
+    TResponsiblePayment,
+} from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import { TPayNowReq } from '../../../../domain/Tegrus';
@@ -42,8 +47,10 @@ export const payNowCredit = async (
     payload: TPayNowReq,
     invoice: TInvoice,
     resident: TResident,
+    responsiblePayment: TResponsiblePayment,
 ) => {
     const resMessage: any = defaultReturnMessage(String(invoice?.returnCode));
+
     try {
         if (['00', '1', '4'].includes(String(invoice?.returnCode))) {
             // verificando se esta paga a fatura
@@ -83,12 +90,12 @@ export const payNowCredit = async (
                     fineTicket: invoice.fineTicket,
                     stepValue: invoice.stepValue,
                     commission: invoice.commission,
+                    responsiblePayment,
                 },
             });
         }
 
         const invoiceService = new InvoiceService();
-        console.log(123);
         const resPayAdapter: any = await payAdatpter(
             resident,
             {
@@ -98,7 +105,6 @@ export const payNowCredit = async (
             invoice,
             true,
         );
-        console.log(124);
 
         const paymentDate: Date =
             resPayAdapter?.payment?.receivedDate || new Date();
@@ -107,8 +113,6 @@ export const payNowCredit = async (
 
         const { code, message }: any = defaultReturnMessage(returnCode);
         console.log(code, message);
-        console.log(999, 'resPayAdaptersss', resPayAdapter?.data?.data);
-        console.log(77777, resident);
 
         if (resPayAdapter?.err || resPayAdapter?.data?.data)
             return returnTopic(
@@ -218,6 +222,7 @@ export const payNowCredit = async (
                     fineTicket: invoice.fineTicket,
                     stepValue: invoice.stepValue,
                     commission: invoice.commission,
+                    responsiblePayment,
                 },
             },
             referenceCode != 1,

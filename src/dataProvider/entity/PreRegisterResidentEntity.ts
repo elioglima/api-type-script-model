@@ -47,12 +47,6 @@ export class PreRegisterResidentEntity {
     email: string | undefined;
 
     @Column({
-        name: 'birthDate',
-        type: 'timestamp',
-    })
-    birthDate: Date | undefined;
-
-    @Column({
         name: 'smartphone',
         type: 'varchar',
     })
@@ -107,6 +101,13 @@ export class PreRegisterResidentEntity {
         type: 'timestamp',
     })
     endDateContract: Date | undefined;
+
+    @Column({
+        name: 'birthDate',
+        type: 'varchar',
+        nullable: true,
+    })
+    birthDate: string | undefined;
 
     // @Column({
     //     name: 'startReferenceDate',

@@ -9,12 +9,10 @@ export default class ResponsiblePaymentService {
     public IncludeOrUpdate = async (
         responsiblePayment: TResponsiblePayment,
     ) => {
-        console.log(777, 'IncludeOrUpdate', responsiblePayment);
         if (responsiblePayment?.id) {
             const resFindOne: any = await this.FindOne(
                 Number(responsiblePayment.id),
             );
-            console.log(777, 'IncludeOrUpdate', resFindOne);
             if (!resFindOne?.err) return resFindOne;
             if (resFindOne?.data?.id)
                 return await this.update(responsiblePayment);
@@ -30,13 +28,10 @@ export default class ResponsiblePaymentService {
                     Number(responsiblePayment?.id),
                 );
 
-                console.log(111, resFindOne);
                 if (!resFindOne?.err && resFindOne?.data) return resFindOne;
             }
 
-            this.logger('Starting method to create responsiblePayment');
             const resp: any = await this.repository.persist(responsiblePayment);
-            console.log(777, resp);
             if (resp?.error == true) {
                 return {
                     err: true,
@@ -57,7 +52,6 @@ export default class ResponsiblePaymentService {
             );
             if (!resFindOne?.err && !resFindOne?.data) return resFindOne;
 
-            this.logger('Starting method to create responsiblePayment');
             const resp: any = await this.repository.update(responsiblePayment);
             if (resp?.error == true) {
                 return {
@@ -100,4 +94,41 @@ export default class ResponsiblePaymentService {
             };
         }
     };
+
+    public FindOneAE = async (apartmentId: number, enterpriseId: number) => {
+        this.logger(`Find One`);
+        try {
+            const responsiblePayment: TResponsiblePayment =
+                await this.repository.FindOneAE({ apartmentId, enterpriseId });
+
+            console.log(77555, {
+                apartmentId,
+                enterpriseId,
+                responsiblePayment,
+            });
+            if (responsiblePayment instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: 'No responsiblePayment found',
+                    },
+                };
+            }
+
+            return {
+                err: false,
+                data: responsiblePayment,
+            };
+        } catch (error: any) {
+            return {
+                err: true,
+                data: {
+                    message: error?.message || 'unexpected error',
+                },
+            };
+        }
+    };
+
+    public deleteAll = async (apartmentId: number, enterpriseId: number) =>
+        await this.repository.deleteAll({ apartmentId, enterpriseId });
 }

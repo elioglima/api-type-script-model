@@ -9,6 +9,7 @@ import {
 } from '../../domain/Tegrus';
 import {
     RecurrentModifyPaymentModel,
+    reqRecurrenceModify,
     reqRecurrentDeactivate,
 } from '../../domain/RecurrentPayment';
 import { PaymentRecurrence } from '../../domain/Payment/PaymentRecurrence';
@@ -48,19 +49,22 @@ export default class RecurrenceService {
                     message: 'recurrence not found',
                 });
 
+            if (checkExists?.data?.row && !checkExists?.data?.row?.active)
+                return rError({
+                    desactived: true,
+                    message: 'recurrence desactived',
+                });
+
             const resResident: any = await this.residentService.FindOne(
                 residenteId,
             );
             if (resResident?.err) return rError(resResident.data);
 
             const resident: TResident = resResident.data;
-
-            // consultar recorrencia pelo id
-
-            const resAdapter = await this.paymentAdapter.init(
+            const resAdapter: any = await this.paymentAdapter.init(
                 Number(resident.enterpriseId),
             );
-            if (resAdapter?.err) return rError(resAdapter.data);
+            if (resAdapter?.err) return rError(resAdapter?.data || resAdapter);
 
             const recurrentPaymentId: string =
                 checkExists?.data?.row?.recurrentPaymentId;
@@ -103,10 +107,11 @@ export default class RecurrenceService {
                         'error when querying the recurrence in the database',
                 });
 
-            const resCreateAdapter = await this.paymentAdapter.init(
+            const resCreateAdapter: any = await this.paymentAdapter.init(
                 resident.enterpriseId,
             );
-            if (checkExists?.err) return rError(resCreateAdapter.data);
+            if (checkExists?.err)
+                return rError(resCreateAdapter?.data || resCreateAdapter);
 
             const recurrenceId = checkExists.data.recurrenceId;
 
@@ -161,12 +166,13 @@ export default class RecurrenceService {
                     message: 'recurrence found in the database',
                 });
 
-            const resCreateAdapter = await this.paymentAdapter.init(
+            const resCreateAdapter: any = await this.paymentAdapter.init(
                 resident.enterpriseId,
             );
-            if (checkExists?.err) return rError(resCreateAdapter.data);
+            if (checkExists?.err)
+                return rError(resCreateAdapter?.data || resCreateAdapter);
 
-            console.log({ recurrence });
+            console.log({ recurrence }, checkExists);
             const makeRecurrent: any = {
                 MerchantOrderId: invoice?.invoiceId
                     .toString()
@@ -185,7 +191,8 @@ export default class RecurrenceService {
                     SoftDescriptor: 'Recorrencia JFL',
                     RecurrentPayment: {
                         AuthorizeNow: true,
-                        EndDate: recurrence.endDateContract,
+                        StartDate: invoice?.recurrenceDate,
+                        EndDate: resident?.exitDate,
                         Interval: 'Monthly',
                     },
                     CreditCard: {
@@ -200,9 +207,18 @@ export default class RecurrenceService {
                 },
             };
 
-            console.log(123, makeRecurrent);
             const resRecurrentCreate: any =
                 await this.paymentAdapter.recurrentCreate(makeRecurrent);
+
+            const recurrenceFind: any = await this.repository.getByResidentId(
+                resident.id,
+            );
+
+            // console.log(11, recurrenceFind);
+            // caso tenha recorrencia desativar
+            if (resRecurrentCreate?.err) {
+                return resRecurrentCreate;
+            }
 
             if (resRecurrentCreate?.err) return resRecurrentCreate;
 
@@ -289,6 +305,7 @@ export default class RecurrenceService {
             }
 
             console.log('atuolizou o pagamento');
+
             const resInvoice: any = await this.invoiceService.Update({
                 ...invoice,
             });
@@ -332,6 +349,28 @@ export default class RecurrenceService {
             // TO-DO-BETO
             // caso ja exista update
 
+            if (!recurrenceFind.err && recurrenceFind?.data?.row) {
+                const dataUpdate = {
+                    id: recurrenceFind.data.row.id,
+                    ...persisRecurrency,
+                };
+
+                console.log(3333333, dataUpdate);
+                const resUpdate: any = await this.repository.update(dataUpdate);
+                if (resUpdate.err) return rError(resUpdate.data);
+
+                const response: any = {
+                    recurrence: {
+                        err: false,
+                        ...resRecurrentCreate?.payment?.recurrentPayment,
+                    },
+                    ...paymentSccess,
+                    message: 'successful recurrence scheduling',
+                };
+
+                return rSuccess(response);
+            }
+
             const resPersist: any = await this.repository.persist(
                 persisRecurrency,
             );
@@ -351,6 +390,7 @@ export default class RecurrenceService {
             console.log(99, error);
             return rError({
                 message: error?.message,
+                ...error,
             });
         }
     };
@@ -390,12 +430,7 @@ export default class RecurrenceService {
                     updatedAt: new Date(),
                     isDeactivateError: true,
                 });
-                return {
-                    err: true,
-                    data: {
-                        message: 'It was not possible deactivate recurrence',
-                    },
-                };
+                return 7;
             }
 
             const updateRecu: PaymentRecurrence = {
@@ -496,8 +531,6 @@ export default class RecurrenceService {
                 invoiceId,
             );
 
-            console.log('resInvoice', resInvoice);
-
             if (!resInvoice.data)
                 return rError({
                     message: 'Invoice not found',
@@ -545,9 +578,15 @@ export default class RecurrenceService {
                 dataInvoice?.residentIdenty?.enterpriseId,
             );
 
+            console.log(7777, recurrence?.recurrentPaymentId);
             const resRecurrence: any = await paymentAdapter.recurrenceFind({
                 recurrentPaymentId: recurrence?.recurrentPaymentId,
             });
+
+            console.log(
+                123,
+                resRecurrence.recurrentPayment.recurrentTransactions,
+            );
 
             if (
                 resRecurrence.recurrentPayment.recurrentTransactions.length <
@@ -558,14 +597,16 @@ export default class RecurrenceService {
                         'RecurrenceNumber is higher than recurrence already paid',
                 });
 
-            const stepPay =
+            const recurrentTransactions =
                 resRecurrence.recurrentPayment.recurrentTransactions[
-                    dataInvoice.recurenceNumber - 1
-                ].paymentId;
+                    dataInvoice.recurenceNumber
+                ];
+
+            const stepPay = recurrentTransactions?.paymentId;
 
             const resRefunded: any = await paymentAdapter.refoundPayment({
                 paymentId: stepPay,
-                amount: dataInvoice.value * 100,
+                amount: dataInvoice?.totalValue * 100,
             });
 
             if (resRefunded instanceof Error)
@@ -578,21 +619,28 @@ export default class RecurrenceService {
                     message: 'Error to refund',
                 });
 
-            const updateInvoice = await this.invoiceService.Update({
+            const dataInvoiceUpdate = {
                 ...dataInvoice,
                 comments,
                 isRefunded: true,
                 statusInvoice: EnumInvoiceStatus.refunded,
-            });
+            };
+
+            const updateInvoice = await this.invoiceService.Update(
+                dataInvoiceUpdate,
+            );
 
             if (updateInvoice.err)
                 return rError({
+                    invoiceId: dataInvoice.invoiceId,
                     message: updateInvoice.data.message,
+                    invoice: dataInvoiceUpdate,
                 });
 
             const resRefund: refundRecurrencePayment = {
                 invoiceId: dataInvoice.invoiceId,
                 reason: comments,
+                invoice: dataInvoiceUpdate,
             };
 
             return resRefund;
@@ -629,12 +677,16 @@ export default class RecurrenceService {
                     message: 'Error to refund',
                 });
 
-            const updateInvoice = await this.invoiceService.Update({
+            const dataInvoiceUpdate = {
                 ...dataInvoice,
                 comments,
                 isRefunded: true,
                 statusInvoice: EnumInvoiceStatus.refunded,
-            });
+            };
+
+            const updateInvoice = await this.invoiceService.Update(
+                dataInvoiceUpdate,
+            );
 
             if (updateInvoice.err)
                 return rError({
@@ -644,6 +696,7 @@ export default class RecurrenceService {
             const resRefund: refundRecurrencePayment = {
                 invoiceId: dataInvoice.invoiceId,
                 reason: comments,
+                invoice: dataInvoiceUpdate,
             };
 
             return resRefund;
@@ -667,23 +720,101 @@ export default class RecurrenceService {
             const invoice: any = await this.invoiceService.FindOne(
                 modifyPayment.invoiceId,
             );
-            
-            if (invoice.err) return;
-            if (!invoice.data) return;
+
+            if (invoice.err)
+                return rError({
+                    message: 'Error to found invoice',
+                });
+            if (!invoice.data)
+                return rError({
+                    message: 'Error to found invoice',
+                });
 
             const { data } = invoice;
-            const recurrence: any = await this.repository.getByPreUserId(data.residentIdenty.id);
 
-            if(recurrence instanceof Error) return
-            if(!recurrence.length) return
+            const recurrence: any = await this.repository.getByPreUserId(
+                data.residentIdenty.id,
+            );
 
-            paymentAdapter.init(data.residentIdenty.id)
+            if (recurrence instanceof Error)
+                return rError({
+                    message: 'Unexpected Error',
+                });
+            if (!recurrence)
+                return rError({
+                    message: 'Error to found recurrence',
+                });
 
-            
+            await paymentAdapter.init(data.residentIdenty.enterpriseId);
 
+            const reqModify: reqRecurrenceModify = {
+                paymentId: recurrence.recurrentPaymentId,
+                modify: modifyPayment.payment,
+            };
 
+            const resModify: any = await paymentAdapter.recurrenceModify(
+                reqModify,
+            );
 
+            if (resModify instanceof Error)
+                return rError({
+                    message: 'Unexpected Error',
+                });
+            if (resModify.err)
+                return rError({
+                    message: 'Error to modify recurrence',
+                });
 
-        } catch (err: any) {}
+            return {
+                err: false,
+                data: {
+                    message: 'Credit card changed with success',
+                },
+            };
+        } catch (err: any) {
+            console.log('ERR', err);
+            return rError({
+                message: 'Unexpected Error',
+            });
+        }
     };
 }
+/* 
+                
+            {
+                "Customer": {
+                    "Name": "Fulano da Silva"
+                },
+                "RecurrentPayment": {
+                    "RecurrentPaymentId": "c30f5c78-fca2-459c-9f3c-9c4b41b09048",
+                    "NextRecurrency": "2017-06-07",
+                    "StartDate": "2017-04-07",
+                    "EndDate": "2017-02-27",
+                    "Interval": "Bimonthly",
+                    "Amount": 15000,
+                    "Country": "BRA",
+                    "CreateDate": "2017-04-07T00:00:00",
+                    "Currency": "BRL",
+                    "CurrentRecurrencyTry": 1,
+                    "Provider": "Simulado",
+                    "RecurrencyDay": 7,
+                    "SuccessfulRecurrences": 0,
+                    "Links": [
+                        {
+                            "Method": "GET",
+                            "Rel": "self",
+                            "Href": "https://apiquerysandbox.cieloecommerce.cielo.com.br/1/RecurrentPayment/c30f5c78-fca2-459c-9f3c-9c4b41b09048"
+                        }
+                    ],
+                    "RecurrentTransactions": [
+                        {
+                            "PaymentId": "f70948a8-f1dd-4b93-a4ad-90428bcbdb84",
+                            "PaymentNumber": 0,
+                            "TryNumber": 1
+                        }
+                    ],
+                    "Status": 1
+                }
+            }
+
+*/

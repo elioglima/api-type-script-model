@@ -4,6 +4,7 @@ import {
     TInvoice,
     TResident,
     TRecurrenceSchedule,
+    TResponsiblePayment,
 } from '../../../../domain/Tegrus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
@@ -25,20 +26,21 @@ const returnTopic = (
     },
     err: boolean = false,
 ) => {
+    const { message, ...resp } = response;
     return {
         err,
         status: err ? 422 : 200,
         statusInvoice: {
             invoices: [
                 {
-                    ...response,
+                    ...resp,
                     ...(err
                         ? {
                               messageError: err
-                                  ? response?.message || 'unexpected error'
+                                  ? message || 'unexpected error'
                                   : undefined,
                           }
-                        : { message: response.message }),
+                        : { message }),
                 },
             ],
         },
@@ -49,6 +51,7 @@ export const payNowRecurrence = async (
     payload: TPayNowReq,
     invoice: TInvoice,
     resident: TResident,
+    responsiblePayment: TResponsiblePayment,
 ) => {
     try {
         const invoiceService = new InvoiceService();
@@ -57,6 +60,7 @@ export const payNowRecurrence = async (
             resident.id,
         );
 
+        console.log(resRecurrenceService);
         if (resRecurrenceService?.err)
             return await returnTopic(
                 {
@@ -101,35 +105,33 @@ export const payNowRecurrence = async (
             payload.card,
         );
 
-        console.log(123, resRecurrence);
-
         if (resRecurrence?.err) {
             return await returnTopic(
                 {
                     invoiceId: invoice.invoiceId,
-                    ...resRecurrence?.data,
+                    ...resRecurrence?.data?.data,
                 },
                 true,
             );
         }
 
         const newStatusInvoice = EnumInvoiceStatus.paid;
+        const paymentDate = resRecurrence?.data?.paymentDate || new Date();
         const updateInvoiceData: TInvoice = {
             ...invoice,
             statusInvoice: newStatusInvoice,
-            paymentDate: resRecurrence.data.paymentDate,
+            paymentDate,
         };
 
         const returnCode = resRecurrence?.data?.returnCode;
 
         const { code, message }: any = defaultReturnMessage(returnCode);
-        console.log(code, message);
-        console.log(999, 'resRecurrence', resRecurrence?.data);
-        console.log(77777, resident);
 
         let referenceCode = code;
         if (referenceCode == 1) {
-            const resUpdate: any = await invoiceService.Update(updateInvoiceData);
+            const resUpdate: any = await invoiceService.Update(
+                updateInvoiceData,
+            );
             if (resUpdate.err)
                 return await returnTopic(
                     {
@@ -143,7 +145,7 @@ export const payNowRecurrence = async (
         return await returnTopic({
             nextRecurrency: resRecurrence?.data?.nextRecurrency,
             invoiceId: invoice.invoiceId,
-            paymentDate: resRecurrence.data.paymentDate,
+            paymentDate,
             statusInvoice: newStatusInvoice,
             paymentMethod: invoice.paymentMethod,
             type: invoice.type,
@@ -155,7 +157,7 @@ export const payNowRecurrence = async (
                         ? newStatusInvoice
                         : invoice.statusInvoice,
 
-                paymentDate: resRecurrence?.data?.paymentDate,
+                paymentDate,
                 tid: resRecurrence?.data?.tid,
                 dueDate: invoice?.dueDate,
                 residentName: resident?.name,
@@ -183,6 +185,7 @@ export const payNowRecurrence = async (
                 stepValue: invoice?.stepValue,
                 commission: invoice?.commission,
 
+                responsiblePayment,
                 recurrence: {
                     ...(resRecurrence?.data?.recurrence
                         ? resRecurrence?.data?.recurrence

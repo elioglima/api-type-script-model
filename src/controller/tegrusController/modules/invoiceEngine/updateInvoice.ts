@@ -1,10 +1,12 @@
 import InvoiceService from '../../../../service/invoiceService';
-import createHash from './createHash';
+// import createHash from './createHash';
+import firstPaymentCreateService from '../../../../service/tegrus.services/firstPaymentCreateService';
 
 const updateInvoice = async (toReceive: any) => {
     try {
         // retorno do app >> bff >> tegrus
         const updataData: any = {
+            invoiceId: toReceive?.updateInvoice?.invoiceId,
             value: toReceive?.updateInvoice?.value,
             totalValue: toReceive?.updateInvoice?.totalValue,
             condominium: toReceive?.updateInvoice?.condominium,
@@ -21,7 +23,6 @@ const updateInvoice = async (toReceive: any) => {
             paymentMethod: toReceive?.updateInvoice?.paymentMethod,
             statusInvoice: toReceive?.updateInvoice?.statusInvoice,
             apartmentId: toReceive?.updateInvoice?.apartmentId,
-            invoiceId: toReceive?.updateInvoice?.invoiceId,
             isExpired: toReceive?.updateInvoice?.isExpired,
             startReferenceDate: toReceive?.updateInvoice?.startReferenceDate,
             endReferenceDate: toReceive?.updateInvoice?.endReferenceDate,
@@ -29,29 +30,34 @@ const updateInvoice = async (toReceive: any) => {
 
         const invoiceService = new InvoiceService();
 
+        console.log(toReceive?.updateInvoice);
+        const invoice = await invoiceService.FindOne(
+            toReceive?.updateInvoice.invoiceId,
+        );
+        if (!invoice?.data) {
+            await firstPaymentCreateService(toReceive?.updateInvoice);
+        }
+
         await invoiceService.Update(updataData);
         if (updataData.isExpired) {
-            // TO-DO-NOW
-            // verificar a recorrencia
-            // desativar a recorrencia do mes atual da fatura alterada
+            // retirado a pedido da fernanda
+            // const linkInvoice: any = await createHash(
+            //     toReceive?.updateInvoice?.invoiceId,
+            // );
 
-            const linkInvoice: any = await createHash(
-                toReceive?.updateInvoice?.invoiceId,
-            );
-
-            if (linkInvoice.err) {
-                return {
-                    err: true,
-                    data: {
-                        updateInvoice: {
-                            ...toReceive?.updateInvoice,
-                            returnOpah: {
-                                messageMessage: 'Error generating link',
-                            },
-                        },
-                    },
-                };
-            }
+            // if (linkInvoice.err) {
+            //     return {
+            //         err: true,
+            //         data: {
+            //             updateInvoice: {
+            //                 ...toReceive?.updateInvoice,
+            //                 returnOpah: {
+            //                     messageMessage: 'Error generating link',
+            //                 },
+            //             },
+            //         },
+            //     };
+            // }
 
             return {
                 err: false,
@@ -60,7 +66,7 @@ const updateInvoice = async (toReceive: any) => {
                         ...toReceive?.updateInvoice,
                         returnOpah: {
                             message: 'success',
-                            linkInvoice,
+                            // linkInvoice,
                         },
                     },
                 },

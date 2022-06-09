@@ -54,7 +54,8 @@ export class TegrusController {
         return await md.invoiceEngine(req, res);
     };
 
-    public invoiceEnginePrivate = async (res: Response) => {
+    public invoiceEnginePrivate = async (req: Request, res: Response) => {
+        console.log(req.body);
         return await md.invoiceEnginePrivate(res);
     };
 

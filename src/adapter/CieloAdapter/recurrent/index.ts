@@ -88,7 +88,7 @@ export class RecurentMethods {
         });
     }
 
-    public Modify(
+    public async Modify(
         payload: reqRecurrenceModify,
     ): Promise<resRecurrentModify | TErrorGeneric> {
         if (!this.util) return this.error('this.util not started');
@@ -96,9 +96,11 @@ export class RecurentMethods {
         if (!payload.paymentId)
             return this.error('paymentId was not informed.');
 
-        return this.util.put(
+        
+        const data:any = await this.util.put(
             { path: `/1/RecurrentPayment/${payload.paymentId}/Payment` },
             payload.modify,
-        );
+        );        
+        return data;
     }
 }

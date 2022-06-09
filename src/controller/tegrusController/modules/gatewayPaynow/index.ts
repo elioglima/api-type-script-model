@@ -13,6 +13,7 @@ import { payNowRecurrence } from './payNowRecurrence';
 import { TPayNowReq } from '../../../../domain/Tegrus/TPayNow';
 import { invoiceToTResident } from '../../../../utils';
 import { FindCardByIdService } from '../../../../service/FindCardByIdService';
+import ResponsiblePaymentService from '../../../../service/responsiblePaymentService';
 
 const returnTopic = (
     response: {
@@ -55,7 +56,6 @@ const servicePrivate = async (payload: TPayNowReq) => {
         if (payload?.hash) {
             const resHash: any = await hashServices.execute(hash);
             if (resHash.err) return resHash;
-            console.log(11133, resHash);
 
             if (
                 (Object.keys(resHash?.data || {}).find(f => f == 'isValid') &&
@@ -90,6 +90,14 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 },
             };
         }
+
+        const responsiblePaymentService = new ResponsiblePaymentService();
+
+        const responsiblePayment: any =
+            await responsiblePaymentService.FindOneAE(
+                resInvoice?.data?.apartmentId,
+                resInvoice?.data?.enterpriseId,
+            );
 
         if (payload.cardId) {
             const findCardByIdService = new FindCardByIdService();
@@ -143,6 +151,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
                     if (result?.err)
                         return {
                             ...result,
+
                             status: 422,
                         };
 
@@ -159,6 +168,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
                         payload,
                         invoice,
                         resident,
+                        responsiblePayment?.data,
                     );
 
                     return await checkedReturn(resPayNowRecurrence);
@@ -168,6 +178,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
                     payload,
                     invoice,
                     resident,
+                    responsiblePayment?.data,
                 );
 
                 return await checkedReturn(resPayNowCredit);

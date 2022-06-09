@@ -3,7 +3,7 @@ import InvoiceService from '../../../../service/invoiceService';
 import { TInvoice } from '../../../../domain/Tegrus/TInvoice';
 import RecurrenceService from '../../../../service/recurrenceService';
 import { invoiceToTResident } from '../../../../utils';
-import { TResident } from '../../../../domain/Tegrus/';
+import { TResident, EnumInvoiceStatus } from '../../../../domain/Tegrus/';
 
 const externalPayment = async (req: any) => {
     const payload: TExternalPayment = req?.externalPayment;
@@ -33,9 +33,9 @@ const externalPayment = async (req: any) => {
         };
     };
 
-    try {        
+    try {
         const invoiceService = new InvoiceService();
-        const resFindOne: any = await invoiceService.FindOne(payload.invoiceId);
+        let resFindOne: any = await invoiceService.FindOne(payload.invoiceId);
         if (resFindOne.err)
             return returnTopic(
                 {
@@ -44,31 +44,41 @@ const externalPayment = async (req: any) => {
                 true,
             );
 
-        const invoice: TInvoice = resFindOne.data;
-        const updataData: any = {
-            paymentDate: payload?.paiAt,
-            paymentMethod: payload?.paymentMethod,
-            statusInvoice: payload?.statusInvoice,
-        };
-        
+        let invoice: TInvoice = resFindOne.data;
+        if (invoice.statusInvoice == EnumInvoiceStatus.issued) {
+            const updataData: any = {
+                invoiceId: invoice?.invoiceId,
+                paymentDate: payload?.paidAt,
+                paymentMethod: payload?.paymentMethod,
+                statusInvoice: payload?.statusInvoice,
+            };
 
-        if (invoice.isRecurrence) { 
-            const converRes:TResident | any = invoiceToTResident(invoice?.residentIdenty)
-            const recurrenceService = new RecurrenceService();            
-            await recurrenceService.DisableRecurrence(converRes)                        
+            if (invoice.isRecurrence) {
+                const converRes: TResident | any = invoiceToTResident(
+                    invoice?.residentIdenty,
+                );
+                const recurrenceService = new RecurrenceService();
+                await recurrenceService.DisableRecurrence(converRes);
+            }
+
+            const resUpdateIvoice = await invoiceService.Update(updataData);
+            const resFindOne2: any = await invoiceService.FindOne(
+                payload.invoiceId,
+            );
+            invoice = resFindOne2?.data;
+
+            if (resUpdateIvoice.err)
+                return returnTopic(
+                    {
+                        message: 'invoice updated successfully',
+                    },
+                    true,
+                );
         }
 
-        const resUpdateIvoice = await invoiceService.Update(updataData);
-        if (resUpdateIvoice.err)
-            return returnTopic(
-                {
-                    message: 'Invoice successfully added',
-                },
-                true,
-            );
-
         return returnTopic({
-            message: 'Invoice successfully added',
+            message: 'invoice processed',
+            invoice,
         });
     } catch (error: any) {
         console.log(error);

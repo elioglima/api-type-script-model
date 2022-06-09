@@ -169,7 +169,7 @@ export class InvoiceEntity {
     @Column({
         name: 'comments',
         type: 'varchar',
-        nullable: true,        
+        nullable: true,
     })
     comments: string | undefined;
 
@@ -208,6 +208,13 @@ export class InvoiceEntity {
         nullable: true,
     })
     referenceDate: Date | undefined;
+
+    @Column({
+        name: 'updateDate',
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP()',
+    })
+    updateDate: Date | undefined;
 
     @Column({
         name: 'firstPayment',

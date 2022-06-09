@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { HashDataRepository } from '../../dataProvider/repository/HashDataRepository';
 import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
-import { resHashData } from '../../domain/Tegrus';
+import { resHashData, EnumInvoiceStatus } from '../../domain/Tegrus';
 import moment from 'moment';
 
 export default class HashSearchService {
@@ -13,6 +13,8 @@ export default class HashSearchService {
         try {
             this.logger('Starting method HashSearchService');
             const resp: any = await this.HashRep.getByHash(hash);
+
+            console.log(777, resp);
 
             if (!resp) {
                 return {
@@ -26,7 +28,7 @@ export default class HashSearchService {
 
             if (!resp?.valid) {
                 return {
-                    err: false,
+                    err: true,
                     data: {
                         code: 2,
                         message: 'hash already used.',
@@ -34,7 +36,7 @@ export default class HashSearchService {
                 };
             }
 
-            const resValidate = await this.validateHashTTL(resp);
+            const resValidate: any = await this.validateHashTTL(resp);
             if (resValidate.err) {
                 return {
                     err: true,
@@ -55,9 +57,38 @@ export default class HashSearchService {
                 };
             }
 
+            if (resValidate?.data?.isExpired) {
+                return {
+                    err: true,
+                    data: {
+                        code: 4,
+                        ...resValidate.data,
+                    },
+                };
+            }
+
             const resInvoicePreUser: any = await this.InvRep.getByInvoiceId(
                 resp.invoiceId,
             );
+            console.log(1111, resInvoicePreUser);
+
+            const timeNow: Date = moment().toDate();
+
+            resInvoicePreUser.invoiceHasExpired = moment(
+                resInvoicePreUser?.dueDate || moment(),
+            )
+                .add('days', 1)
+                .isBefore(timeNow);
+
+            if (resInvoicePreUser.invoiceHasExpired) {
+                return {
+                    err: true,
+                    data: {
+                        code: 7,
+                        message: 'dueDate has expired.',
+                    },
+                };
+            }
 
             if (!resInvoicePreUser)
                 return {
@@ -76,9 +107,17 @@ export default class HashSearchService {
                 invoice: delete resInvoicePreUser.resident && resInvoicePreUser,
             };
 
-            if (res.invoice.statusInvoice == 'paid') {
-                const teste = await this.terminateHashTTL(hash);
-                console.log(teste, hash);
+            if (res.invoice.statusInvoice == EnumInvoiceStatus.canceled) {
+                await this.terminateHashTTL(hash);
+                return {
+                    err: true,
+                    data: {
+                        code: 7,
+                        message: 'invoice invoiced',
+                    },
+                };
+            } else if (res.invoice.statusInvoice == EnumInvoiceStatus.paid) {
+                await this.terminateHashTTL(hash);
                 return {
                     err: true,
                     data: {
@@ -101,16 +140,14 @@ export default class HashSearchService {
     private async validateHashTTL(hashData: resHashData) {
         try {
             const timeNow: Date = moment().toDate();
-            if (moment(hashData.lifeTime).isBefore(timeNow)) {
+            if (moment(hashData.lifeTime).add('days', 1).isBefore(timeNow)) {
                 await this.terminateHashTTL(String(hashData.hash));
                 return {
                     err: false,
                     data: {
-                        err: false,
-                        data: {
-                            message: 'hash expired or is invalid.',
-                            isValid: false,
-                        },
+                        message: 'hash expired or is invalid.',
+                        isValid: false,
+                        isExpired: true,
                     },
                 };
             }
@@ -119,6 +156,7 @@ export default class HashSearchService {
                 err: false,
                 data: {
                     isValid: true,
+                    isExpired: false,
                 },
             };
         } catch (error: any) {

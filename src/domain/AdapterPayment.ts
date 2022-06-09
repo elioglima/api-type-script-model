@@ -18,9 +18,9 @@ import { FindPaymentConfigService } from '../service/FindPaymentConfigService';
 import {
     reqRecurrentCreate,
     reqRecurrentDeactivate,
-    resRecurrentCreate,
     resRecurrentDeactivate,
     reqRecurrentPaymentConsult,
+    reqRecurrenceModify,
 } from './RecurrentPayment';
 import { rError, rSuccess } from '../utils';
 import { reqFindPayment } from './Payment';
@@ -125,6 +125,7 @@ export class AdapterPayment implements IAdapter {
     ): Promise<resRefoundPayment | TErrorGeneric> {
         if (!this.paymentProvider) throw new Error('Error provider not found.');
 
+        console.log({ payload });
         try {
             return this.paymentProvider.refoundPayment(payload);
         } catch (error) {
@@ -133,16 +134,9 @@ export class AdapterPayment implements IAdapter {
         }
     }
 
-    public recurrentCreate(
-        payload: reqRecurrentCreate,
-    ): Promise<resRecurrentCreate | TErrorGeneric> {
+    public async recurrentCreate(payload: reqRecurrentCreate) {
         if (!this.paymentProvider) throw new Error('Error provider not found.');
-        try {
-            return this.paymentProvider.recurrentCreate(payload);
-        } catch (error) {
-            console.log(error);
-            throw new Error('Error Method recurrentDeactivate.');
-        }
+        return await this.paymentProvider.recurrentCreate(payload);
     }
 
     public recurrentDeactivate(
@@ -172,6 +166,19 @@ export class AdapterPayment implements IAdapter {
         if (!this.paymentProvider) throw new Error('Error provider not found.');
         try {
             const response = await this.paymentProvider.find(payload);
+            return response;
+        } catch (error) {
+            console.log('recurrenceFind', error);
+            throw new Error('Error Method recurrenceFind.');
+        }
+    }
+
+    public async recurrenceModify(payload: reqRecurrenceModify) {
+        if (!this.paymentProvider) throw new Error('Error provider not found.');
+        try {
+            const response = await this.paymentProvider.recurrenceModify(
+                payload,
+            );
             return response;
         } catch (error) {
             console.log('recurrenceFind', error);

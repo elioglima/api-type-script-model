@@ -8,18 +8,20 @@ export const rGeneric = (
     err: boolean = false,
     abortProcess: boolean = false,
 ) => {
+    const { message, ...res } = response;
     return {
         err,
         abortProcess,
+        status: err ? 422 : 200,
         data: {
-            ...response,
+            ...res,
             ...(err
                 ? {
                       messageError: err
-                          ? response?.message || 'unexpected error'
+                          ? message || 'unexpected error'
                           : undefined,
                   }
-                : { message: response.message }),
+                : { message }),
         },
     };
 };
@@ -82,7 +84,7 @@ export const parseStatusCielo = (code: number) => {
         PaymentConfirmed = 'PaymentConfirmed',
         Denied = 'Denied',
         Voided = 'Voided',
-        Refunded = 'Refunded',
+        Refunded = 'chargeback',
         Pending = 'Pending',
         Aborted = 'Aborted',
         Scheduled = 'Scheduled',

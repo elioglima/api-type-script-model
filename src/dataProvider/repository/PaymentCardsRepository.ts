@@ -91,11 +91,15 @@ export class PaymentCardsRepository {
     };
 
     public findExists = async (filter: TFindExistsFilter) => {
-        try {            
+        try {
             const db = getConnection()
                 .getRepository(PaymentCardsEntity)
                 .createQueryBuilder('paymentCards')
                 .where('paymentCards.deletedAt IS NULL');
+
+            db.andWhere('paymentCards.enterpriseId = :enterpriseId', {
+                enterpriseId: filter.enterpriseId,
+            });
 
             if (filter.userId) {
                 db.andWhere('paymentCards.userId = :userId', {
@@ -106,10 +110,6 @@ export class PaymentCardsRepository {
                     residentId: filter.residentId,
                 });
             } else return rError({ message: 'invalid parameters' });
-
-            db.andWhere('paymentCards.enterpriseId = :enterpriseId', {
-                enterpriseId: filter.enterpriseId,
-            });
 
             if (filter.firstFourNumbers) {
                 db.andWhere(
@@ -133,6 +133,7 @@ export class PaymentCardsRepository {
             }
 
             const data = await db.getOne();
+
             if (!data)
                 return rSuccess({ message: 'processed data', row: undefined });
 
@@ -222,4 +223,13 @@ export class PaymentCardsRepository {
                 },
             );
     };
+
+    public getByUserId = async (userId: number) =>
+        await getConnection()
+            .getRepository(PaymentCardsEntity)
+            .createQueryBuilder('paymentCards')
+            .where('paymentCards.userId = :userId', { userId })
+            .andWhere('paymentCards.deletedAt IS NULL')
+            .andWhere('paymentCards.active = true')
+            .getMany();
 }

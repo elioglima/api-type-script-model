@@ -1,4 +1,4 @@
-import { PaymentStatus } from '../enum';
+import { EnumInvoiceStatus } from '../domain/Tegrus';
 
 export const cieloStatusConverter = (cieloStatus: number) => {
     const paidStatus = [1, 2];
@@ -6,13 +6,12 @@ export const cieloStatusConverter = (cieloStatus: number) => {
     const refundedStatus = [10, 11];
     const canceledStatus = [13];
 
-    if (paidStatus.includes(cieloStatus))
-        return PaymentStatus.PAID;
+    if (paidStatus.includes(cieloStatus)) return EnumInvoiceStatus.paid;
     else if (refusedStatus.includes(cieloStatus))
-        return PaymentStatus.REFUSED;
+        return EnumInvoiceStatus.paymentError;
     else if (refundedStatus.includes(cieloStatus))
-        return PaymentStatus.REFUNDED;
+        return EnumInvoiceStatus.refunded;
     else if (canceledStatus.includes(cieloStatus))
-        return PaymentStatus.CANCELED;
-    else return PaymentStatus.ERROR;
+        return EnumInvoiceStatus.canceled;
+    else return EnumInvoiceStatus.paymentError;
 };

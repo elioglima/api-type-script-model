@@ -6,16 +6,33 @@ import { getConnection } from 'typeorm';
 export class PreRegistrationRepository {
     private logger = debug('service-api:PreRegisterRepository');
 
-    public persist = async (preReg: TResident) =>
-        await getConnection()
+    public persist = async (preReg: TResident) => {
+        const data = {
+            id: preReg.id,
+            name: preReg.name,
+            nationality: preReg.nationality,
+            nickname: preReg.nickname,
+            email: preReg.email,
+            birthDate: preReg?.birthDate,
+            smartphone: preReg.smartphone,
+            documentType: preReg.documentType,
+            document: preReg.document,
+            description: preReg.description,
+            apartmentId: preReg.apartmentId,
+            enterpriseId: preReg.enterpriseId,
+            contractCode: preReg.contractCode,
+            startDateContract: preReg.startDateContract,
+            endDateContract: preReg.endDateContract,
+            recurrenceId: preReg.recurrenceId,
+            startReferenceDate: preReg.startReferenceDate,
+            endReferenceDate: preReg.endReferenceDate,
+            responsiblePayment: preReg.responsiblePayment,
+        };
+        return await getConnection()
             .getRepository(PreRegisterResidentEntity)
             .createQueryBuilder('preRegisterResident')
             .insert()
-            .values([
-                {
-                    ...preReg,
-                },
-            ])
+            .values([data])
             .execute()
             .then(
                 response => {
@@ -33,6 +50,7 @@ export class PreRegistrationRepository {
                     };
                 },
             );
+    };
 
     public getById = async (id: number) =>
         await getConnection()

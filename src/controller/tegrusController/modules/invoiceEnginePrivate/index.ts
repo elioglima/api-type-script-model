@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { cieloStatusConverter } from '../../../../utils/cieloStatus';
 import {
     TInvoiceFilter,
@@ -5,7 +6,6 @@ import {
     TInvoice,
 } from './../../../../domain/Tegrus/TInvoice';
 import { EnumInvoiceStatus } from './../../../../domain/Tegrus/EnumInvoiceStatus';
-import { Response } from 'express';
 import InvoiceService from '../../../../service/invoiceService/index';
 import RecurrenceService from '../../../../service/recurrenceService';
 import { invoiceToTResident } from '../../../../utils/parse';
@@ -14,12 +14,36 @@ import { TResident } from '../../../../domain/Tegrus';
 
 const invoiceEnginePrivate = async (res: Response) => {
     try {
+        console.log('invoiceEnginePrivate');
+        return res.status(200).json({
+            statusInvoice: {
+                invoices: [
+                    {
+                        invoiceId: 390,
+                        statusInvoice: 'payment_error',
+                        paymentMethod: 'credit',
+                        messageError: 'Cartão com limite insuficiente',
+                    },
+                    {
+                        invoiceId: 420,
+                        recurrentPaymentId:
+                            'd2ca3af5-506e-488a-bb81-7d58e0b3210e',
+                        statusInvoice: 'paid',
+                        paymentMethod: 'credit',
+                        paymentDate: new Date(),
+                    },
+                ],
+            },
+        });
+
         const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();
 
-        const todayDate: string = moment().format('YYYY-MM-DD 23:59:59');
+        const todayDate: string = moment()
+            .add(10, 'days')
+            .format('YYYY-MM-DD 23:59:59');
         const backwardDate: string = moment(todayDate)
-            .subtract(30, 'days')
+            .subtract(20, 'days')
             .format('YYYY-MM-DD 00:00:00');
 
         const invoiceSearch: TInvoiceFilter = {
@@ -30,22 +54,40 @@ const invoiceEnginePrivate = async (res: Response) => {
             statusInvoice: EnumInvoiceStatus.issued,
         };
 
-        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);        
-        if (invoicesFounded.err) return invoicesFounded;
+        console.log('invoiceEnginePrivate.invoiceSearch');
 
-        if (!invoicesFounded.data.length) return;
+        const invoicesFounded: any = await invoiceService.Find(invoiceSearch);
+        if (invoicesFounded.err) return invoicesFounded;
+        console.log('invoiceEnginePrivate.invoicesFounded');
+
+        if (!invoicesFounded.data.length)
+            return res.status(200).json({
+                statusInvoice: {
+                    invoices: [],
+                },
+            });
+
+        console.log('invoiceEnginePrivate.result');
 
         const result: Array<Object> = await Promise.all(
             invoicesFounded.data
                 .map(async (invoice: TInvoice) => {
+                    console.log('invoiceEnginePrivate.invoice', invoice);
+
                     try {
                         const resident: TResident | any = invoiceToTResident(
                             invoice?.residentIdenty,
                         );
+
                         const recurrency: any =
                             await recurrenceService.FindOneResidentId(
                                 resident.id,
                             );
+
+                        console.log(
+                            'invoiceEnginePrivate.recurrency',
+                            recurrency,
+                        );
 
                         if (recurrency?.err) return;
 
@@ -54,19 +96,32 @@ const invoiceEnginePrivate = async (res: Response) => {
                                 ?.toString()
                                 .toLocaleLowerCase()
                                 .trim() == 'recurrence not found'
-                        )
-                            return {
-                                err: true,
-                                data: recurrency.data.message,
-                            };
+                        ) {
+                            await invoiceService.Update({
+                                ...invoice,
+                                statusInvoice: EnumInvoiceStatus.paymentError,
+                                returnMessage: recurrency?.data?.message,
+                            });
 
-                        const recurrenceNumber: number = Number(invoice?.recurenceNumber) - 1;
+                            return {
+                                invoiceId: invoice.invoiceId,
+                                statusInvoice: 'payment_error',
+                                paymentMethod: 'credit',
+                                paymentDate: new Date(),
+                                message: recurrency?.data?.message,
+                            };
+                        }
+
+                        const recurrenceNumber: number =
+                            Number(invoice?.recurenceNumber) - 1;
                         const paymentId: string =
-                            recurrency?.data?.recurrentTransactions[recurrenceNumber]
-                                ?.paymentId;
+                            recurrency?.data?.recurrentTransactions[
+                                recurrenceNumber
+                            ]?.paymentId;
                         const tryNumber: number =
-                            recurrency?.data?.recurrentTransactions[recurrenceNumber]
-                                ?.tryNumber;
+                            recurrency?.data?.recurrentTransactions[
+                                recurrenceNumber
+                            ]?.tryNumber;
                         const enterpriseId: number = resident.enterpriseId;
                         const receiptCielo: any =
                             await invoiceService.GetInvoiceCielo(
@@ -86,19 +141,18 @@ const invoiceEnginePrivate = async (res: Response) => {
                                 statusInvoice: EnumInvoiceStatus.paymentError,
                                 tryNumber,
                             });
+
                             return {
-                                statusInvoice: {
-                                    invoiceId: invoice.invoiceId,
-                                    recurrentPaymentId:
-                                        recurrency.data.recurrentPaymentId,
-                                    statusInvoice: cieloStatusConverter(10),
-                                    paymentMethod: 'credit',
-                                    paymentDate: new Date(),
-                                    recurence: {
-                                        ...recurrency.data,
-                                    },
-                                    message: 'recurrence off',
+                                invoiceId: invoice.invoiceId,
+                                recurrentPaymentId:
+                                    recurrency.data.recurrentPaymentId,
+                                statusInvoice: cieloStatusConverter(10),
+                                paymentMethod: 'credit',
+                                paymentDate: new Date(),
+                                recurence: {
+                                    ...recurrency.data,
                                 },
+                                message: 'recurrence off',
                             };
                         }
 
@@ -116,6 +170,7 @@ const invoiceEnginePrivate = async (res: Response) => {
                                 paymentDate: new Date(),
                                 tryNumber,
                             });
+
                             return {
                                 err: false,
                                 invoiceId: invoice.invoiceId,
@@ -146,11 +201,11 @@ const invoiceEnginePrivate = async (res: Response) => {
                             err: true,
                             invoiceId: invoice.invoiceId,
                             recurrentPaymentId:
-                                recurrency.data.recurrentPaymentId,
+                                recurrency?.data?.recurrentPaymentId,
                             statusInvoice: cieloStatusConverter(
                                 Number(recurrency?.data?.status),
                             ),
-                            paymentMethod: 'credit',
+                            paymentMethod: invoice.paymentMethod,
                             paymentDate: new Date(),
                             recurence: {
                                 ...recurrency.data,
@@ -166,9 +221,9 @@ const invoiceEnginePrivate = async (res: Response) => {
                 .filter((f: any) => !f?.err),
         );
 
-        res.status(200).json({
+        return res.status(200).json({
             statusInvoice: {
-                invoices: [...result],
+                invoices: [...result.filter((f: any) => !f?.err)],
             },
         });
     } catch (error: any) {

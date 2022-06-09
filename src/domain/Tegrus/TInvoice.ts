@@ -6,6 +6,7 @@ import { TResponsiblePayment } from './TResponsiblePayment';
 
 export type TInvoice = {
     id?: number;
+    lastRent: boolean; // para cancelar a recorrencia.
     date?: Date;
     invoiceId: number;
     userId?: number;
@@ -27,6 +28,7 @@ export type TInvoice = {
     anticipation: boolean;
     recurrenceDate: Date; //timestamp,
     active?: boolean;
+    lastRecurrence?: boolean;
     type: EnumInvoiceType;
     paymentMethod: EnumInvoicePaymentMethod;
     statusInvoice: EnumInvoiceStatus;
@@ -53,6 +55,7 @@ export type TInvoice = {
     recurenceNumber?: number; // aluguel atual
     firstPayment?: boolean;
     responsiblePayment?: TResponsiblePayment;
+    updateDate: Date;
 };
 
 export type TInvoiceFilter = {
