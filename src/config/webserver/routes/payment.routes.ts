@@ -6,20 +6,16 @@ export const payment: Router = Router();
 
 payment
     .post('/config', paymentController.createPaymentconfig)
-    .post('/card', paymentController.CardAdd)
     .get('/card/:userId', paymentController.UserCardListByFilter)
-    .get('/card/id/:id', paymentController.findCardById)
     .delete('/card/:id', paymentController.CardRemove)
-    .get('/id/:id', paymentController.getById)
-    .get('/:userId', paymentController.getReceipt)
-    .get('/', paymentController.getAllPayments)
-    .put('/', paymentController.MakePayment)
-    .put('/refound/:id', paymentController.RefoundPayment)
+    .get('/card/id/:id', paymentController.findCardById)
+    .post('/card', paymentController.CardAdd)
     .put('/card', paymentController.updateCard)
     .put('/inactivate-card/:userId', paymentController.inactivateUserCards)
+    .put('/refound/:id', paymentController.RefoundPayment)
+    .post('/refund/recurrence', paymentController.RefundRecurrencePayment)
     .post('/pix', paymentController.makePix)
     .get('/pix/getReceipt/:merchantOrderId', paymentController.getReceiptPix)
-    .post('/refund/recurrence', paymentController.RefundRecurrencePayment)
     .put('/card/recurrence/change/:invoiceId', paymentController.changeCard)
     .get(
         '/card/recurrence/:userId/:residentId',
@@ -30,4 +26,8 @@ payment
         paymentController.changeCardRecurrence,
     )
     .get('/receipt/:id', paymentController.getReceiptByPaymentId)
-    .get('/preRegister/:id', paymentController.getPreRegisterUserData);
+    .get('/preRegister/:id', paymentController.getPreRegisterUserData)
+    .get('/id/:id', paymentController.getById)
+    .get('/:userId', paymentController.getReceipt)
+    .get('/', paymentController.getAllPayments)
+    .put('/', paymentController.MakePayment);

@@ -91,6 +91,7 @@ export class InvoiceRepository {
             .getMany();
 
     public Find = async (filter: TInvoiceFilter) => {
+        console.log(777, filter);
         const db = getConnection()
             .getRepository(InvoiceEntity)
             .createQueryBuilder('invoice')
@@ -109,14 +110,20 @@ export class InvoiceRepository {
             active: true,
         });
 
-        if (filter.userId) {
-            db.andWhere('invoice.userId = :userId', {
-                userId: filter.userId,
+        if (filter.invoiceId) {
+            db.andWhere('invoice.invoiceId = :invoiceId', {
+                invoiceId: filter.invoiceId,
             });
-        } else if (filter.residentId) {
-            db.andWhere('invoice.residentIdenty = :residentId', {
-                residentId: filter.residentId,
-            });
+        } else {
+            if (filter.userId) {
+                db.andWhere('invoice.userId = :userId', {
+                    userId: filter.userId,
+                });
+            } else if (filter.residentId) {
+                db.andWhere('invoice.residentIdenty = :residentId', {
+                    residentId: filter.residentId,
+                });
+            }
         }
 
         if (filter.paymentMethod) {

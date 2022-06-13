@@ -76,11 +76,13 @@ export default async (data = {}, options) => {
         return dataReturn;
     } catch (error) {
         console.log(11111111, 'dataReturn.error', error.response.statusText);
+        console.log(error?.response);
         return {
             err: true,
             data: {
                 status: error?.response?.status,
                 message: error?.response?.statusText || 'unexpected error',
+                message: error?.response?.data || 'no data',
             },
         };
     }
