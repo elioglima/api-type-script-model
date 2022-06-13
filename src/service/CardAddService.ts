@@ -15,6 +15,7 @@ export default class CardAddService {
     public execute = async (paymentCard: PaymentCards) => {
         try {
             this.logger(`Find Card Add`);
+            console.log('paymentCard', paymentCard);
 
             if (!paymentCard?.enterpriseId)
                 return rError({
