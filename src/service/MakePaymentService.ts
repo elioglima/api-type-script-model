@@ -27,7 +27,13 @@ export default class MakePaymentService {
                 response.payment.status,
             );
 
-            if (response.payment.status !== 'PAGO') {
+            console.log(97979797, response.payment);
+
+            if (
+                !['paid', 'pago'].includes(
+                    response.payment.status.toString().toLowerCase(),
+                )
+            ) {
                 return {
                     err: true,
                     message: `Payment ${response.payment.status}`,
@@ -44,6 +50,7 @@ export default class MakePaymentService {
                     userId: req?.userId,
                     enterpriseId: req.enterpriseId,
                     ...response?.payment,
+                    status: 'PAGO',
                     amount: saveAmount,
                     product: req.payment.softDescriptor ?? '',
                 })

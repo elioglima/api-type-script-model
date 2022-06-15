@@ -19,7 +19,6 @@ import { PreRegistrationRepository } from '../../dataProvider/repository/PreRegi
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
 import AdapterPayment from '../../domain/AdapterPayment';
 import { reqRecurrenceModify } from '../../domain/RecurrentPayment';
-import { rError } from '../../utils';
 import { FindReceiptByPaymentIdService } from '../../service/FindReceiptByPaymentIdService';
 import PreRegisterService from '../../service/tegrus.services/PreRegisterService';
 
@@ -418,21 +417,12 @@ export class PaymentController {
                   }
                 : {};
 
-            const list = await this.paymentCardsRepository.getByUserId(userId);
+            // const list = await this.paymentCardsRepository.getByUserId(userId);
 
             return res.status(200).json({
-                ...recurrence,
-                cards: list
-                    ? list.map(m => ({
-                          id: m.id,
-                          firstFourNumbers: m.firstFourNumbers,
-                          lastFourNumbers: m.lastFourNumbers,
-                          brand: m.brand,
-                          holder: m.holder,
-                          expirationDate: m.expirationDate,
-                          active: m.active,
-                      }))
-                    : {},
+                cards: {
+                    ...recurrence,
+                },
             });
         } catch (error) {
             this.logger(`Error`, error);
@@ -446,6 +436,7 @@ export class PaymentController {
 
             const userId: number = Number(req.params.userId);
             const residentId: number = Number(req.params.residentId);
+            const cardId: number = Number(req.body.cardId);
 
             const resident: any = await this.preRegistrationRepository.getById(
                 residentId,
@@ -464,34 +455,67 @@ export class PaymentController {
                     residentId,
                 );
 
-            if (resRrecurrence?.data?.row) {
-                // caso tenha recorrencia
-                const recurrence: any = resRrecurrence?.data?.row;
-                const paymentAdapter = new AdapterPayment();
-
-                await paymentAdapter.init(resident.enterpriseId);
-
-                const reqModify: reqRecurrenceModify = {
-                    paymentId: recurrence?.recurrentPaymentId,
-                    modify: {
-                        Type: 'CreditCard',
-                        CreditCard: req.body,
+            if (!resRrecurrence?.data?.row)
+                return res.status(422).json({
+                    err: true,
+                    data: {
+                        message: 'There is no recurrence for this resident.',
                     },
-                };
+                });
 
-                const resModify: any = await paymentAdapter.recurrenceModify(
-                    reqModify,
-                );
+            const resCard = await this.findCardByIdService.execute(
+                Number(cardId),
+            );
 
-                if (resModify instanceof Error)
-                    return rError({
-                        message: 'Unexpected Error',
-                    });
-                if (resModify.err)
-                    return rError({
-                        message: 'Error to modify recurrence',
-                    });
+            if (resCard instanceof Error) {
+                return res.status(422).json({
+                    err: true,
+                    data: {
+                        message: resCard.message,
+                    },
+                });
             }
+
+            console.log(resCard);
+
+            // caso tenha recorrencia
+            const recurrence: any = resRrecurrence?.data?.row;
+            const paymentAdapter = new AdapterPayment();
+
+            await paymentAdapter.init(resident.enterpriseId);
+
+            const reqModify: reqRecurrenceModify = {
+                paymentId: recurrence?.recurrentPaymentId,
+                modify: {
+                    Type: 'CreditCard',
+                    CreditCard: {
+                        Brand: resCard.brand || '',
+                        Holder: resCard.holder || '',
+                        CardNumber: resCard.hashC || '',
+                        ExpirationDate: resCard.expirationDate || '',
+                    },
+                },
+            };
+
+            const resModify: any = await paymentAdapter.recurrenceModify(
+                reqModify,
+            );
+
+            if (resModify instanceof Error)
+                return res.status(422).json({
+                    err: true,
+                    data: {
+                        message: 'Unexpected Error',
+                    },
+                });
+
+            if (resModify.err)
+                return res.status(422).json({
+                    err: true,
+                    data: {
+                        message: 'Error to modify recurrence',
+                    },
+                });
 
             const response = await this.CardAddService.execute({
                 userId,
