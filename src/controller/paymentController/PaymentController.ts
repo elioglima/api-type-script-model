@@ -414,8 +414,6 @@ export class PaymentController {
                   }
                 : {};
 
-            // const list = await this.paymentCardsRepository.getByUserId(userId);
-
             return res.status(200).json({
                 cards: {
                     ...recurrence,
