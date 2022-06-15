@@ -1,21 +1,12 @@
 import { Request, Response } from 'express';
 import InvoiceService from '../../../service/invoiceService';
 import { TInvoiceFilter } from '../../../domain/Tegrus/TInvoice';
-import moment from 'moment';
 
 export const invoicesFilter = async (req: Request, res: Response) => {
     try {
         console.log(999, 'invoicesFilter');
 
-        const invoicesFilter: TInvoiceFilter = {
-            ...req?.body,
-            startDate: req?.body?.startDate
-                ? req?.body?.startDate
-                : moment().subtract(30, 'days').format('DD/MM/YYYY 00:00'),
-            endDate: req?.body?.endDate
-                ? req?.body?.endDate
-                : moment().add(1, 'days').format('DD/MM/YYYY 00:00'),
-        };
+        const invoicesFilter: TInvoiceFilter = req?.body;
 
         console.log(999, invoicesFilter);
 
