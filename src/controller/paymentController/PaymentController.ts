@@ -14,7 +14,6 @@ import { InactivatePaymentCardService } from '../../service/InactivatePaymentCar
 import { FindCardByIdService } from '../../service/FindCardByIdService';
 import { PaymentCards } from '../../domain/Payment';
 import { RecurrentModifyPaymentModel } from '../../domain/RecurrentPayment/recurrentModify';
-import { PaymentCardsRepository } from '../../dataProvider/repository/PaymentCardsRepository';
 import { PreRegistrationRepository } from '../../dataProvider/repository/PreRegisterRepository';
 import { PaymentRecurrenceRepository } from '../../dataProvider/repository/PaymentRecurrenceRepository';
 import AdapterPayment from '../../domain/AdapterPayment';
@@ -39,7 +38,6 @@ export class PaymentController {
     private updatePaymentCardService = new UpdatePaymentCardService();
     private inactivatePaymentCardService = new InactivatePaymentCardService();
     private findCardByIdService = new FindCardByIdService();
-    private paymentCardsRepository = new PaymentCardsRepository();
     private preRegistrationRepository = new PreRegistrationRepository();
     private paymentRecurrenceRepository = new PaymentRecurrenceRepository();
     private findReceiptByPaymentIdService = new FindReceiptByPaymentIdService();
@@ -389,7 +387,6 @@ export class PaymentController {
         try {
             this.logger(`payment cardRecurrence`, req.body);
 
-            const userId: number = Number(req.params.userId);
             const residentId: number = Number(req.params.residentId);
 
             const resident: any = await this.preRegistrationRepository.getById(
