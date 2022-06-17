@@ -578,7 +578,6 @@ export default class RecurrenceService {
                 dataInvoice?.residentIdenty?.enterpriseId,
             );
 
-            console.log(7777, recurrence?.recurrentPaymentId);
             const resRecurrence: any = await paymentAdapter.recurrenceFind({
                 recurrentPaymentId: recurrence?.recurrentPaymentId,
             });

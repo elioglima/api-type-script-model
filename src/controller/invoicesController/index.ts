@@ -3,7 +3,6 @@ import * as md from './modules/';
 
 export class InvoicesController {
     public invoicesFilter = async (req: Request, res: Response) => {
-        console.log(111111);
         return await md.invoicesFilter(req, res);
     };
 

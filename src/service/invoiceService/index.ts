@@ -247,10 +247,7 @@ export default class InvoiceService {
 
     public Find = async (payload: TInvoiceFilter) => {
         this.logger(`Find`);
-        console.log(999, payload);
-
         const resInvoiceFind: any = await this.invoiceRepository.Find(payload);
-        console.log(999, resInvoiceFind);
         if (resInvoiceFind instanceof Error) {
             return {
                 err: true,

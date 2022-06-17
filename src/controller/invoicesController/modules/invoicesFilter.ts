@@ -4,12 +4,7 @@ import { TInvoiceFilter } from '../../../domain/Tegrus/TInvoice';
 
 export const invoicesFilter = async (req: Request, res: Response) => {
     try {
-        console.log(999, 'invoicesFilter');
-
         const invoicesFilter: TInvoiceFilter = req?.body;
-
-        console.log(999, invoicesFilter);
-
         const invoiceService = new InvoiceService();
 
         const response = await invoiceService.Find(invoicesFilter);
