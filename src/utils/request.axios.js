@@ -9,18 +9,19 @@ export default async (data = {}, options) => {
 
         let response;
 
+        console.log(
+            9998,
+            `${options.hostname}/${options.path}`,
+            JSON.stringify(dataPost, null, 4),
+            JSON.stringify(options.headers, null, 4),
+            JSON.stringify(options.method, null, 4),
+        );
+
         if (options.method == 'PUT') {
             if (options && options.headers)
                 options.headers['Content-Length'] = Buffer.byteLength(dataPost);
 
-            console.log(
-                9998,
-                `${options.hostname}/${options.path}`,
-                JSON.stringify(dataPost, null, 4),
-                JSON.stringify(options.headers, null, 4),
-            );
-
-            console.log(`url:${options.hostname}/${options.path}`);
+            console.log(`url:${options.hostname}${options.path}`);
 
             response = await axios.put(
                 `${options.hostname}${options.path}`,

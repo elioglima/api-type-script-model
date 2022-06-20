@@ -75,6 +75,8 @@ export class PaymentController {
                 Number(req.params.id),
             );
 
+            console.log(9999999, data);
+
             if (data instanceof Error) {
                 this.logger('Error', data.message);
                 return res.status(422).json(data.message);
