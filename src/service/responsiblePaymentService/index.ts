@@ -1,10 +1,16 @@
 import debug from 'debug';
 import { ResponsiblePaymentRepository } from '../../dataProvider/repository/ResponsiblePaymentRepository';
 import { TResponsiblePayment } from '../../domain/Tegrus/TResponsiblePayment';
+import UserGateway from '../../dataProvider/gateway/UserGateway';
+import ApartmentUserGateway from '../../dataProvider/gateway/ApartmentUserGateway';
+import EnterpriseGateway from '../../dataProvider/gateway/EnterpriseGateway';
 
 export default class ResponsiblePaymentService {
     private logger = debug('payment-api:ResponsiblePaymentService');
     private repository = new ResponsiblePaymentRepository();
+    private userGateway = new UserGateway();
+    private apartmentUserGateway = new ApartmentUserGateway();
+    private enterpriseGateway = new EnterpriseGateway();
 
     public IncludeOrUpdate = async (
         responsiblePayment: TResponsiblePayment,
@@ -118,6 +124,81 @@ export default class ResponsiblePaymentService {
             return {
                 err: false,
                 data: responsiblePayment,
+            };
+        } catch (error: any) {
+            return {
+                err: true,
+                data: {
+                    message: error?.message || 'unexpected error',
+                },
+            };
+        }
+    };
+
+    public FindOneByUserId = async (userId: number) => {
+        this.logger(`Find One`);
+        try {
+            const user: any = await this.userGateway.findById(userId);
+
+            if (user instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: user.message,
+                    },
+                };
+            }
+
+            const resApartamentUser: any =
+                await this.apartmentUserGateway.findByUserId(user?.id);
+
+            if (resApartamentUser instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: resApartamentUser.message,
+                    },
+                };
+            }
+
+            const resEnterpriseGateway = await this.enterpriseGateway.findById(
+                resApartamentUser?.data?.apartment?.idEnterprise,
+            );
+
+            if (resEnterpriseGateway instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: resEnterpriseGateway.message,
+                    },
+                };
+            } else if (!resEnterpriseGateway) {
+                return {
+                    err: true,
+                    data: {
+                        message: 'Enterprise not located',
+                    },
+                };
+            }
+
+            const responsiblePayment: TResponsiblePayment =
+                await this.repository.FindOneAE({
+                    apartmentId: resApartamentUser?.data?.apartment?.externalId,
+                    enterpriseId: resEnterpriseGateway?.externalId,
+                });
+
+            if (responsiblePayment instanceof Error) {
+                return {
+                    err: true,
+                    data: {
+                        message: 'No responsiblePayment found',
+                    },
+                };
+            }
+
+            return {
+                err: false,
+                data: { isResponsiblePayment: responsiblePayment != undefined },
             };
         } catch (error: any) {
             return {
