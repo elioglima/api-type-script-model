@@ -20,6 +20,9 @@ import AdapterPayment from '../../domain/AdapterPayment';
 import { reqRecurrenceModify } from '../../domain/RecurrentPayment';
 import { FindReceiptByPaymentIdService } from '../../service/FindReceiptByPaymentIdService';
 import PreRegisterService from '../../service/tegrus.services/PreRegisterService';
+import InvoiceService from '../../service/invoiceService';
+import { TInvoice } from '../../domain/Tegrus/TInvoice';
+import { EnumInvoiceStatus } from '../../domain/Tegrus/EnumInvoiceStatus';
 
 export class PaymentController {
     private logger = debug('payment-api:PaymentController');
@@ -42,6 +45,7 @@ export class PaymentController {
     private paymentRecurrenceRepository = new PaymentRecurrenceRepository();
     private findReceiptByPaymentIdService = new FindReceiptByPaymentIdService();
     private preRegisterService = new PreRegisterService();
+    private invoiceService = new InvoiceService();
 
     public MakePayment = async (req: Request, res: Response) => {
         try {
@@ -71,7 +75,7 @@ export class PaymentController {
     public RefoundPayment = async (req: Request, res: Response) => {
         try {
             this.logger(`Refound payment`, req.body);
-            const data = await this.refoundPaymentService.execute(
+            const data = await this.refoundPaymentService.refound(
                 Number(req.params.id),
             );
 
@@ -88,6 +92,66 @@ export class PaymentController {
             }
 
             return res.status(200).json(data);
+        } catch (error) {
+            this.logger(`Error`, error);
+            return res.status(422).json(error);
+        }
+    };
+
+    public RefoundPaymentInvoice = async (req: Request, res: Response) => {
+        try {
+            const invoiceId: number = Number(req.params?.invoiceId);
+
+            this.logger(`Refound payment`, req.body);
+            const invoiceData = await this.invoiceService.FindOne(
+                Number(invoiceId),
+            );
+
+            if (invoiceData instanceof Error) {
+                this.logger('Error', invoiceData.message);
+                return res.status(422).json(invoiceData.message);
+            }
+
+            const invoice: TInvoice = invoiceData?.data;
+
+            if (invoice.statusInvoice == EnumInvoiceStatus.refunded) {
+                return res.status(422).json({
+                    err: true,
+                    message: `the invoice has already been reversed`,
+                });
+            } else if (invoice.statusInvoice != EnumInvoiceStatus.paid) {
+                return res.status(422).json({
+                    err: true,
+                    message: `the invoice cannot be reversed :: status=${invoice.statusInvoice}`,
+                });
+            }
+
+            const data = await this.refoundPaymentService.refundInvoice(
+                invoice.enterpriseId,
+                String(invoice.paymentId),
+                invoice.totalValue,
+            );
+
+            if (data.err || data?.code == 309) {
+                return res.status(422).json(data.message);
+            }
+
+            const updateData: any = await this.invoiceService.Update({
+                ...invoice,
+                statusInvoice: EnumInvoiceStatus.refunded,
+            });
+
+            if (!updateData?.data?.row?.affected) {
+                return res.status(422).json({
+                    err: true,
+                    message: 'unable to update invoice status to reversed',
+                });
+            }
+
+            return res.status(200).json({
+                err: true,
+                message: 'invoice payment successfully reversed',
+            });
         } catch (error) {
             this.logger(`Error`, error);
             return res.status(422).json(error);

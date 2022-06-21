@@ -81,15 +81,15 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 true,
             );
 
-        if (resInvoice?.data?.statusInvoice == 'paid') {
-            return {
-                err: true,
-                status: 422,
-                data: {
-                    message: 'invoice is already paid',
-                },
-            };
-        }
+        // if (resInvoice?.data?.statusInvoice == 'paid') {
+        //     return {
+        //         err: true,
+        //         status: 422,
+        //         data: {
+        //             message: 'invoice is already paid',
+        //         },
+        //     };
+        // }
 
         const responsiblePaymentService = new ResponsiblePaymentService();
 
