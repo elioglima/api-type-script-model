@@ -7,7 +7,7 @@ import { EnumInvoiceStatus } from '../../../../domain/Tegrus/EnumInvoiceStatus';
 import { EnumInvoicePaymentMethod } from '../../../../domain/Tegrus/EnumInvoicePaymentMethod';
 import { EnumInvoiceType } from '../../../../domain/Tegrus/EnumInvoiceType';
 import { EnumBrands } from '../../../../enum';
-import HashSearchService from './hashSearchService';
+import HashSearchService from '../hashSearchService';
 import { payNowCredit } from './payNowCredit';
 import { payNowRecurrence } from './payNowRecurrence';
 import { TPayNowReq } from '../../../../domain/Tegrus/TPayNow';
@@ -81,15 +81,27 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 true,
             );
 
-        // if (resInvoice?.data?.statusInvoice == 'paid') {
-        //     return {
-        //         err: true,
-        //         status: 422,
-        //         data: {
-        //             message: 'invoice is already paid',
-        //         },
-        //     };
-        // }
+        if (resInvoice?.data?.statusInvoice == EnumInvoiceStatus.paid) {
+            return {
+                err: true,
+                status: 422,
+                data: {
+                    code: 6,
+                    message: 'invoice is already paid',
+                },
+            };
+        }
+
+        if (resInvoice?.data?.statusInvoice == EnumInvoiceStatus.expired) {
+            return {
+                err: true,
+                status: 422,
+                data: {
+                    code: 7,
+                    message: 'invoice is expired',
+                },
+            };
+        }
 
         const responsiblePaymentService = new ResponsiblePaymentService();
 

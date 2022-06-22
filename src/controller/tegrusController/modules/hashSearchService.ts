@@ -1,7 +1,11 @@
 import debug from 'debug';
-import { HashDataRepository } from '../../dataProvider/repository/HashDataRepository';
-import { InvoiceRepository } from '../../dataProvider/repository/InvoiceRepository';
-import { resHashData, EnumInvoiceStatus } from '../../domain/Tegrus';
+import { HashDataRepository } from '../../../dataProvider/repository/HashDataRepository';
+import { InvoiceRepository } from '../../../dataProvider/repository/InvoiceRepository';
+import {
+    resHashData,
+    EnumInvoiceStatus,
+    TInvoice,
+} from '../../../domain/Tegrus';
 import moment from 'moment';
 
 export default class HashSearchService {
@@ -26,7 +30,7 @@ export default class HashSearchService {
 
             if (!resp?.valid) {
                 return {
-                    err: true,
+                    err: false,
                     data: {
                         code: 2,
                         message: 'hash already used.',
@@ -34,7 +38,62 @@ export default class HashSearchService {
                 };
             }
 
-            const resValidate: any = await this.validateHashTTL(resp);
+            const resInvoicePreUser: any = await this.InvRep.getByInvoiceId(
+                resp.invoiceId,
+            );
+
+            if (!resInvoicePreUser)
+                return {
+                    err: true,
+                    data: {
+                        code: 5,
+                        message: 'Invoice doesnt found.',
+                    },
+                };
+
+            if (resInvoicePreUser instanceof Error)
+                return { err: true, data: resInvoicePreUser };
+
+            const invoice: TInvoice = resInvoicePreUser?.data;
+
+            if (invoice.statusInvoice == EnumInvoiceStatus.paid) {
+                return {
+                    err: true,
+                    data: {
+                        code: 6,
+                        message: 'invoice is already paid',
+                    },
+                };
+            }
+
+            if (invoice.statusInvoice == EnumInvoiceStatus.expired) {
+                return {
+                    err: true,
+                    data: {
+                        code: 7,
+                        message: 'invoice is expired',
+                    },
+                };
+            }
+
+            const timeNow: Date = moment().toDate();
+            if (moment(invoice.dueDate).add('days', 1).isBefore(timeNow)) {
+                await this.TerminateHashTTL(String(resp));
+                await this.InvRep.update({
+                    ...invoice,
+                    statusInvoice: EnumInvoiceStatus.expired,
+                });
+
+                return {
+                    err: true,
+                    data: {
+                        code: 7,
+                        message: 'invoice is expired',
+                    },
+                };
+            }
+
+            const resValidate = await this.validateHashTTL(resp);
             if (resValidate.err) {
                 return {
                     err: true,
@@ -50,87 +109,39 @@ export default class HashSearchService {
                     err: false,
                     data: {
                         code: 4,
-                        ...resValidate.data,
+                        message: 'the hash is not valid',
                     },
                 };
             }
 
             if (resValidate?.data?.isExpired) {
-                return {
-                    err: true,
-                    data: {
-                        code: 4,
-                        ...resValidate.data,
-                    },
-                };
-            }
+                // atualizar
 
-            const resInvoicePreUser: any = await this.InvRep.getByInvoiceId(
-                resp.invoiceId,
-            );
-            console.log(1111, resInvoicePreUser);
+                await this.InvRep.update({
+                    ...invoice,
+                    statusInvoice: EnumInvoiceStatus.expired,
+                });
 
-            const timeNow: Date = moment().toDate();
-
-            resInvoicePreUser.invoiceHasExpired = moment(
-                resInvoicePreUser?.dueDate || moment(),
-            )
-                .add('days', 1)
-                .isBefore(timeNow);
-
-            if (resInvoicePreUser.invoiceHasExpired) {
                 return {
                     err: true,
                     data: {
                         code: 7,
-                        message: 'dueDate has expired.',
+                        message: 'invoice is expired',
                     },
                 };
             }
-
-            if (!resInvoicePreUser)
-                return {
-                    err: true,
-                    data: {
-                        code: 5,
-                        message: 'Invoice doesnt found.',
-                    },
-                };
-
-            if (resInvoicePreUser instanceof Error)
-                return { err: true, data: resInvoicePreUser };
 
             const res: resHashData = {
                 resident: resInvoicePreUser.resident,
                 invoice: delete resInvoicePreUser.resident && resInvoicePreUser,
             };
 
-            if (res.invoice.statusInvoice == EnumInvoiceStatus.canceled) {
-                await this.terminateHashTTL(hash);
-                return {
-                    err: true,
-                    data: {
-                        code: 7,
-                        message: 'invoice invoiced',
-                    },
-                };
-            } else if (res.invoice.statusInvoice == EnumInvoiceStatus.paid) {
-                await this.terminateHashTTL(hash);
-                return {
-                    err: true,
-                    data: {
-                        code: 6,
-                        message: 'invoice is already paid',
-                    },
-                };
-            }
-
             return res;
         } catch (error) {
-            console.log(error);
             return {
+                code: 8,
+                message: 'unexpected error',
                 err: true,
-                data: error,
             };
         }
     }
@@ -139,7 +150,7 @@ export default class HashSearchService {
         try {
             const timeNow: Date = moment().toDate();
             if (moment(hashData.lifeTime).add('days', 1).isBefore(timeNow)) {
-                await this.terminateHashTTL(String(hashData.hash));
+                await this.TerminateHashTTL(String(hashData.hash));
                 return {
                     err: false,
                     data: {
@@ -167,13 +178,10 @@ export default class HashSearchService {
         }
     }
 
-    private async terminateHashTTL(hash: string) {
+    public async TerminateHashTTL(hash: string) {
         try {
             const resp = await this.HashRep.update(hash);
-            if (resp.err) {
-                return { err: true, data: resp.err };
-            }
-
+            if (resp.err) return { err: true, data: resp.err };
             return resp;
         } catch (error: any) {
             return {

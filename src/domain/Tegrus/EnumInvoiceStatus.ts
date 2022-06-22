@@ -4,4 +4,5 @@ export enum EnumInvoiceStatus {
     paid = 'paid',
     refunded = 'chargeback',
     paymentError = 'paymentError',
+    expired = 'expired',
 }

@@ -11,6 +11,7 @@ export const invoicesFilter = async (req: Request, res: Response) => {
         if (response.err) {
             return res.status(422).json(response);
         }
+
         const result = response.data.map((m: any) => ({
             id: m.id,
             date: m.date,
