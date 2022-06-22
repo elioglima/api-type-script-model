@@ -1,25 +1,20 @@
-import debug from 'debug';
 import { Request, Response } from 'express';
 
 import tegrusServices from '../../../service/tegrus.services';
+import { EnMessages } from '../../../enum';
 
 const hashSearch = async (req: Request, res: Response) => {
-    const logger = debug('payment-api:PaymentController');
-
     try {
         const hash: string = req?.params?.hash;
         if (!hash)
             return res.status(422).json({
                 err: true,
-                data: {
-                    message: 'No hash was sent.',
-                },
+                data: EnMessages.Error.HashNotFount,
             });
 
         const dataRes: any =
             await new tegrusServices.HashSearchService().execute(hash);
         if (dataRes?.err) {
-            logger('Error', dataRes?.data);
             return res.status(422).json({
                 err: true,
                 status: 422,
@@ -28,13 +23,10 @@ const hashSearch = async (req: Request, res: Response) => {
         }
 
         if (!dataRes) {
-            logger('Error', 'Nothing was found');
             return res.status(422).json({
                 err: true,
                 status: 422,
-                data: {
-                    message: 'Nothing was found',
-                },
+                data: EnMessages.Error.HashDecodingFailed,
             });
         }
 
@@ -44,7 +36,7 @@ const hashSearch = async (req: Request, res: Response) => {
             data: dataRes?.data || dataRes,
         });
     } catch (error: any) {
-        return res.status(422).json(error);
+        return res.status(422).json(EnMessages.Error.UnexpectedError);
     }
 };
 

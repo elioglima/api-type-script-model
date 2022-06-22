@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import moment from 'moment';
 
 import InvoiceService from '../../../../service/invoiceService';
 import RecurrenceService from '../../../../service/recurrenceService';
@@ -14,6 +15,7 @@ import { TPayNowReq } from '../../../../domain/Tegrus/TPayNow';
 import { invoiceToTResident } from '../../../../utils';
 import { FindCardByIdService } from '../../../../service/FindCardByIdService';
 import ResponsiblePaymentService from '../../../../service/responsiblePaymentService';
+import { EnMessages } from '../../../../enum';
 
 const returnTopic = (
     response: {
@@ -33,7 +35,7 @@ const returnTopic = (
             invoices: [
                 {
                     messageError: err
-                        ? response?.message || 'unexpected error'
+                        ? response?.message || EnMessages.Error.UnexpectedError
                         : undefined,
                     ...response,
                 },
@@ -76,19 +78,13 @@ const servicePrivate = async (payload: TPayNowReq) => {
         }
 
         if (resInvoice?.err)
-            return returnTopic(
-                { message: 'invoice not found in database' },
-                true,
-            );
+            return returnTopic(EnMessages.Error.InvoiceNotFound, true);
 
         if (resInvoice?.data?.statusInvoice == EnumInvoiceStatus.paid) {
             return {
                 err: true,
                 status: 422,
-                data: {
-                    code: 6,
-                    message: 'invoice is already paid',
-                },
+                data: EnMessages.Error.InvoiceIsPaid,
             };
         }
 
@@ -96,15 +92,37 @@ const servicePrivate = async (payload: TPayNowReq) => {
             return {
                 err: true,
                 status: 422,
-                data: {
-                    code: 7,
-                    message: 'invoice is expired',
-                },
+                data: EnMessages.Error.InvoiceIsExpired,
+            };
+        }
+
+        if (resInvoice?.data?.statusInvoice != EnumInvoiceStatus.issued) {
+            return {
+                err: true,
+                status: 422,
+                data: EnMessages.Error.InvoiceCannotBePaid,
+            };
+        }
+
+        // verifica vencimento expirado
+        const timeNow: Date = moment().toDate();
+        if (
+            moment(resInvoice?.data?.dueDate).add('days', 1).isBefore(timeNow)
+        ) {
+            await invoiceService.Update({
+                ...resInvoice?.data,
+                isExpired: true,
+                statusInvoice: EnumInvoiceStatus.expired,
+            });
+
+            return {
+                err: true,
+                status: 422,
+                data: EnMessages.Error.InvoiceStatusChangeExpired,
             };
         }
 
         const responsiblePaymentService = new ResponsiblePaymentService();
-
         const responsiblePayment: any =
             await responsiblePaymentService.FindOneAE(
                 resInvoice?.data?.apartmentId,
@@ -116,10 +134,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
             const card = await findCardByIdService.execute(payload.cardId);
 
             if (card instanceof Error) {
-                return returnTopic(
-                    { message: 'card not found in database' },
-                    true,
-                );
+                return returnTopic(EnMessages.Error.CardNotFound, true);
             }
 
             payload.card = {
@@ -141,10 +156,7 @@ const servicePrivate = async (payload: TPayNowReq) => {
         const invoice: TInvoice = invoiceData;
 
         if (!resident)
-            return returnTopic(
-                { message: 'resident not found in database' },
-                true,
-            );
+            return returnTopic(EnMessages.Error.ResidentNotFound, true);
 
         if (
             [
@@ -196,22 +208,19 @@ const servicePrivate = async (payload: TPayNowReq) => {
                 return await checkedReturn(resPayNowCredit);
             } else {
                 return returnTopic(
-                    { message: 'type not implemented for payment' },
+                    EnMessages.Error.InvoiceTypeNotImplemented,
                     true,
                 );
             }
         } else {
             return returnTopic(
-                { message: 'method not implemented for payment' },
+                EnMessages.Error.InvoiceTypeNotImplemented,
                 true,
             );
         }
     } catch (error: any) {
         console.log(777, error);
-        return returnTopic(
-            { message: 'resident not found in database, unexpected error' },
-            true,
-        );
+        return returnTopic(EnMessages.Error.ResidentNotFound, true);
     }
 };
 

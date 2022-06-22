@@ -52,48 +52,48 @@ export const payNowCredit = async (
     const resMessage: any = defaultReturnMessage(String(invoice?.returnCode));
 
     try {
-        // if (['00', '1', '4'].includes(String(invoice?.returnCode))) {
-        //     // verificando se esta paga a fatura
-        //     return returnTopic({
-        //         message: 'invoice payment has already been changed',
-        //         invoiceId: invoice.invoiceId,
-        //         paymentDate: invoice.paymentDate,
-        //         statusInvoice: invoice.statusInvoice,
-        //         paymentMethod: invoice.paymentMethod,
-        //         type: invoice.type,
-        //         returnMessage: invoice.returnMessage,
-        //         paymentId: invoice?.paymentId,
-        //         tid: invoice.tid,
-        //         returnCode: resMessage.code,
-        //         receipt: {
-        //             referenceCode: 1,
-        //             tid: invoice.tid,
-        //             invoiceId: invoice.invoiceId,
-        //             statusInvoice: invoice.statusInvoice,
-        //             residentName: resident.name,
-        //             enterpriseId: invoice.enterpriseId,
-        //             apartmentId: invoice.apartmentId,
-        //             paymentMethod: invoice.paymentMethod,
-        //             dueDate: invoice.dueDate,
-        //             paymentDate: invoice.paymentDate,
-        //             message: resMessage.message,
-        //             value: invoice.value,
-        //             totalValue: invoice.totalValue,
-        //             startReferenceDate: invoice.startReferenceDate,
-        //             endReferenceDate: invoice.endReferenceDate,
-        //             tax: invoice.tax,
-        //             refund: invoice.refund,
-        //             expense: invoice.expense,
-        //             fine: invoice.fine,
-        //             discount: invoice.discount,
-        //             condominium: invoice.condominium,
-        //             fineTicket: invoice.fineTicket,
-        //             stepValue: invoice.stepValue,
-        //             commission: invoice.commission,
-        //             responsiblePayment,
-        //         },
-        //     });
-        // }
+        if (['00', '1', '4'].includes(String(invoice?.returnCode))) {
+            // verificando se esta paga a fatura
+            return returnTopic({
+                message: 'invoice payment has already been changed',
+                invoiceId: invoice.invoiceId,
+                paymentDate: invoice.paymentDate,
+                statusInvoice: invoice.statusInvoice,
+                paymentMethod: invoice.paymentMethod,
+                type: invoice.type,
+                returnMessage: invoice.returnMessage,
+                paymentId: invoice?.paymentId,
+                tid: invoice.tid,
+                returnCode: resMessage.code,
+                receipt: {
+                    referenceCode: 1,
+                    tid: invoice.tid,
+                    invoiceId: invoice.invoiceId,
+                    statusInvoice: invoice.statusInvoice,
+                    residentName: resident.name,
+                    enterpriseId: invoice.enterpriseId,
+                    apartmentId: invoice.apartmentId,
+                    paymentMethod: invoice.paymentMethod,
+                    dueDate: invoice.dueDate,
+                    paymentDate: invoice.paymentDate,
+                    message: resMessage.message,
+                    value: invoice.value,
+                    totalValue: invoice.totalValue,
+                    startReferenceDate: invoice.startReferenceDate,
+                    endReferenceDate: invoice.endReferenceDate,
+                    tax: invoice.tax,
+                    refund: invoice.refund,
+                    expense: invoice.expense,
+                    fine: invoice.fine,
+                    discount: invoice.discount,
+                    condominium: invoice.condominium,
+                    fineTicket: invoice.fineTicket,
+                    stepValue: invoice.stepValue,
+                    commission: invoice.commission,
+                    responsiblePayment,
+                },
+            });
+        }
 
         const invoiceService = new InvoiceService();
         const resPayAdapter: any = await payAdatpter(

@@ -1,11 +1,13 @@
+import moment from 'moment';
+
 import InvoiceService from '../../../../service/invoiceService';
-// import createHash from './createHash';
 import firstPaymentCreateService from '../../../../service/tegrus.services/firstPaymentCreateService';
+import { EnumInvoiceStatus } from '../../../../domain/Tegrus';
 
 const updateInvoice = async (toReceive: any) => {
     try {
         // retorno do app >> bff >> tegrus
-        const updataData: any = {
+        let updataData: any = {
             invoiceId: toReceive?.updateInvoice?.invoiceId,
             value: toReceive?.updateInvoice?.value,
             totalValue: toReceive?.updateInvoice?.totalValue,
@@ -38,40 +40,13 @@ const updateInvoice = async (toReceive: any) => {
             await firstPaymentCreateService(toReceive?.updateInvoice);
         }
 
-        await invoiceService.Update(updataData);
-        if (updataData.isExpired) {
-            // retirado a pedido da fernanda
-            // const linkInvoice: any = await createHash(
-            //     toReceive?.updateInvoice?.invoiceId,
-            // );
-
-            // if (linkInvoice.err) {
-            //     return {
-            //         err: true,
-            //         data: {
-            //             updateInvoice: {
-            //                 ...toReceive?.updateInvoice,
-            //                 returnOpah: {
-            //                     messageMessage: 'Error generating link',
-            //                 },
-            //             },
-            //         },
-            //     };
-            // }
-
-            return {
-                err: false,
-                data: {
-                    updateInvoice: {
-                        ...toReceive?.updateInvoice,
-                        returnOpah: {
-                            message: 'success',
-                            // linkInvoice,
-                        },
-                    },
-                },
-            };
+        const timeNow: Date = moment().toDate();
+        if (moment(updataData.dueDate).add('days', 1).isBefore(timeNow)) {
+            updataData.isExpired = true;
+            updataData.statusInvoice = EnumInvoiceStatus.expired;
         }
+
+        await invoiceService.Update(updataData);
 
         // retorno apenas de um update
         return {
@@ -80,7 +55,9 @@ const updateInvoice = async (toReceive: any) => {
                 updateInvoice: {
                     ...toReceive?.updateInvoice,
                     returnOpah: {
-                        message: 'success',
+                        message: !updataData.expired
+                            ? 'success'
+                            : 'Invoice status changed to expired, due date expired.',
                     },
                 },
             },

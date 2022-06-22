@@ -14,3 +14,4 @@ export * from './FraudANalysisStatusEnum';
 export * from './TypeFlowAnalysusFraudEnum';
 export * from './RecurrentPaymentIntervalEnum';
 export * from './TravelEnum';
+export * from './EnumMessages';
