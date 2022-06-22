@@ -13,32 +13,28 @@ import moment from 'moment';
 import { TResident } from '../../../../domain/Tegrus';
 
 const invoiceEnginePrivate = async (res: Response) => {
-    const pixData = pixController();
+    const pixData = await pixController();
 
-    const cieloData = cieloController();
+    const cieloData = await cieloController();
 
-    return res.status(200).json({
-        statusInvoice: {
-            invoices: [
-                {
-                    invoiceId: 390,
-                    statusInvoice: 'payment_error',
-                    paymentMethod: 'credit',
-                    messageError: 'Cartão com limite insuficiente',
-                },
-                {
-                    invoiceId: 420,
-                    recurrentPaymentId: 'd2ca3af5-506e-488a-bb81-7d58e0b3210e',
-                    statusInvoice: 'paid',
-                    paymentMethod: 'credit',
-                    paymentDate: new Date(),
-                },
-            ],
-        },
-    });
+    if (cieloData) {
+        return res.status(200).json({
+            statusInvoice: { ...cieloData },
+        });
+    }
+
+    if (pixData) {
+        return res.status(200).json({
+            statusInvoice: { ...pixData },
+        });
+    }
 };
 
-const pixController = () => {};
+const pixController = async () => {
+    return {
+        data: 'to be done',
+    };
+};
 
 const cieloController = async () => {
     try {
