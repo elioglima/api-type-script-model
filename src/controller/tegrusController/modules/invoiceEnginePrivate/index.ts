@@ -13,28 +13,32 @@ import moment from 'moment';
 import { TResident } from '../../../../domain/Tegrus';
 
 const invoiceEnginePrivate = async (res: Response) => {
+    const pixData = await pixController();
+
+    const cieloData = await cieloController();
+
+    if (cieloData) {
+        return res.status(200).json({
+            statusInvoice: { ...cieloData },
+        });
+    }
+
+    if (pixData) {
+        return res.status(200).json({
+            statusInvoice: { ...pixData },
+        });
+    }
+};
+
+const pixController = async () => {
+    return {
+        data: 'to be done',
+    };
+};
+
+const cieloController = async () => {
     try {
         console.log('invoiceEnginePrivate');
-        return res.status(200).json({
-            statusInvoice: {
-                invoices: [
-                    {
-                        invoiceId: 390,
-                        statusInvoice: 'payment_error',
-                        paymentMethod: 'credit',
-                        messageError: 'Cartão com limite insuficiente',
-                    },
-                    {
-                        invoiceId: 420,
-                        recurrentPaymentId:
-                            'd2ca3af5-506e-488a-bb81-7d58e0b3210e',
-                        statusInvoice: 'paid',
-                        paymentMethod: 'credit',
-                        paymentDate: new Date(),
-                    },
-                ],
-            },
-        });
 
         const invoiceService = new InvoiceService();
         const recurrenceService = new RecurrenceService();
@@ -60,12 +64,7 @@ const invoiceEnginePrivate = async (res: Response) => {
         if (invoicesFounded.err) return invoicesFounded;
         console.log('invoiceEnginePrivate.invoicesFounded');
 
-        if (!invoicesFounded.data.length)
-            return res.status(200).json({
-                statusInvoice: {
-                    invoices: [],
-                },
-            });
+        if (!invoicesFounded.data.length) return { data: [], err: false };
 
         console.log('invoiceEnginePrivate.result');
 
@@ -221,17 +220,13 @@ const invoiceEnginePrivate = async (res: Response) => {
                 .filter((f: any) => !f?.err),
         );
 
-        return res.status(200).json({
-            statusInvoice: {
-                invoices: [...result.filter((f: any) => !f?.err)],
-            },
-        });
+        return { data: [...result.filter((f: any) => !f?.err)], err: false };
     } catch (error: any) {
         console.log('ERROR', error);
-        return res.status(500).json({
+        return {
             err: true,
             data: error,
-        });
+        };
     }
 };
 
