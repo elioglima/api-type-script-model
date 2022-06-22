@@ -1,1 +1,1 @@
-# Model Api
+# API template in type script
