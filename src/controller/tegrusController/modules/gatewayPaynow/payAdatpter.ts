@@ -78,6 +78,7 @@ export const payAdatpter = async (
             };
 
             const resPayment: any = await adapter.makePayment(reqPayment);
+            console.log(777777, resPayment);
 
             if (resPayment instanceof Error)
                 return rError({ message: 'Error to pay' });

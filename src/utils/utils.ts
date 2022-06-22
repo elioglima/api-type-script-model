@@ -61,6 +61,8 @@ export class Utils {
                     const uri = `/1/sales/${paymentId}/capture`;
                     return this.put<T, U>({ path: uri }).then(
                         (capture: any) => {
+                            console.log(444444444, paymentId, capture?.data);
+
                             if (capture?.err) {
                                 return reject({
                                     err: true,
