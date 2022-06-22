@@ -1,19 +1,19 @@
 {
-  "name": "payment-api",
+  "name": "model-api",
   "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "cross-env DEBUG=payment-api* ts-node-dev --transpile-only --ignore-watch node_modules -r tsconfig-paths/register src/index.ts",
-    "start": "DEBUG=payment-api* node dist/index.js"
+    "dev": "cross-env DEBUG=model-api* ts-node-dev --transpile-only --ignore-watch node_modules -r tsconfig-paths/register src/config/index.ts",
+    "start": "DEBUG=model-api* node dist/index.js"
   },
   "repository": {
     "type": "git",
     "url": "https://git.opah.com.br/jfl/backend/payment-api.git"
   },
   "keywords": [],
-  "author": "Opah IT",
+  "author": "elioglima",
   "license": "ISC",
   "dependencies": {
     "@types/tape": "^4.13.2",

@@ -1,2 +1,2 @@
-export * from './parse';
-export * from './returns';
+export * from './base64Decode';
+export * from './base64Encode';
